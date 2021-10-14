@@ -3,18 +3,18 @@ using Cake.Core.Diagnostics;
 
 namespace Grynwald.SharedBuild
 {
-    public class PushTarget : IPrintableObject
+    public class PushTarget : IPushTarget
     {
-        private readonly DefaultBuildContext m_Context;
+        private readonly Func<IBuildContext, bool> m_IsActive;
 
-        public PushTargetType Type { get; }
+        /// <inheritdoc />
+        public virtual PushTargetType Type { get; }
 
-        public string FeedUrl { get; }
+        /// <inheritdoc />
+        public virtual string FeedUrl { get; }
 
-        public Func<IBuildContext, bool> IsActive { get; }
 
-
-        public PushTarget(DefaultBuildContext context, PushTargetType type, string feedUrl, Func<IBuildContext, bool> isActive)
+        public PushTarget(PushTargetType type, string feedUrl, Func<IBuildContext, bool> isActive)
         {
             if (String.IsNullOrWhiteSpace(feedUrl))
                 throw new ArgumentException("Value must not be null or whitespace", nameof(feedUrl));
@@ -22,18 +22,20 @@ namespace Grynwald.SharedBuild
             if (!Enum.IsDefined(type))
                 throw new ArgumentException($"Undefined enum value '{type}'", nameof(type));
 
-            m_Context = context ?? throw new ArgumentNullException(nameof(context));
             Type = type;
             FeedUrl = feedUrl;
-            IsActive = isActive ?? throw new ArgumentNullException(nameof(isActive));
+            m_IsActive = isActive ?? throw new ArgumentNullException(nameof(isActive));
         }
+
+
+        /// <inheritdoc />
+        public virtual bool IsActive(IBuildContext context) => m_IsActive(context);
 
 
         public void PrintToLog(ICakeLog log)
         {
             log.Information($"{nameof(Type)}: {Type}");
             log.Information($"{nameof(FeedUrl)}: {FeedUrl}");
-            log.Information($"{nameof(IsActive)}: {IsActive(m_Context)}");
         }
     }
 }

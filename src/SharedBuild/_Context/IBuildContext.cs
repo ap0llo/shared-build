@@ -49,6 +49,6 @@ namespace Grynwald.SharedBuild
         /// <summary>
         /// Gets the sources to push NuGet packages to
         /// </summary>
-        IReadOnlyCollection<PushTarget> PushTargets { get; }
+        IReadOnlyCollection<IPushTarget> PushTargets { get; }
     }
 }

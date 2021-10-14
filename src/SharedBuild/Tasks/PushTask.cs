@@ -40,7 +40,7 @@ namespace Grynwald.SharedBuild.Tasks
         }
 
 
-        private void PushToAzureArtifacts(IBuildContext context, PushTarget pushTarget)
+        private void PushToAzureArtifacts(IBuildContext context, IPushTarget pushTarget)
         {
             // See https://www.daveaglick.com/posts/pushing-packages-from-azure-pipelines-to-azure-artifacts-using-cake
             var accessToken = context.EnvironmentVariable("SYSTEM_ACCESSTOKEN");
@@ -72,7 +72,7 @@ namespace Grynwald.SharedBuild.Tasks
             }
         }
 
-        private void PushToNuGetOrg(IBuildContext context, PushTarget pushTarget)
+        private void PushToNuGetOrg(IBuildContext context, IPushTarget pushTarget)
         {
             var apiKey = context.EnvironmentVariable("NUGET_ORG_APIKEY");
             if (String.IsNullOrEmpty(apiKey))

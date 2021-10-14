@@ -48,7 +48,7 @@ namespace Grynwald.SharedBuild
         public virtual IOutputContext Output { get; }
 
         /// <inheritdoc />
-        public virtual IReadOnlyCollection<PushTarget> PushTargets { get; }
+        public virtual IReadOnlyCollection<IPushTarget> PushTargets { get; }
 
 
         /// <summary>
@@ -62,13 +62,11 @@ namespace Grynwald.SharedBuild
             PushTargets = new[]
             {
                 new PushTarget(
-                    this,
                     PushTargetType.AzureArtifacts,
                     "https://pkgs.dev.azure.com/ap0llo/OSS/_packaging/Cake.GitHubReleases/nuget/v3/index.json",
                     context => context.Git.IsMasterBranch || context.Git.IsReleaseBranch
                 ),
                 new PushTarget(
-                    this,
                     PushTargetType.NuGetOrg,
                     "https://api.nuget.org/v3/index.json",
                     context => context.Git.IsReleaseBranch
