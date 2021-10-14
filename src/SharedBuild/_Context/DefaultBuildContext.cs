@@ -42,7 +42,7 @@ namespace Grynwald.SharedBuild
         public virtual IGitContext Git { get; }
 
         /// <inheritdoc />
-        public virtual GitHubContext GitHub { get; }
+        public virtual IGitHubContext GitHub { get; }
 
         /// <inheritdoc />
         public virtual OutputContext Output { get; }
@@ -80,7 +80,7 @@ namespace Grynwald.SharedBuild
 
             AzurePipelines = new(this);
             Git = new DefaultGitContext(this);
-            GitHub = new(this);
+            GitHub = new DefaultGitHubContext(this);
             Output = new(this);
             BuildSettings = new(this);
         }

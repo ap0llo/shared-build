@@ -39,7 +39,7 @@ namespace Grynwald.SharedBuild
         /// <summary>
         /// Gets information about the current project on GitHub
         /// </summary>
-        GitHubContext GitHub { get; }
+        IGitHubContext GitHub { get; }
 
         /// <summary>
         /// Gets settings about the project's outputs (e.g. the outut path)
