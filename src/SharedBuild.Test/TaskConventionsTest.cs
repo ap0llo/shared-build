@@ -20,6 +20,15 @@ namespace Grynwald.SharedBuild.Test
                 .Select(t => new object[] { t });
         }
 
+
+
+        [Theory]
+        [MemberData(nameof(TaskTypes))]
+        public void Tasks_must_be_reference_types(Type type)
+        {
+            Assert.True(type.IsClass);
+        }
+
         [Theory]
         [MemberData(nameof(TaskTypes))]
         public void Tasks_have_a_TaskName_attribute(Type type)
