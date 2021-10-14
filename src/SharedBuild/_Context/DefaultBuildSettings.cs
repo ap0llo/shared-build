@@ -5,14 +5,12 @@ using Cake.Core.Diagnostics;
 
 namespace Grynwald.SharedBuild
 {
-    public class BuildSettings
+    public class DefaultBuildSettings : IBuildSettings
     {
         private readonly DefaultBuildContext m_Context;
 
 
-        /// <summary>
-        /// Gets the configuration to build (Debug/Relesae)
-        /// </summary>
+        /// <inheritdoc />
         public string Configuration => m_Context.Argument("configuration", "Release");
 
         /// <summary>
@@ -27,19 +25,19 @@ namespace Grynwald.SharedBuild
 
 
 
-        public BuildSettings(DefaultBuildContext context)
+        public DefaultBuildSettings(DefaultBuildContext context)
         {
             m_Context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
 
-
+        /// <inheritdoc />
         public DotNetCoreMSBuildSettings GetDefaultMSBuildSettings() => new()
         {
             TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error
         };
 
-
+        /// <inheritdoc />
         public void PrintToLog(int indentWidth = 0)
         {
             string prefix = new String(' ', indentWidth);

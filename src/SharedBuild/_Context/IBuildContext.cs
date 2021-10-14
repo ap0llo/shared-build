@@ -29,7 +29,7 @@ namespace Grynwald.SharedBuild
         /// <summary>
         /// Gets the build settings to use
         /// </summary>
-        BuildSettings BuildSettings { get; }
+        IBuildSettings BuildSettings { get; }
 
         /// <summary>
         /// Gets information about the current Git workspace
