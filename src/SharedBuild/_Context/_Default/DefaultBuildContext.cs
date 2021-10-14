@@ -48,7 +48,7 @@ namespace Grynwald.SharedBuild
         public virtual IOutputContext Output { get; }
 
         /// <inheritdoc />
-        public virtual IReadOnlyCollection<IPushTarget> PushTargets { get; }
+        public virtual IReadOnlyCollection<IPushTarget> PushTargets { get; } = Array.Empty<IPushTarget>();
 
 
         /// <summary>
@@ -57,22 +57,6 @@ namespace Grynwald.SharedBuild
         public DefaultBuildContext(ICakeContext context) : base(context)
         {
             RootDirectory = context.Environment.WorkingDirectory;
-
-            // TODO: Remove hard-coded feed url
-            PushTargets = new[]
-            {
-                new PushTarget(
-                    PushTargetType.AzureArtifacts,
-                    "https://pkgs.dev.azure.com/ap0llo/OSS/_packaging/Cake.GitHubReleases/nuget/v3/index.json",
-                    context => context.Git.IsMasterBranch || context.Git.IsReleaseBranch
-                ),
-                new PushTarget(
-                    PushTargetType.NuGetOrg,
-                    "https://api.nuget.org/v3/index.json",
-                    context => context.Git.IsReleaseBranch
-                ),
-            };
-
 
             AzurePipelines = new DefaultAzurePipelinesContext(this);
             Git = new DefaultGitContext(this);
