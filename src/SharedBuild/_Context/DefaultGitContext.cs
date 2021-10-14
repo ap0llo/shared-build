@@ -5,12 +5,13 @@ using Cake.Core.IO;
 
 namespace Grynwald.SharedBuild
 {
-    public class GitContext
+    public class DefaultGitContext : IGitContext
     {
         private readonly DefaultBuildContext m_Context;
 
 
-        public string BranchName
+        /// <inheritdoc />
+        public virtual string BranchName
         {
             get
             {
@@ -33,24 +34,28 @@ namespace Grynwald.SharedBuild
             }
         }
 
+        /// <inheritdoc />
         public string CommitId => m_Context.AzurePipelines.IsActive
             ? m_Context.AzurePipelines().Environment.Repository.SourceVersion
             : StartGit("rev-parse", "HEAD").Trim();
 
+        /// <inheritdoc />
         public string RemoteUrl => StartGit("remote", "get-url", "origin").Trim();
 
+        /// <inheritdoc />
         public bool IsMasterBranch => BranchName.Equals("master", StringComparison.OrdinalIgnoreCase);
-
+        /// <inheritdoc />
         public bool IsReleaseBranch => BranchName.StartsWith("release/", StringComparison.OrdinalIgnoreCase);
 
 
-        public GitContext(DefaultBuildContext context)
+        public DefaultGitContext(DefaultBuildContext context)
         {
             m_Context = context ?? throw new ArgumentNullException(nameof(context));
 
         }
 
 
+        /// <inheritdoc />
         public void PrintToLog(int indentWidth = 0)
         {
             string prefix = new String(' ', indentWidth);

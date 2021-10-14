@@ -10,13 +10,13 @@ namespace Grynwald.SharedBuild
     public class DefaultBuildContext : FrostingContext, IBuildContext
     {
         /// <inheritdoc />
-        public bool IsRunningInCI => AzurePipelines.IsActive;
+        public virtual bool IsRunningInCI => AzurePipelines.IsActive;
 
         /// <inheritdoc />
-        public DirectoryPath RootDirectory { get; }
+        public virtual DirectoryPath RootDirectory { get; }
 
         /// <inheritdoc />
-        public FilePath SolutionPath
+        public virtual FilePath SolutionPath
         {
             get
             {
@@ -33,24 +33,24 @@ namespace Grynwald.SharedBuild
         }
 
         /// <inheritdoc />
-        public AzurePipelinesContext AzurePipelines { get; }
+        public virtual AzurePipelinesContext AzurePipelines { get; }
 
         /// <inheritdoc />
-        public BuildSettings BuildSettings { get; }
+        public virtual BuildSettings BuildSettings { get; }
 
         /// <inheritdoc />
-        public GitContext Git { get; }
+        public virtual IGitContext Git { get; }
 
         /// <inheritdoc />
-        public GitHubContext GitHub { get; }
+        public virtual GitHubContext GitHub { get; }
 
         /// <inheritdoc />
-        public OutputContext Output { get; }
+        public virtual OutputContext Output { get; }
 
         /// <summary>
         /// Gets the sources to push the build's NuGet packages to
         /// </summary>
-        public IReadOnlyCollection<PushTarget> PushTargets { get; }
+        public virtual IReadOnlyCollection<PushTarget> PushTargets { get; }
 
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Grynwald.SharedBuild
 
 
             AzurePipelines = new(this);
-            Git = new(this);
+            Git = new DefaultGitContext(this);
             GitHub = new(this);
             Output = new(this);
             BuildSettings = new(this);
@@ -89,7 +89,7 @@ namespace Grynwald.SharedBuild
         /// <summary>
         /// Prints the context's data to the log
         /// </summary>
-        public void PrintToLog(int indentWidth = 0)
+        public virtual void PrintToLog(int indentWidth = 0)
         {
             static string prefix(int width) => new String(' ', width);
 

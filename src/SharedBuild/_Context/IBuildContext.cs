@@ -34,7 +34,7 @@ namespace Grynwald.SharedBuild
         /// <summary>
         /// Gets information about the current Git workspace
         /// </summary>
-        GitContext Git { get; }
+        IGitContext Git { get; }
 
         /// <summary>
         /// Gets information about the current project on GitHub
