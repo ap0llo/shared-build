@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <RunWorkingDirectory>$(MSBuildProjectDirectory)\..\</RunWorkingDirectory>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\azure-pipelines.yml" Link="azure-pipelines.yml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Cake.BuildSystems.Module" Version="3.0.3" />
+    <PackageReference Include="Cake.Frosting" Version="1.3.0" />
+    <PackageReference Include="Cake.GitVersioning" Version="3.5.37-alpha" />
+    <PackageReference Include="Cake.GitHubReleases" Version="1.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Include SharedBuild code. This project is "building itself"-->
+    <Compile Include="..\src\SharedBuild\**\*.cs"
+             Link="SharedBuild\%(RecursiveDir)\%(FileName)%(Extension)"
+             Exclude="..\src\SharedBuild\obj\**\*.cs;..\src\SharedBuild\Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+</Project>
