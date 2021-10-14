@@ -1,6 +1,6 @@
 ﻿namespace Grynwald.SharedBuild
 {
-    public interface IGitHubContext
+    public interface IGitHubContext : IPrintableObject
     {
         /// <summary>
         /// Gets the host name of the GitHub server
@@ -21,10 +21,5 @@
         /// Tries to get the GitHub Access token for the current builds
         /// </summary>
         string? TryGetAccessToken();
-
-        /// <summary>
-        /// Prints the context's data to the log
-        /// </summary>
-        void PrintToLog(int indentWidth = 0);
     }
 }

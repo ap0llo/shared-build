@@ -34,20 +34,18 @@ namespace Grynwald.SharedBuild
         public DefaultAzurePipelinesContext(DefaultBuildContext context)
         {
             m_Context = context ?? throw new ArgumentNullException(nameof(context));
-            ArtifactNames = new DefaultAzurePipelinesArtifactNames(context);
+            ArtifactNames = new DefaultAzurePipelinesArtifactNames();
             m_AzurePipelinesProvider = context.AzurePipelines();
         }
 
 
         /// <inheritdoc />
-        public virtual void PrintToLog(int indentWidth = 0)
+        public virtual void PrintToLog(ICakeLog log)
         {
-            string prefix = new String(' ', indentWidth);
+            log.Information($"{nameof(IsActive)}: {IsActive}");
 
-            m_Context.Log.Information($"{prefix}{nameof(IsActive)}: {IsActive}");
-
-            m_Context.Log.Information($"{prefix}{nameof(ArtifactNames)}:");
-            ArtifactNames.PrintToLog(indentWidth + 2);
+            log.Information($"{nameof(ArtifactNames)}:");
+            ArtifactNames.PrintToLog(new IndentedCakeLog(log));
         }
     }
 }

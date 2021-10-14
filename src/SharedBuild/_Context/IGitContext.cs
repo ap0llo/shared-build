@@ -1,6 +1,6 @@
 ﻿namespace Grynwald.SharedBuild
 {
-    public interface IGitContext
+    public interface IGitContext : IPrintableObject
     {
         /// <summary>
         /// Gets the name of the currently checked-out git branch
@@ -26,11 +26,5 @@
         /// Gets whether the current branch is a release branch
         /// </summary>
         bool IsReleaseBranch { get; }
-
-
-        /// <summary>
-        /// Prints the context's data to the log
-        /// </summary>
-        void PrintToLog(int indentWidth = 0);
     }
 }

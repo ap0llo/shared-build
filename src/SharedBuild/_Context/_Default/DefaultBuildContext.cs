@@ -85,38 +85,37 @@ namespace Grynwald.SharedBuild
 
 
         /// <inheritdoc />
-        public virtual void PrintToLog(int indentWidth = 0)
+        public virtual void PrintToLog(ICakeLog log)
         {
-            static string prefix(int width) => new String(' ', width);
+            var indentedLog = new IndentedCakeLog(log);
 
-            Log.Information($"{prefix(indentWidth)}{nameof(IsRunningInCI)}: {IsRunningInCI}");
+            log.Information($"{nameof(IsRunningInCI)}: {IsRunningInCI}");
 
-            Log.Information($"{prefix(indentWidth)}{nameof(RootDirectory)}: {RootDirectory.FullPath}");
+            log.Information($"{nameof(RootDirectory)}: {RootDirectory.FullPath}");
 
-            Log.Information($"{prefix(indentWidth)}{nameof(SolutionPath)}: {SolutionPath.FullPath}");
+            log.Information($"{nameof(SolutionPath)}: {SolutionPath.FullPath}");
 
-            Log.Information($"{prefix(indentWidth)}{nameof(Output)}:");
-            Output.PrintToLog(indentWidth + 2);
+            log.Information(nameof(Output));
+            Output.PrintToLog(indentedLog);
 
-            Log.Information($"{prefix(indentWidth)}{nameof(BuildSettings)}:");
-            BuildSettings.PrintToLog(indentWidth + 2);
+            log.Information(nameof(BuildSettings));
+            BuildSettings.PrintToLog(indentedLog);
 
-            Log.Information($"{prefix(indentWidth)}{nameof(Git)}:");
-            Git.PrintToLog(indentWidth + 2);
+            log.Information(nameof(Git));
+            Git.PrintToLog(indentedLog);
 
-            Log.Information($"{prefix(indentWidth)}{nameof(AzurePipelines)}:");
-            AzurePipelines.PrintToLog(indentWidth + 2);
+            log.Information(nameof(AzurePipelines));
+            AzurePipelines.PrintToLog(indentedLog);
 
-            Log.Information($"{prefix(indentWidth)}{nameof(GitHub)}:");
-            GitHub.PrintToLog(indentWidth + 2);
+            log.Information(nameof(GitHub));
+            GitHub.PrintToLog(indentedLog);
 
-            // 
-            Log.Information($"{nameof(PushTargets)}:");
-            int index = 0;
+            log.Information($"{nameof(PushTargets)}:");
+            var index = 0;
             foreach (var pushTarget in PushTargets)
             {
-                Log.Information($"{prefix(indentWidth + 2)}{nameof(PushTargets)}[{index}]:");
-                pushTarget.PrintToLog(indentWidth + 4);
+                indentedLog.Information($"{nameof(PushTargets)}[{index}]:");
+                pushTarget.PrintToLog(new IndentedCakeLog(indentedLog));
                 index++;
             }
         }

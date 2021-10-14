@@ -4,7 +4,7 @@ using Cake.Frosting;
 
 namespace Grynwald.SharedBuild
 {
-    public interface IBuildContext : IFrostingContext
+    public interface IBuildContext : IFrostingContext, IPrintableObject
     {
         /// <summary>
         /// Gets whether the current build is running in a CI environment
@@ -50,12 +50,5 @@ namespace Grynwald.SharedBuild
         /// Gets the sources to push NuGet packages to
         /// </summary>
         IReadOnlyCollection<PushTarget> PushTargets { get; }
-
-
-
-        /// <summary>
-        /// Prints the context's data to the log
-        /// </summary>
-        void PrintToLog(int indentWidth = 0);
     }
 }

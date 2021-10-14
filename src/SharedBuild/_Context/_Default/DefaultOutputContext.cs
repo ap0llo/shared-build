@@ -41,14 +41,12 @@ namespace Grynwald.SharedBuild
 
 
         /// <inheritdoc />
-        public virtual void PrintToLog(int indentWidth = 0)
+        public virtual void PrintToLog(ICakeLog log)
         {
-            string prefix = new String(' ', indentWidth);
-
-            m_Context.Log.Information($"{prefix}{nameof(BinariesDirectory)}: {BinariesDirectory.FullPath}");
-            m_Context.Log.Information($"{prefix}{nameof(PackagesDirectory)}: {PackagesDirectory.FullPath}");
-            m_Context.Log.Information($"{prefix}{nameof(TestResultsDirectory)}: {TestResultsDirectory.FullPath}");
-            m_Context.Log.Information($"{prefix}{nameof(ChangeLogFile)}: {ChangeLogFile.FullPath}");
+            log.Information($"{nameof(BinariesDirectory)}: {BinariesDirectory.FullPath}");
+            log.Information($"{nameof(PackagesDirectory)}: {PackagesDirectory.FullPath}");
+            log.Information($"{nameof(TestResultsDirectory)}: {TestResultsDirectory.FullPath}");
+            log.Information($"{nameof(ChangeLogFile)}: {ChangeLogFile.FullPath}");
         }
     }
 }

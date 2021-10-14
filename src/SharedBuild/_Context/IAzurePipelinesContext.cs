@@ -2,7 +2,7 @@
 
 namespace Grynwald.SharedBuild
 {
-    public interface IAzurePipelinesContext : IAzurePipelinesProvider
+    public interface IAzurePipelinesContext : IAzurePipelinesProvider, IPrintableObject
     {
         /// <summary>
         /// Gets the names to use for publishing pipeline artifacts
@@ -13,10 +13,5 @@ namespace Grynwald.SharedBuild
         /// Gets whether the build is currently running on Azure Pipelines
         /// </summary>
         bool IsActive { get; }
-
-        /// <summary>
-        /// Prints the context's data to the log
-        /// </summary>
-        void PrintToLog(int indentWidth = 0);
     }
 }

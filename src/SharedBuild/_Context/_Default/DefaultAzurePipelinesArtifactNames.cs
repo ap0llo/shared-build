@@ -5,9 +5,6 @@ namespace Grynwald.SharedBuild
 {
     public class DefaultAzurePipelinesArtifactNames : IAzurePipelinesArtifactNames
     {
-        private readonly DefaultBuildContext m_Context;
-
-
         /// <summary>
         /// The name of the main artifact
         /// </summary>
@@ -24,19 +21,12 @@ namespace Grynwald.SharedBuild
         public virtual string ChangeLog => "ChangeLog";
 
 
-        public DefaultAzurePipelinesArtifactNames(DefaultBuildContext context)
+        /// <inheritdoc />
+        public virtual void PrintToLog(ICakeLog log)
         {
-            m_Context = context ?? throw new ArgumentNullException(nameof(context));
-        }
-
-
-        public virtual void PrintToLog(int indentWidth = 0)
-        {
-            string prefix = new String(' ', indentWidth);
-
-            m_Context.Log.Information($"{prefix}{nameof(Binaries)}: {Binaries}");
-            m_Context.Log.Information($"{prefix}{nameof(TestResults)}: {TestResults}");
-            m_Context.Log.Information($"{prefix}{nameof(ChangeLog)}: {ChangeLog}");
+            log.Information($"{nameof(Binaries)}: {Binaries}");
+            log.Information($"{nameof(TestResults)}: {TestResults}");
+            log.Information($"{nameof(ChangeLog)}: {ChangeLog}");
         }
     }
 }

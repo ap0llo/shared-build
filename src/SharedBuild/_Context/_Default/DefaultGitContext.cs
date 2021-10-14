@@ -56,15 +56,13 @@ namespace Grynwald.SharedBuild
 
 
         /// <inheritdoc />
-        public virtual void PrintToLog(int indentWidth = 0)
+        public virtual void PrintToLog(ICakeLog log)
         {
-            string prefix = new String(' ', indentWidth);
-
-            m_Context.Log.Information($"{prefix}{nameof(BranchName)}: {BranchName}");
-            m_Context.Log.Information($"{prefix}{nameof(CommitId)}: {CommitId}");
-            m_Context.Log.Information($"{prefix}{nameof(RemoteUrl)}: {RemoteUrl}");
-            m_Context.Log.Information($"{prefix}{nameof(IsMasterBranch)}: {IsMasterBranch}");
-            m_Context.Log.Information($"{prefix}{nameof(IsReleaseBranch)}: {IsReleaseBranch}");
+            log.Information($"{nameof(BranchName)}: {BranchName}");
+            log.Information($"{nameof(CommitId)}: {CommitId}");
+            log.Information($"{nameof(RemoteUrl)}: {RemoteUrl}");
+            log.Information($"{nameof(IsMasterBranch)}: {IsMasterBranch}");
+            log.Information($"{nameof(IsReleaseBranch)}: {IsReleaseBranch}");
         }
 
 

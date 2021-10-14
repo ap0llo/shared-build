@@ -38,12 +38,10 @@ namespace Grynwald.SharedBuild
         };
 
         /// <inheritdoc />
-        public virtual void PrintToLog(int indentWidth = 0)
+        public virtual void PrintToLog(ICakeLog log)
         {
-            var prefix = new String(' ', indentWidth);
-
-            m_Context.Log.Information($"{prefix}{nameof(Configuration)}: {Configuration}");
-            m_Context.Log.Information($"{prefix}{nameof(Deterministic)}: {Deterministic}");
+            log.Information($"{nameof(Configuration)}: {Configuration}");
+            log.Information($"{nameof(Deterministic)}: {Deterministic}");
         }
     }
 }
