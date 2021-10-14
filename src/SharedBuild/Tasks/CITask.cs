@@ -2,7 +2,7 @@
 
 namespace Grynwald.SharedBuild.Tasks
 {
-    [TaskName("CI")]
+    [TaskName(TaskNames.CI)]
     [TaskDescription("Main entry point for the Continuous Integration Build")]
     [IsDependentOn(typeof(PrintBuildContextTask))]
     [IsDependentOn(typeof(SetBuildNumberTask))]

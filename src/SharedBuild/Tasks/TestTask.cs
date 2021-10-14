@@ -11,7 +11,7 @@ using Cake.Frosting;
 
 namespace Grynwald.SharedBuild.Tasks
 {
-    [TaskName("Test")]
+    [TaskName(TaskNames.Test)]
     [IsDependentOn(typeof(BuildTask))]
     public class TestTask : FrostingTask<BuildContext>
     {

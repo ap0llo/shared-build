@@ -8,7 +8,7 @@ using Cake.GitVersioning;
 
 namespace Grynwald.SharedBuild.Tasks
 {
-    [TaskName("CreateGitHubRelease")]
+    [TaskName(TaskNames.CreateGitHubRelease)]
     [IsDependentOn(typeof(GenerateChangeLogTask))]
     public class CreateGitHubReleaseTask : AsyncFrostingTask<BuildContext>
     {

@@ -7,7 +7,7 @@ using Cake.Frosting;
 
 namespace Grynwald.SharedBuild.Tasks
 {
-    [TaskName("Build")]
+    [TaskName(TaskNames.Build)]
     public class BuildTask : FrostingTask<BuildContext>
     {
         public override void Run(BuildContext context)

@@ -2,7 +2,7 @@
 
 namespace Grynwald.SharedBuild.Tasks
 {
-    [TaskName("PrintBuildContext")]
+    [TaskName(TaskNames.PrintBuildContext)]
     public class PrintBuildContextTask : FrostingTask<BuildContext>
     {
         public override void Run(BuildContext context) => context.PrintToLog();

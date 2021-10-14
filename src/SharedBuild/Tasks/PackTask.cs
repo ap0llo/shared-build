@@ -8,7 +8,7 @@ using Cake.Frosting;
 
 namespace Grynwald.SharedBuild.Tasks
 {
-    [TaskName("Pack")]
+    [TaskName(TaskNames.Pack)]
     [IsDependentOn(typeof(BuildTask))]
     public class PackTask : FrostingTask<BuildContext>
     {

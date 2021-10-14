@@ -2,7 +2,7 @@
 
 namespace Grynwald.SharedBuild.Tasks
 {
-    [TaskName("Default")]
+    [TaskName(TaskNames.Default)]
     [IsDependentOn(typeof(BuildTask))]
     [IsDependentOn(typeof(TestTask))]
     [IsDependentOn(typeof(PackTask))]

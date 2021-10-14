@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Cake.Common;
 using Cake.Common.Tools.DotNetCore;
 using Cake.Common.Tools.DotNetCore.NuGet.Push;
 using Cake.Common.Tools.DotNetCore.NuGet.Source;
 using Cake.Core.Diagnostics;
-using Cake.Core.IO;
 using Cake.Frosting;
 
 namespace Grynwald.SharedBuild.Tasks
 {
-    [TaskName("Push")]
+    [TaskName(TaskNames.Push)]
     [IsDependentOn(typeof(PackTask))]
     public class PushTask : FrostingTask<BuildContext>
     {
