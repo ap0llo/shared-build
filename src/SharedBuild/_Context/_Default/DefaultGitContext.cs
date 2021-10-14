@@ -1,5 +1,4 @@
 ﻿using System;
-using Cake.Common.Build;
 using Cake.Core.Diagnostics;
 using Cake.Core.IO;
 
@@ -17,7 +16,7 @@ namespace Grynwald.SharedBuild
             {
                 if (m_Context.AzurePipelines.IsActive)
                 {
-                    var branchName = m_Context.AzurePipelines().Environment.Repository.SourceBranch;
+                    var branchName = m_Context.AzurePipelines.Environment.Repository.SourceBranch;
 
                     if (branchName.StartsWith("refs/heads/"))
                     {
@@ -36,7 +35,7 @@ namespace Grynwald.SharedBuild
 
         /// <inheritdoc />
         public string CommitId => m_Context.AzurePipelines.IsActive
-            ? m_Context.AzurePipelines().Environment.Repository.SourceVersion
+            ? m_Context.AzurePipelines.Environment.Repository.SourceVersion
             : StartGit("rev-parse", "HEAD").Trim();
 
         /// <inheritdoc />

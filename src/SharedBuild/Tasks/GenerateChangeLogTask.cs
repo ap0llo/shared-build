@@ -1,5 +1,4 @@
-﻿using Cake.Common.Build;
-using Cake.Core.Diagnostics;
+﻿using Cake.Core.Diagnostics;
 using Cake.Frosting;
 using Cake.GitVersioning;
 using Grynwald.SharedBuild.Tools.ChangeLog;
@@ -47,7 +46,7 @@ namespace Grynwald.SharedBuild.Tasks
             if (context.AzurePipelines.IsActive)
             {
                 context.Log.Information("Publishing change log to Azure Pipelines");
-                context.AzurePipelines().Commands.UploadArtifact("", context.Output.ChangeLogFile, context.AzurePipelines.ArtifactNames.ChangeLog);
+                context.AzurePipelines.Commands.UploadArtifact("", context.Output.ChangeLogFile, context.AzurePipelines.ArtifactNames.ChangeLog);
             }
         }
     }

@@ -1,6 +1,8 @@
-﻿namespace Grynwald.SharedBuild
+﻿using Cake.Common.Build.AzurePipelines;
+
+namespace Grynwald.SharedBuild
 {
-    public interface IAzurePipelinesContext
+    public interface IAzurePipelinesContext : IAzurePipelinesProvider
     {
         /// <summary>
         /// Gets the names to use for publishing pipeline artifacts

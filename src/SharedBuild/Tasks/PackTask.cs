@@ -1,5 +1,4 @@
-﻿using Cake.Common.Build;
-using Cake.Common.IO;
+﻿using Cake.Common.IO;
 using Cake.Common.Tools.DotNetCore;
 using Cake.Common.Tools.DotNetCore.MSBuild;
 using Cake.Common.Tools.DotNetCore.Pack;
@@ -50,7 +49,7 @@ namespace Grynwald.SharedBuild.Tasks
                 foreach (var file in context.Output.PackageFiles)
                 {
                     context.Log.Debug("Publishing '{file}'");
-                    context.AzurePipelines().Commands.UploadArtifact("", file, context.AzurePipelines.ArtifactNames.Binaries);
+                    context.AzurePipelines.Commands.UploadArtifact("", file, context.AzurePipelines.ArtifactNames.Binaries);
                 }
             }
         }

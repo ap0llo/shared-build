@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Cake.Common.Build;
 using Cake.Common.Build.AzurePipelines.Data;
 using Cake.Common.IO;
 using Cake.Common.Tools.DotNetCore;
@@ -66,10 +65,9 @@ namespace Grynwald.SharedBuild.Tasks
             if (context.AzurePipelines.IsActive)
             {
                 context.Log.Information("Publishing Test Results to Azure Pipelines");
-                var azurePipelines = context.AzurePipelines();
 
                 // Publish test results to Azure Pipelines test UI
-                azurePipelines.Commands.PublishTestResults(new()
+                context.AzurePipelines.Commands.PublishTestResults(new()
                 {
                     Configuration = context.BuildSettings.Configuration,
                     TestResultsFiles = testResults.ToList(),
@@ -80,7 +78,7 @@ namespace Grynwald.SharedBuild.Tasks
                 foreach (var testResult in testResults)
                 {
                     context.Log.Debug($"Publishing '{testResult}' as build artifact");
-                    azurePipelines.Commands.UploadArtifact(
+                    context.AzurePipelines.Commands.UploadArtifact(
                         folderName: "",
                         file: testResult,
                         context.AzurePipelines.ArtifactNames.TestResults
