@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Cake.Core.IO;
 
-namespace Build
+namespace Grynwald.SharedBuild
 {
     internal static class FileExtensions
     {

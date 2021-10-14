@@ -3,7 +3,7 @@ using Cake.Common;
 using Cake.Common.Tools.DotNetCore.MSBuild;
 using Cake.Core.Diagnostics;
 
-namespace Build
+namespace Grynwald.SharedBuild
 {
     public class BuildSettings
     {

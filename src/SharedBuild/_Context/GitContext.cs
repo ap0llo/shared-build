@@ -3,7 +3,7 @@ using Cake.Common.Build;
 using Cake.Core.Diagnostics;
 using Cake.Core.IO;
 
-namespace Build
+namespace Grynwald.SharedBuild
 {
     public class GitContext
     {

@@ -5,7 +5,7 @@ using Cake.Common.Tools.DotNetCore.Restore;
 using Cake.Core.Diagnostics;
 using Cake.Frosting;
 
-namespace Build.Tasks
+namespace Grynwald.SharedBuild.Tasks
 {
     [TaskName("Build")]
     public class BuildTask : FrostingTask<BuildContext>

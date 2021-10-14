@@ -2,7 +2,7 @@
 using System.Linq;
 using Cake.Core.IO;
 
-namespace Build
+namespace Grynwald.SharedBuild
 {
     internal static class FileSystemExtensions
     {

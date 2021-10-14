@@ -6,7 +6,7 @@ using Cake.Common.Tools.DotNetCore.Pack;
 using Cake.Core.Diagnostics;
 using Cake.Frosting;
 
-namespace Build.Tasks
+namespace Grynwald.SharedBuild.Tasks
 {
     [TaskName("Pack")]
     [IsDependentOn(typeof(BuildTask))]

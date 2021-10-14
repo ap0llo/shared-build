@@ -1,10 +1,10 @@
-﻿using Build.Tools.ChangeLog;
+﻿using Grynwald.SharedBuild.Tools.ChangeLog;
 using Cake.Common.Build;
 using Cake.Core.Diagnostics;
 using Cake.Frosting;
 using Cake.GitVersioning;
 
-namespace Build.Tasks
+namespace Grynwald.SharedBuild.Tasks
 {
     [TaskName("GenerateChangeLog")]
     public class GenerateChangeLogTask : FrostingTask<BuildContext>

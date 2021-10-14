@@ -2,7 +2,7 @@
 using Cake.Common.Build;
 using Cake.Core.Diagnostics;
 
-namespace Build
+namespace Grynwald.SharedBuild
 {
     public class AzurePipelinesContext
     {

@@ -1,6 +1,6 @@
 ﻿using Cake.Frosting;
 
-namespace Build.Tasks
+namespace Grynwald.SharedBuild.Tasks
 {
     [TaskName("Default")]
     [IsDependentOn(typeof(BuildTask))]

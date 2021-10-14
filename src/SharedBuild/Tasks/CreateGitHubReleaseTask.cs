@@ -6,7 +6,7 @@ using Cake.Frosting;
 using Cake.GitHubReleases;
 using Cake.GitVersioning;
 
-namespace Build.Tasks
+namespace Grynwald.SharedBuild.Tasks
 {
     [TaskName("CreateGitHubRelease")]
     [IsDependentOn(typeof(GenerateChangeLogTask))]

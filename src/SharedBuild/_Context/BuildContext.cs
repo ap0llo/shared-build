@@ -5,7 +5,7 @@ using Cake.Core.Diagnostics;
 using Cake.Core.IO;
 using Cake.Frosting;
 
-namespace Build
+namespace Grynwald.SharedBuild
 {
     public interface IBuildContext : IFrostingContext
     {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Cake.Core.Diagnostics;
 using Cake.Frosting;
 
-namespace Build.Tasks
+namespace Grynwald.SharedBuild.Tasks
 {
     [TaskName("Demo")]
     public class DemoTask : FrostingTask<IBuildContext>

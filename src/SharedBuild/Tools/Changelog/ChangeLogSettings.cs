@@ -1,7 +1,7 @@
 ﻿using Cake.Core.IO;
 using Cake.Core.Tooling;
 
-namespace Build.Tools.ChangeLog
+namespace Grynwald.SharedBuild.Tools.ChangeLog
 {
     internal class ChangeLogSettings : ToolSettings
     {

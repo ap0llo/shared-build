@@ -1,6 +1,6 @@
 ﻿using Cake.Frosting;
 
-namespace Build.Tasks
+namespace Grynwald.SharedBuild.Tasks
 {
     [TaskName("PrintBuildContext")]
     public class PrintBuildContextTask : FrostingTask<BuildContext>

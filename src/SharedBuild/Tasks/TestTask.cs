@@ -9,7 +9,7 @@ using Cake.Core.Diagnostics;
 using Cake.Core.IO;
 using Cake.Frosting;
 
-namespace Build.Tasks
+namespace Grynwald.SharedBuild.Tasks
 {
     [TaskName("Test")]
     [IsDependentOn(typeof(BuildTask))]
@@ -72,7 +72,7 @@ namespace Build.Tasks
                 azurePipelines.Commands.PublishTestResults(new()
                 {
                     Configuration = context.BuildSettings.Configuration,
-                    TestResultsFiles = testResults,
+                    TestResultsFiles = testResults.ToList(),
                     TestRunner = AzurePipelinesTestRunnerType.VSTest
                 });
 

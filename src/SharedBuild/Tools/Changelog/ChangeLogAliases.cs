@@ -1,7 +1,7 @@
 ﻿using System;
 using Cake.Core;
 
-namespace Build.Tools.ChangeLog
+namespace Grynwald.SharedBuild.Tools.ChangeLog
 {
     internal static class ChangeLogAliases
     {

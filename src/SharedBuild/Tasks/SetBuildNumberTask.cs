@@ -2,7 +2,7 @@
 using Cake.Frosting;
 using Cake.GitVersioning;
 
-namespace Build.Tasks
+namespace Grynwald.SharedBuild.Tasks
 {
     [TaskName("SetBuildNumber")]
     [TaskDescription("Sets the build number when running in a CI system")]

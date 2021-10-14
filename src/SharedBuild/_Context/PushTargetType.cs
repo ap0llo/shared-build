@@ -1,4 +1,4 @@
-﻿namespace Build
+﻿namespace Grynwald.SharedBuild
 {
     public enum PushTargetType
     {

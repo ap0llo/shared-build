@@ -3,7 +3,7 @@ using Cake.Common;
 using Cake.Core.Diagnostics;
 using Grynwald.ChangeLog.Integrations.GitHub;
 
-namespace Build
+namespace Grynwald.SharedBuild
 {
     public class GitHubContext
     {

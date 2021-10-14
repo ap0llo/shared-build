@@ -1,7 +1,7 @@
 ﻿using System;
 using Cake.Core.Diagnostics;
 
-namespace Build
+namespace Grynwald.SharedBuild
 {
     public class PushTarget
     {

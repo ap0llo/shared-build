@@ -1,4 +1,4 @@
-﻿namespace Build.Tools.ChangeLog
+﻿namespace Grynwald.SharedBuild.Tools.ChangeLog
 {
     public enum ChangeLogIntegrationProvider
     {
