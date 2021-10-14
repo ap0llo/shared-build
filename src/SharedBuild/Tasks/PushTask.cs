@@ -11,14 +11,14 @@ namespace Grynwald.SharedBuild.Tasks
 {
     [TaskName(TaskNames.Push)]
     [IsDependentOn(typeof(PackTask))]
-    public class PushTask : FrostingTask<BuildContext>
+    public class PushTask : FrostingTask<IBuildContext>
     {
-        public override bool ShouldRun(BuildContext context)
+        public override bool ShouldRun(IBuildContext context)
         {
             return context.IsRunningInCI && context.PushTargets.Any(x => x.IsActive(context));
         }
 
-        public override void Run(BuildContext context)
+        public override void Run(IBuildContext context)
         {
             var activePushTargets = context.PushTargets.Where(x => x.IsActive(context));
             foreach (var target in activePushTargets)
@@ -40,7 +40,7 @@ namespace Grynwald.SharedBuild.Tasks
         }
 
 
-        private void PushToAzureArtifacts(BuildContext context, PushTarget pushTarget)
+        private void PushToAzureArtifacts(IBuildContext context, PushTarget pushTarget)
         {
             // See https://www.daveaglick.com/posts/pushing-packages-from-azure-pipelines-to-azure-artifacts-using-cake
             var accessToken = context.EnvironmentVariable("SYSTEM_ACCESSTOKEN");
@@ -72,7 +72,7 @@ namespace Grynwald.SharedBuild.Tasks
             }
         }
 
-        private void PushToNuGetOrg(BuildContext context, PushTarget pushTarget)
+        private void PushToNuGetOrg(IBuildContext context, PushTarget pushTarget)
         {
             var apiKey = context.EnvironmentVariable("NUGET_ORG_APIKEY");
             if (String.IsNullOrEmpty(apiKey))

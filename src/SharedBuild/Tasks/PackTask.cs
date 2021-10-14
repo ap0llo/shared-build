@@ -10,9 +10,9 @@ namespace Grynwald.SharedBuild.Tasks
 {
     [TaskName(TaskNames.Pack)]
     [IsDependentOn(typeof(BuildTask))]
-    public class PackTask : FrostingTask<BuildContext>
+    public class PackTask : FrostingTask<IBuildContext>
     {
-        public override void Run(BuildContext context)
+        public override void Run(IBuildContext context)
         {
             //
             // Clean output directory

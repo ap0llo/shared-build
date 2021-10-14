@@ -7,7 +7,7 @@ namespace Grynwald.SharedBuild
 {
     public class BuildSettings
     {
-        private readonly BuildContext m_Context;
+        private readonly DefaultBuildContext m_Context;
 
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace Grynwald.SharedBuild
 
 
 
-        public BuildSettings(BuildContext context)
+        public BuildSettings(DefaultBuildContext context)
         {
             m_Context = context ?? throw new ArgumentNullException(nameof(context));
         }

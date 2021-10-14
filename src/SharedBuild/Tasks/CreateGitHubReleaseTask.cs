@@ -10,14 +10,14 @@ namespace Grynwald.SharedBuild.Tasks
 {
     [TaskName(TaskNames.CreateGitHubRelease)]
     [IsDependentOn(typeof(GenerateChangeLogTask))]
-    public class CreateGitHubReleaseTask : AsyncFrostingTask<BuildContext>
+    public class CreateGitHubReleaseTask : AsyncFrostingTask<IBuildContext>
     {
-        public override bool ShouldRun(BuildContext context)
+        public override bool ShouldRun(IBuildContext context)
         {
             return context.IsRunningInCI && (context.Git.IsMasterBranch || context.Git.IsReleaseBranch);
         }
 
-        public override async Task RunAsync(BuildContext context)
+        public override async Task RunAsync(IBuildContext context)
         {
             context.Log.Information("Creating GitHub Releases");
 
@@ -48,7 +48,7 @@ namespace Grynwald.SharedBuild.Tasks
         }
 
 
-        private async Task CreateDraftRelease(BuildContext context, string accessToken, string version, string changeLog)
+        private async Task CreateDraftRelease(IBuildContext context, string accessToken, string version, string changeLog)
         {
             var releaseSettings = new GitHubReleaseCreateSettings(context.GitHub.RepositoryOwner, context.GitHub.RepositoryName, "vNext")
             {
@@ -65,7 +65,7 @@ namespace Grynwald.SharedBuild.Tasks
             await context.GitHubReleaseCreateAsync(releaseSettings);
         }
 
-        private async Task CreateRelease(BuildContext context, string accessToken, string version, string changeLog)
+        private async Task CreateRelease(IBuildContext context, string accessToken, string version, string changeLog)
         {
             var releaseSettings = new GitHubReleaseCreateSettings(context.GitHub.RepositoryOwner, context.GitHub.RepositoryName, $"v{version}")
             {

@@ -7,7 +7,7 @@ namespace Grynwald.SharedBuild
 {
     public class GitContext
     {
-        private readonly BuildContext m_Context;
+        private readonly DefaultBuildContext m_Context;
 
 
         public string BranchName
@@ -44,7 +44,7 @@ namespace Grynwald.SharedBuild
         public bool IsReleaseBranch => BranchName.StartsWith("release/", StringComparison.OrdinalIgnoreCase);
 
 
-        public GitContext(BuildContext context)
+        public GitContext(DefaultBuildContext context)
         {
             m_Context = context ?? throw new ArgumentNullException(nameof(context));
 

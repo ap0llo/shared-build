@@ -3,8 +3,8 @@
 namespace Grynwald.SharedBuild.Tasks
 {
     [TaskName(TaskNames.PrintBuildContext)]
-    public class PrintBuildContextTask : FrostingTask<BuildContext>
+    public class PrintBuildContextTask : FrostingTask<IBuildContext>
     {
-        public override void Run(BuildContext context) => context.PrintToLog();
+        public override void Run(IBuildContext context) => context.PrintToLog();
     }
 }

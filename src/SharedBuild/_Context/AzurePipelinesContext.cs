@@ -8,7 +8,7 @@ namespace Grynwald.SharedBuild
     {
         public class ArtifactNameSettings
         {
-            private readonly BuildContext m_Context;
+            private readonly DefaultBuildContext m_Context;
 
 
             /// <summary>
@@ -27,7 +27,7 @@ namespace Grynwald.SharedBuild
             public string ChangeLog => "ChangeLog";
 
 
-            public ArtifactNameSettings(BuildContext context)
+            public ArtifactNameSettings(DefaultBuildContext context)
             {
                 m_Context = context ?? throw new ArgumentNullException(nameof(context));
             }
@@ -43,7 +43,7 @@ namespace Grynwald.SharedBuild
             }
         }
 
-        private readonly BuildContext m_Context;
+        private readonly DefaultBuildContext m_Context;
 
 
         public ArtifactNameSettings ArtifactNames { get; }
@@ -53,7 +53,7 @@ namespace Grynwald.SharedBuild
             m_Context.AzurePipelines().IsRunningOnAzurePipelinesHosted;
 
 
-        public AzurePipelinesContext(BuildContext context)
+        public AzurePipelinesContext(DefaultBuildContext context)
         {
             m_Context = context ?? throw new ArgumentNullException(nameof(context));
             ArtifactNames = new(context);

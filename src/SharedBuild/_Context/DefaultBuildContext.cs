@@ -7,39 +7,15 @@ using Cake.Frosting;
 
 namespace Grynwald.SharedBuild
 {
-    public interface IBuildContext : IFrostingContext
+    public class DefaultBuildContext : FrostingContext, IBuildContext
     {
-        public bool IsRunningInCI { get; }
-
-    }
-
-    public class BuildContext : FrostingContext, IBuildContext
-    {
-        /// <summary>
-        /// Gets whether the current build is running in a CI environment
-        /// </summary>
+        /// <inheritdoc />
         public bool IsRunningInCI => AzurePipelines.IsActive;
 
-        public AzurePipelinesContext AzurePipelines { get; }
-
-        public GitContext Git { get; }
-
-        public GitHubContext GitHub { get; }
-
-        public IReadOnlyCollection<PushTarget> PushTargets { get; }
-
-        public OutputContext Output { get; }
-
-        public BuildSettings BuildSettings { get; }
-
-        /// <summary>
-        /// Gets the root directory of the current repository
-        /// </summary>
+        /// <inheritdoc />
         public DirectoryPath RootDirectory { get; }
 
-        /// <summary>
-        /// Gets the path of the Visual Studio Solution to build
-        /// </summary>
+        /// <inheritdoc />
         public FilePath SolutionPath
         {
             get
@@ -56,8 +32,31 @@ namespace Grynwald.SharedBuild
             }
         }
 
+        /// <inheritdoc />
+        public AzurePipelinesContext AzurePipelines { get; }
 
-        public BuildContext(ICakeContext context) : base(context)
+        /// <inheritdoc />
+        public BuildSettings BuildSettings { get; }
+
+        /// <inheritdoc />
+        public GitContext Git { get; }
+
+        /// <inheritdoc />
+        public GitHubContext GitHub { get; }
+
+        /// <inheritdoc />
+        public OutputContext Output { get; }
+
+        /// <summary>
+        /// Gets the sources to push the build's NuGet packages to
+        /// </summary>
+        public IReadOnlyCollection<PushTarget> PushTargets { get; }
+
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="DefaultBuildContext"/>
+        /// </summary>
+        public DefaultBuildContext(ICakeContext context) : base(context)
         {
             RootDirectory = context.Environment.WorkingDirectory;
 
@@ -87,6 +86,9 @@ namespace Grynwald.SharedBuild
         }
 
 
+        /// <summary>
+        /// Prints the context's data to the log
+        /// </summary>
         public void PrintToLog(int indentWidth = 0)
         {
             static string prefix(int width) => new String(' ', width);

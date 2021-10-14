@@ -7,7 +7,7 @@ namespace Grynwald.SharedBuild
 {
     public class GitHubContext
     {
-        private readonly BuildContext m_Context;
+        private readonly DefaultBuildContext m_Context;
         private readonly Lazy<GitHubProjectInfo> m_ProjectInfo;
 
 
@@ -18,7 +18,7 @@ namespace Grynwald.SharedBuild
         public string RepositoryName => m_ProjectInfo.Value.Repository;
 
 
-        public GitHubContext(BuildContext context)
+        public GitHubContext(DefaultBuildContext context)
         {
             m_Context = context ?? throw new ArgumentNullException(nameof(context));
             m_ProjectInfo = new Lazy<GitHubProjectInfo>(() => GitHubUrlParser.ParseRemoteUrl(m_Context.Git.RemoteUrl));

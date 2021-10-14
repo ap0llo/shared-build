@@ -13,16 +13,16 @@ namespace Grynwald.SharedBuild.Tasks
 {
     [TaskName(TaskNames.Test)]
     [IsDependentOn(typeof(BuildTask))]
-    public class TestTask : FrostingTask<BuildContext>
+    public class TestTask : FrostingTask<IBuildContext>
     {
-        public override void Run(BuildContext context)
+        public override void Run(IBuildContext context)
         {
             context.EnsureDirectoryDoesNotExist(context.Output.TestResultsDirectory);
 
             RunTests(context);
         }
 
-        public override void OnError(Exception exception, BuildContext context)
+        public override void OnError(Exception exception, IBuildContext context)
         {
             // If test execution failed, publish test results anyways (so the error can be inspected)
             // but do not throw in PublishTestResults() when there are not test results
@@ -32,7 +32,7 @@ namespace Grynwald.SharedBuild.Tasks
         }
 
 
-        private void RunTests(BuildContext context)
+        private void RunTests(IBuildContext context)
         {
             context.Log.Information($"Running tests for {context.SolutionPath}");
 
@@ -56,7 +56,7 @@ namespace Grynwald.SharedBuild.Tasks
             PublishTestResults(context, failOnMissingTestResults: true);
         }
 
-        private static void PublishTestResults(BuildContext context, bool failOnMissingTestResults)
+        private static void PublishTestResults(IBuildContext context, bool failOnMissingTestResults)
         {
             var testResults = context.FileSystem.GetFilePaths(context.Output.TestResultsDirectory, "*.trx", SearchScope.Current);
 

@@ -8,7 +8,7 @@ namespace Grynwald.SharedBuild
 {
     public class OutputContext
     {
-        private readonly BuildContext m_Context;
+        private readonly DefaultBuildContext m_Context;
 
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Grynwald.SharedBuild
         public IEnumerable<FilePath> PackageFiles => m_Context.FileSystem.GetFilePaths(PackagesDirectory, "*.nupkg");
 
 
-        public OutputContext(BuildContext context)
+        public OutputContext(DefaultBuildContext context)
         {
             m_Context = context ?? throw new ArgumentNullException(nameof(context));
         }

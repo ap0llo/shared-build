@@ -5,21 +5,21 @@ namespace Grynwald.SharedBuild
 {
     public class PushTarget
     {
-        private readonly BuildContext m_Context;
+        private readonly DefaultBuildContext m_Context;
 
         public PushTargetType Type { get; }
 
         public string FeedUrl { get; }
 
-        public Func<BuildContext, bool> IsActive { get; }
+        public Func<IBuildContext, bool> IsActive { get; }
 
 
-        public PushTarget(BuildContext context, PushTargetType type, string feedUrl, Func<BuildContext, bool> isActive)
+        public PushTarget(DefaultBuildContext context, PushTargetType type, string feedUrl, Func<IBuildContext, bool> isActive)
         {
             if (String.IsNullOrWhiteSpace(feedUrl))
                 throw new ArgumentException("Value must not be null or whitespace", nameof(feedUrl));
 
-            if (!Enum.IsDefined<PushTargetType>(type))
+            if (!Enum.IsDefined(type))
                 throw new ArgumentException($"Undefined enum value '{type}'", nameof(type));
 
             m_Context = context ?? throw new ArgumentNullException(nameof(context));

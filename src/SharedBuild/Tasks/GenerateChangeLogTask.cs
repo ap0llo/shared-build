@@ -7,9 +7,9 @@ using Grynwald.SharedBuild.Tools.ChangeLog;
 namespace Grynwald.SharedBuild.Tasks
 {
     [TaskName(TaskNames.GenerateChangeLog)]
-    public class GenerateChangeLogTask : FrostingTask<BuildContext>
+    public class GenerateChangeLogTask : FrostingTask<IBuildContext>
     {
-        public override void Run(BuildContext context)
+        public override void Run(IBuildContext context)
         {
             //
             // Generate change log

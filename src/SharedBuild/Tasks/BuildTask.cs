@@ -8,9 +8,9 @@ using Cake.Frosting;
 namespace Grynwald.SharedBuild.Tasks
 {
     [TaskName(TaskNames.Build)]
-    public class BuildTask : FrostingTask<BuildContext>
+    public class BuildTask : FrostingTask<IBuildContext>
     {
-        public override void Run(BuildContext context)
+        public override void Run(IBuildContext context)
         {
             //
             // Restore NuGet Packages
