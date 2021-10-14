@@ -6,14 +6,12 @@ using Cake.Core.IO;
 
 namespace Grynwald.SharedBuild
 {
-    public class OutputContext
+    public class DefaultOutputContext : IOutputContext
     {
         private readonly DefaultBuildContext m_Context;
 
 
-        /// <summary>
-        /// Gets the root output directory
-        /// </summary>
+        /// <inheritdoc />
         public DirectoryPath BinariesDirectory
         {
             get
@@ -23,24 +21,26 @@ namespace Grynwald.SharedBuild
             }
         }
 
-        /// <summary>
-        /// Gets the output path for NuGet packages
-        /// </summary>
+        /// <inheritdoc />
         public DirectoryPath PackagesDirectory => BinariesDirectory.Combine(m_Context.BuildSettings.Configuration).Combine("packages");
 
+        /// <inheritdoc />
         public DirectoryPath TestResultsDirectory => BinariesDirectory.Combine(m_Context.BuildSettings.Configuration).Combine("TestResults");
 
+        /// <inheritdoc />
         public FilePath ChangeLogFile => BinariesDirectory.CombineWithFilePath("changelog.md");
 
+        /// <inheritdoc />
         public IEnumerable<FilePath> PackageFiles => m_Context.FileSystem.GetFilePaths(PackagesDirectory, "*.nupkg");
 
 
-        public OutputContext(DefaultBuildContext context)
+        public DefaultOutputContext(DefaultBuildContext context)
         {
             m_Context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
 
+        /// <inheritdoc />
         public void PrintToLog(int indentWidth = 0)
         {
             string prefix = new String(' ', indentWidth);

@@ -44,7 +44,7 @@ namespace Grynwald.SharedBuild
         /// <summary>
         /// Gets settings about the project's outputs (e.g. the outut path)
         /// </summary>
-        OutputContext Output { get; }
+        IOutputContext Output { get; }
 
         /// <summary>
         /// Gets the sources to push NuGet packages to
