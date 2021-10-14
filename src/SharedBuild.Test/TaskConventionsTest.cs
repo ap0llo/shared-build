@@ -18,7 +18,6 @@ namespace Grynwald.SharedBuild.Test
             return typeof(DefaultTask).Assembly.GetTypes()
                 .Where(t => t.IsAssignableTo(typeof(IFrostingTask)))
                 .Select(t => new object[] { t });
-
         }
 
         [Theory]
@@ -65,6 +64,26 @@ namespace Grynwald.SharedBuild.Test
             var field = fields.Single(x => x.Name == taskName);
 
             Assert.Equal(field.GetValue(null), taskName);
+        }
+
+        public static IEnumerable<object[]> TaskNames()
+        {
+            return typeof(TaskNames).GetFields(BindingFlags.Static | BindingFlags.Public)
+                .Select(field => field.GetValue(null)!)
+                .Select(name => new object[] { name });
+        }
+
+        [Theory]
+        [MemberData(nameof(TaskNames))]
+        public void Task_defined_in_TaskNames_exists(string taskName)
+        {
+            var taskNames = typeof(DefaultTask).Assembly.GetTypes()
+                .Where(t => t.IsAssignableTo(typeof(IFrostingTask)))
+                .Select(t => t.GetCustomAttribute<TaskNameAttribute>()?.Name)
+                .Where(name => !String.IsNullOrEmpty(name))
+                .ToArray();
+
+            Assert.Contains(taskName, taskNames);
         }
     }
 }
