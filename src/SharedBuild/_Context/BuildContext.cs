@@ -40,13 +40,28 @@ namespace Build
         /// <summary>
         /// Gets the path of the Visual Studio Solution to build
         /// </summary>
-        public FilePath SolutionPath => RootDirectory.CombineWithFilePath("Cake.GitHubReleases.sln");
+        public FilePath SolutionPath
+        {
+            get
+            {
+                var solutionFiles = FileSystem.GetFilePaths(RootDirectory, "*.sln", SearchScope.Current);
+
+                return solutionFiles.Count switch
+                {
+                    < 0 => throw new InvalidOperationException(), // Cannot happen, count will always be >= 0
+                    0 => throw new Exception($"No solution files found in '{RootDirectory}'"),
+                    1 => solutionFiles[0],
+                    > 1 => throw new Exception($"Multiple solution files found in '{RootDirectory}'")
+                };
+            }
+        }
 
 
         public BuildContext(ICakeContext context) : base(context)
         {
             RootDirectory = context.Environment.WorkingDirectory;
 
+            // TODO: Remove hard-coded feed url
             PushTargets = new[]
             {
                 new PushTarget(

@@ -6,7 +6,7 @@ namespace Build
 {
     internal static class FileSystemExtensions
     {
-        public static ICollection<FilePath> GetFilePaths(this IFileSystem fileSystem, DirectoryPath? directory = null, string filter = "*", SearchScope scope = SearchScope.Current)
+        public static IReadOnlyList<FilePath> GetFilePaths(this IFileSystem fileSystem, DirectoryPath? directory = null, string filter = "*", SearchScope scope = SearchScope.Current)
         {
             directory ??= new DirectoryPath(".");
 
