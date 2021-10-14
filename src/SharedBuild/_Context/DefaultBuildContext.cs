@@ -33,7 +33,7 @@ namespace Grynwald.SharedBuild
         }
 
         /// <inheritdoc />
-        public virtual AzurePipelinesContext AzurePipelines { get; }
+        public virtual IAzurePipelinesContext AzurePipelines { get; }
 
         /// <inheritdoc />
         public virtual BuildSettings BuildSettings { get; }
@@ -47,9 +47,7 @@ namespace Grynwald.SharedBuild
         /// <inheritdoc />
         public virtual OutputContext Output { get; }
 
-        /// <summary>
-        /// Gets the sources to push the build's NuGet packages to
-        /// </summary>
+        /// <inheritdoc />
         public virtual IReadOnlyCollection<PushTarget> PushTargets { get; }
 
 
@@ -78,7 +76,7 @@ namespace Grynwald.SharedBuild
             };
 
 
-            AzurePipelines = new(this);
+            AzurePipelines = new DefaultAzurePipelinesContext(this);
             Git = new DefaultGitContext(this);
             GitHub = new DefaultGitHubContext(this);
             Output = new(this);
@@ -86,9 +84,7 @@ namespace Grynwald.SharedBuild
         }
 
 
-        /// <summary>
-        /// Prints the context's data to the log
-        /// </summary>
+        /// <inheritdoc />
         public virtual void PrintToLog(int indentWidth = 0)
         {
             static string prefix(int width) => new String(' ', width);

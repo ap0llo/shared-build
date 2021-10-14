@@ -24,7 +24,7 @@ namespace Grynwald.SharedBuild
         /// <summary>
         /// Gets the interface to Azure Pipelines when build is running in Azure Pipelines
         /// </summary>
-        AzurePipelinesContext AzurePipelines { get; }
+        IAzurePipelinesContext AzurePipelines { get; }
 
         /// <summary>
         /// Gets the build settings to use
@@ -46,11 +46,16 @@ namespace Grynwald.SharedBuild
         /// </summary>
         OutputContext Output { get; }
 
+        /// <summary>
+        /// Gets the sources to push NuGet packages to
+        /// </summary>
         IReadOnlyCollection<PushTarget> PushTargets { get; }
 
 
 
-
+        /// <summary>
+        /// Prints the context's data to the log
+        /// </summary>
         void PrintToLog(int indentWidth = 0);
     }
 }
