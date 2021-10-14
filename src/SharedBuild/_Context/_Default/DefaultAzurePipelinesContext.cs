@@ -40,7 +40,7 @@ namespace Grynwald.SharedBuild
 
 
         /// <inheritdoc />
-        public void PrintToLog(int indentWidth = 0)
+        public virtual void PrintToLog(int indentWidth = 0)
         {
             string prefix = new String(' ', indentWidth);
 

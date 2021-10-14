@@ -11,17 +11,17 @@ namespace Grynwald.SharedBuild
         /// <summary>
         /// The name of the main artifact
         /// </summary>
-        public string Binaries => "Binaries";
+        public virtual string Binaries => "Binaries";
 
         /// <summary>
         /// The artifact name under which to save test result files
         /// </summary>
-        public string TestResults => "TestResults";
+        public virtual string TestResults => "TestResults";
 
         /// <summary>
         /// The artifact name for the auto-generated change log.
         /// </summary>
-        public string ChangeLog => "ChangeLog";
+        public virtual string ChangeLog => "ChangeLog";
 
 
         public DefaultAzurePipelinesArtifactNames(DefaultBuildContext context)
@@ -30,7 +30,7 @@ namespace Grynwald.SharedBuild
         }
 
 
-        public void PrintToLog(int indentWidth = 0)
+        public virtual void PrintToLog(int indentWidth = 0)
         {
             string prefix = new String(' ', indentWidth);
 

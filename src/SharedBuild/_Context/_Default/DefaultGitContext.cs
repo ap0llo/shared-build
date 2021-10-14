@@ -34,17 +34,18 @@ namespace Grynwald.SharedBuild
         }
 
         /// <inheritdoc />
-        public string CommitId => m_Context.AzurePipelines.IsActive
+        public virtual string CommitId => m_Context.AzurePipelines.IsActive
             ? m_Context.AzurePipelines.Environment.Repository.SourceVersion
             : StartGit("rev-parse", "HEAD").Trim();
 
         /// <inheritdoc />
-        public string RemoteUrl => StartGit("remote", "get-url", "origin").Trim();
+        public virtual string RemoteUrl => StartGit("remote", "get-url", "origin").Trim();
 
         /// <inheritdoc />
-        public bool IsMasterBranch => BranchName.Equals("master", StringComparison.OrdinalIgnoreCase);
+        public virtual bool IsMasterBranch => BranchName.Equals("master", StringComparison.OrdinalIgnoreCase);
+
         /// <inheritdoc />
-        public bool IsReleaseBranch => BranchName.StartsWith("release/", StringComparison.OrdinalIgnoreCase);
+        public virtual bool IsReleaseBranch => BranchName.StartsWith("release/", StringComparison.OrdinalIgnoreCase);
 
 
         public DefaultGitContext(DefaultBuildContext context)
@@ -55,7 +56,7 @@ namespace Grynwald.SharedBuild
 
 
         /// <inheritdoc />
-        public void PrintToLog(int indentWidth = 0)
+        public virtual void PrintToLog(int indentWidth = 0)
         {
             string prefix = new String(' ', indentWidth);
 

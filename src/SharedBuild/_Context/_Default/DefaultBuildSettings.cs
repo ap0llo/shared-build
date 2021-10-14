@@ -11,7 +11,7 @@ namespace Grynwald.SharedBuild
 
 
         /// <inheritdoc />
-        public string Configuration => m_Context.Argument("configuration", "Release");
+        public virtual string Configuration => m_Context.Argument("configuration", "Release");
 
         /// <summary>
         /// Determines whether to use deterministic build settings
@@ -21,7 +21,7 @@ namespace Grynwald.SharedBuild
         /// Wehn running in the CI environment, it is enabled by default.
         /// In other environments it is disabled by default.
         /// </remarks>
-        public bool Deterministic => m_Context.Argument("deterministic", m_Context.IsRunningInCI);
+        public virtual bool Deterministic => m_Context.Argument("deterministic", m_Context.IsRunningInCI);
 
 
 
@@ -32,15 +32,15 @@ namespace Grynwald.SharedBuild
 
 
         /// <inheritdoc />
-        public DotNetCoreMSBuildSettings GetDefaultMSBuildSettings() => new()
+        public virtual DotNetCoreMSBuildSettings GetDefaultMSBuildSettings() => new()
         {
             TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error
         };
 
         /// <inheritdoc />
-        public void PrintToLog(int indentWidth = 0)
+        public virtual void PrintToLog(int indentWidth = 0)
         {
-            string prefix = new String(' ', indentWidth);
+            var prefix = new String(' ', indentWidth);
 
             m_Context.Log.Information($"{prefix}{nameof(Configuration)}: {Configuration}");
             m_Context.Log.Information($"{prefix}{nameof(Deterministic)}: {Deterministic}");

@@ -12,7 +12,7 @@ namespace Grynwald.SharedBuild
 
 
         /// <inheritdoc />
-        public DirectoryPath BinariesDirectory
+        public virtual DirectoryPath BinariesDirectory
         {
             get
             {
@@ -22,16 +22,16 @@ namespace Grynwald.SharedBuild
         }
 
         /// <inheritdoc />
-        public DirectoryPath PackagesDirectory => BinariesDirectory.Combine(m_Context.BuildSettings.Configuration).Combine("packages");
+        public virtual DirectoryPath PackagesDirectory => BinariesDirectory.Combine(m_Context.BuildSettings.Configuration).Combine("packages");
 
         /// <inheritdoc />
-        public DirectoryPath TestResultsDirectory => BinariesDirectory.Combine(m_Context.BuildSettings.Configuration).Combine("TestResults");
+        public virtual DirectoryPath TestResultsDirectory => BinariesDirectory.Combine(m_Context.BuildSettings.Configuration).Combine("TestResults");
 
         /// <inheritdoc />
-        public FilePath ChangeLogFile => BinariesDirectory.CombineWithFilePath("changelog.md");
+        public virtual FilePath ChangeLogFile => BinariesDirectory.CombineWithFilePath("changelog.md");
 
         /// <inheritdoc />
-        public IEnumerable<FilePath> PackageFiles => m_Context.FileSystem.GetFilePaths(PackagesDirectory, "*.nupkg");
+        public virtual IEnumerable<FilePath> PackageFiles => m_Context.FileSystem.GetFilePaths(PackagesDirectory, "*.nupkg");
 
 
         public DefaultOutputContext(DefaultBuildContext context)
@@ -41,7 +41,7 @@ namespace Grynwald.SharedBuild
 
 
         /// <inheritdoc />
-        public void PrintToLog(int indentWidth = 0)
+        public virtual void PrintToLog(int indentWidth = 0)
         {
             string prefix = new String(' ', indentWidth);
 

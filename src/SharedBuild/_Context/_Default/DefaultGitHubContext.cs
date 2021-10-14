@@ -12,13 +12,13 @@ namespace Grynwald.SharedBuild
 
 
         /// <inheritdoc />
-        public string HostName => m_ProjectInfo.Value.Host;
+        public virtual string HostName => m_ProjectInfo.Value.Host;
 
         /// <inheritdoc />
-        public string RepositoryOwner => m_ProjectInfo.Value.Owner;
+        public virtual string RepositoryOwner => m_ProjectInfo.Value.Owner;
 
         /// <inheritdoc />
-        public string RepositoryName => m_ProjectInfo.Value.Repository;
+        public virtual string RepositoryName => m_ProjectInfo.Value.Repository;
 
 
         public DefaultGitHubContext(DefaultBuildContext context)
@@ -29,7 +29,7 @@ namespace Grynwald.SharedBuild
 
 
         /// <inheritdoc />
-        public string? TryGetAccessToken()
+        public virtual string? TryGetAccessToken()
         {
             if (m_Context.EnvironmentVariable("GITHUB_ACCESSTOKEN") is string { Length: > 0 } accessToken)
             {
