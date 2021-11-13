@@ -15,5 +15,6 @@
         public const string FormatCode = "FormatCode";
         public const string ValidateCodeFormatting = "ValidateCodeFormatting";
         public const string Validate = "Validate";
+        public const string Generate = "Generate";
     }
 }
