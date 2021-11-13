@@ -8,7 +8,7 @@ return new CakeHost()
     .UseContext<BuildContext>()
     .UseModule<AzurePipelinesModule>()
     //TODO: Use Tool manifest
-    .InstallTool(new Uri("dotnet:?package=Grynwald.ChangeLog&version=0.4.135"))  
+    .InstallTool(new Uri("dotnet:?package=Grynwald.ChangeLog&version=0.4.135"))
     .Run(args);
 
 
