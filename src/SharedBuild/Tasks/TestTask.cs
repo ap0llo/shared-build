@@ -4,6 +4,7 @@ using Cake.Common.Build.AzurePipelines.Data;
 using Cake.Common.IO;
 using Cake.Common.Tools.DotNetCore;
 using Cake.Common.Tools.DotNetCore.Test;
+using Cake.Common.Tools.ReportGenerator;
 using Cake.Core.Diagnostics;
 using Cake.Core.IO;
 using Cake.Frosting;
@@ -19,6 +20,12 @@ namespace Grynwald.SharedBuild.Tasks
             context.EnsureDirectoryDoesNotExist(context.Output.TestResultsDirectory);
 
             RunTests(context);
+
+            if (context.TestSettings.CollectCodeCoverage)
+            {
+                GenerateCoverageReport(context);
+            }
+
         }
 
         public override void OnError(Exception exception, IBuildContext context)
@@ -46,6 +53,12 @@ namespace Grynwald.SharedBuild.Tasks
                 Loggers = new[] { "trx" },
                 ResultsDirectory = context.Output.TestResultsDirectory
             };
+
+            if (context.TestSettings.CollectCodeCoverage)
+            {
+                // Assumes that the "coverlet.collector" package is installed in all test projects
+                testSettings.Collectors = new[] { "XPlat Code Coverage" };
+            }
 
             context.DotNetCoreTest(context.SolutionPath.FullPath, testSettings);
 
@@ -84,6 +97,51 @@ namespace Grynwald.SharedBuild.Tasks
                         context.AzurePipelines.ArtifactNames.TestResults
                     );
                 }
+            }
+        }
+
+
+        private void GenerateCoverageReport(IBuildContext context)
+        {
+            context.EnsureDirectoryDoesNotExist(context.Output.CodeCoverageReportDirectory, new() { Force = true, Recursive = true });
+
+            var coverageFiles = context.FileSystem.GetFilePaths(context.Output.TestResultsDirectory, "coverage.cobertura.xml", SearchScope.Recursive);
+
+            if (!coverageFiles.Any())
+                throw new Exception($"No coverage files found in '{context.Output.TestResultsDirectory}'");
+
+            context.Log.Information($"Found {coverageFiles.Count} coverage files");
+
+            //
+            // Generate Coverage Report and merged code coverage file
+            //
+            context.Log.Information("Merging coverage files");
+            var htmlReportType = context.AzurePipelines.IsActive
+                ? ReportGeneratorReportType.HtmlInline_AzurePipelines
+                : ReportGeneratorReportType.Html;
+
+            context.ReportGenerator(
+                reports: coverageFiles,
+                targetDir: context.Output.CodeCoverageReportDirectory,
+                settings: new ReportGeneratorSettings()
+                {
+                    ReportTypes = new[] { htmlReportType, ReportGeneratorReportType.Cobertura },
+                    HistoryDirectory = context.Output.CodeCoverageHistoryDirectory
+                }
+            );
+
+            //
+            // Publish Code coverage report
+            //
+            if (context.AzurePipelines.IsActive)
+            {
+                context.Log.Information("Publishing Code Coverage Results to Azure Pipelines");
+                context.AzurePipelines.Commands.PublishCodeCoverage(new()
+                {
+                    CodeCoverageTool = AzurePipelinesCodeCoverageToolType.Cobertura,
+                    SummaryFileLocation = context.Output.CodeCoverageReportDirectory.CombineWithFilePath("Cobertura.xml"),
+                    ReportDirectory = context.Output.CodeCoverageReportDirectory
+                });
             }
         }
     }

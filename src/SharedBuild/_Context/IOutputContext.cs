@@ -26,6 +26,17 @@ namespace Grynwald.SharedBuild
         DirectoryPath TestResultsDirectory { get; }
 
         /// <summary>
+        /// Gets the output path for code coverage reports
+        /// </summary>
+        DirectoryPath CodeCoverageReportDirectory { get; }
+
+        /// <summary>
+        /// Gets the output path for code coverage history files
+        /// (used by Report Generator to show differences in code coverage between different runs)
+        /// </summary>
+        DirectoryPath CodeCoverageHistoryDirectory { get; }
+
+        /// <summary>
         /// Gets all NuGet package files in the packages output directory
         /// </summary>
         IEnumerable<FilePath> PackageFiles { get; }

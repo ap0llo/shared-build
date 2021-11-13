@@ -28,6 +28,12 @@ namespace Grynwald.SharedBuild
         public virtual DirectoryPath TestResultsDirectory => BinariesDirectory.Combine(m_Context.BuildSettings.Configuration).Combine("TestResults");
 
         /// <inheritdoc />
+        public virtual DirectoryPath CodeCoverageReportDirectory => BinariesDirectory.Combine(m_Context.BuildSettings.Configuration).Combine("CodeCoverage").Combine("Report");
+
+        /// <inheritdoc />
+        public virtual DirectoryPath CodeCoverageHistoryDirectory => BinariesDirectory.Combine(m_Context.BuildSettings.Configuration).Combine("CodeCoverage").Combine("History");
+
+        /// <inheritdoc />
         public virtual FilePath ChangeLogFile => BinariesDirectory.CombineWithFilePath("changelog.md");
 
         /// <inheritdoc />
@@ -46,6 +52,8 @@ namespace Grynwald.SharedBuild
             log.Information($"{nameof(BinariesDirectory)}: {BinariesDirectory.FullPath}");
             log.Information($"{nameof(PackagesDirectory)}: {PackagesDirectory.FullPath}");
             log.Information($"{nameof(TestResultsDirectory)}: {TestResultsDirectory.FullPath}");
+            log.Information($"{nameof(CodeCoverageReportDirectory)}: {CodeCoverageReportDirectory.FullPath}");
+            log.Information($"{nameof(CodeCoverageHistoryDirectory)}: {CodeCoverageHistoryDirectory.FullPath}");
             log.Information($"{nameof(ChangeLogFile)}: {ChangeLogFile.FullPath}");
         }
     }

@@ -39,6 +39,9 @@ namespace Grynwald.SharedBuild
         public virtual IBuildSettings BuildSettings { get; }
 
         /// <inheritdoc />
+        public virtual ITestSettings TestSettings { get; }
+
+        /// <inheritdoc />
         public virtual IGitContext Git { get; }
 
         /// <inheritdoc />
@@ -63,6 +66,7 @@ namespace Grynwald.SharedBuild
             GitHub = new DefaultGitHubContext(this);
             Output = new DefaultOutputContext(this);
             BuildSettings = new DefaultBuildSettings(this);
+            TestSettings = new DefaultTestSettings(this);
         }
 
 
@@ -82,6 +86,9 @@ namespace Grynwald.SharedBuild
 
             log.Information(nameof(BuildSettings));
             BuildSettings.PrintToLog(indentedLog);
+
+            log.Information(nameof(TestSettings));
+            TestSettings.PrintToLog(indentedLog);
 
             log.Information(nameof(Git));
             Git.PrintToLog(indentedLog);

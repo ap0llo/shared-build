@@ -32,6 +32,11 @@ namespace Grynwald.SharedBuild
         IBuildSettings BuildSettings { get; }
 
         /// <summary>
+        /// Gets the test settings to use
+        /// </summary>
+        ITestSettings TestSettings { get; }
+
+        /// <summary>
         /// Gets information about the current Git workspace
         /// </summary>
         IGitContext Git { get; }
