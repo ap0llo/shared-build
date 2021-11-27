@@ -63,7 +63,7 @@ namespace Grynwald.SharedBuild.Tasks
             context.DotNetCoreTest(context.SolutionPath.FullPath, testSettings);
 
             //
-            // Publish Test Resilts
+            // Publish Test Results
             //
             PublishTestResults(context, failOnMissingTestResults: true);
         }
@@ -79,17 +79,18 @@ namespace Grynwald.SharedBuild.Tasks
             {
                 context.Log.Information("Publishing Test Results to Azure Pipelines");
 
-                // Publish test results to Azure Pipelines test UI
-                context.AzurePipelines.Commands.PublishTestResults(new()
-                {
-                    Configuration = context.BuildSettings.Configuration,
-                    TestResultsFiles = testResults.ToList(),
-                    TestRunner = AzurePipelinesTestRunnerType.VSTest
-                });
-
-                // Publish result files as downloadable artifact
                 foreach (var testResult in testResults)
                 {
+                    // Publish test results to Azure Pipelines test UI
+                    context.AzurePipelines.Commands.PublishTestResults(new()
+                    {
+                        Configuration = context.BuildSettings.Configuration,
+                        TestResultsFiles = new[] { testResult },
+                        TestRunner = AzurePipelinesTestRunnerType.VSTest,
+                        TestRunTitle = "Test Run"
+                    });
+
+                    // Publish result file as downloadable artifact
                     context.Log.Debug($"Publishing '{testResult}' as build artifact");
                     context.AzurePipelines.Commands.UploadArtifact(
                         folderName: "",
