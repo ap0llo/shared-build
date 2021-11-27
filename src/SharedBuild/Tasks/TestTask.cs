@@ -98,7 +98,7 @@ namespace Grynwald.SharedBuild.Tasks
                     // Publish result file as downloadable artifact
                     context.Log.Debug($"Publishing '{testResult}' as build artifact");
                     context.AzurePipelines.Commands.UploadArtifact(
-                        folderName: testRunNames[testResult],
+                        folderName: "",
                         file: testResult,
                         context.AzurePipelines.ArtifactNames.TestResults
                     );
