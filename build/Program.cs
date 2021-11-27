@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Cake.AzurePipelines.Module;
 using Cake.Core;
 using Cake.DotNetLocalTools.Module;
@@ -15,7 +15,16 @@ return new CakeHost()
 
 class BuildContext : DefaultBuildContext
 {
-    public BuildContext(ICakeContext context) : base(context)
+
+    public override IReadOnlyCollection<IPushTarget> PushTargets { get; } = new IPushTarget[]
     {
-    }
+        new PushTarget(
+            type: PushTargetType.AzureArtifacts,
+            feedUrl: "https://pkgs.dev.azure.com/ap0llo/OSS/_packaging/BuildInfrastructure/nuget/v3/index.json",
+            isActive: context => context.Git.IsMasterBranch || context.Git.IsReleaseBranch
+        )
+    };
+
+    public BuildContext(ICakeContext context) : base(context)
+    { }
 }
