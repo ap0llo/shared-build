@@ -9,6 +9,8 @@
 		<BaseOutputPath Condition="!HasTrailingSlash('BaseOutputPath')">$(BaseOutputPath)/</BaseOutputPath>
 		<OutputPath>$(BaseOutputPath)$(Configuration)/$(MSBuildProjectName)/</OutputPath>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<PackageOutputPath>$(BaseOutputPath)$(Configuration)/packages/</PackageOutputPath>
+		<VSTestResultsDirectory>$(BaseOutputPath)TestResults/</VSTestResultsDirectory>
 	</PropertyGroup>
 
 	<!-- Compiler settings-->
