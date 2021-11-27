@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cake.Common.Build.AzurePipelines.Data;
+using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Common.Tools.DotNetCore;
 using Cake.Common.Tools.DotNetCore.Test;
@@ -75,9 +77,12 @@ namespace Grynwald.SharedBuild.Tasks
             if (!testResults.Any() && failOnMissingTestResults)
                 throw new Exception($"No test results found in '{context.Output.TestResultsDirectory}'");
 
+
             if (context.AzurePipelines.IsActive)
             {
                 context.Log.Information("Publishing Test Results to Azure Pipelines");
+
+                var testRunNames = GetTestRunNames(context, testResults);
 
                 foreach (var testResult in testResults)
                 {
@@ -87,20 +92,19 @@ namespace Grynwald.SharedBuild.Tasks
                         Configuration = context.BuildSettings.Configuration,
                         TestResultsFiles = new[] { testResult },
                         TestRunner = AzurePipelinesTestRunnerType.VSTest,
-                        TestRunTitle = "Test Run"
+                        TestRunTitle = testRunNames[testResult]
                     });
 
                     // Publish result file as downloadable artifact
                     context.Log.Debug($"Publishing '{testResult}' as build artifact");
                     context.AzurePipelines.Commands.UploadArtifact(
-                        folderName: "",
+                        folderName: testRunNames[testResult],
                         file: testResult,
                         context.AzurePipelines.ArtifactNames.TestResults
                     );
                 }
             }
         }
-
 
         private void GenerateCoverageReport(IBuildContext context)
         {
@@ -144,6 +148,33 @@ namespace Grynwald.SharedBuild.Tasks
                     ReportDirectory = context.Output.CodeCoverageReportDirectory
                 });
             }
+        }
+
+        private static IReadOnlyDictionary<FilePath, string> GetTestRunNames(IBuildContext context, IEnumerable<FilePath> testResultPaths)
+        {
+            var testRunNamer = new TestRunNamer(context.Log, context.Environment, context.FileSystem);
+
+            var previousNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var testRunNames = new Dictionary<FilePath, string>();
+
+            foreach (var testResultPath in testResultPaths)
+            {
+                var baseName = testRunNamer.GetTestRunName(testResultPath);
+                var name = baseName;
+
+                // Test run names should be unique, otherwise Azure Pipeline will overwrite results for a previous test with the same name
+                // To avoid this, append a number at the end of the name until it is unique.
+                var counter = 1;
+                while (previousNames.Contains(name))
+                {
+                    name = $"{baseName} ({counter++})";
+                }
+
+                previousNames.Add(name);
+                testRunNames.Add(testResultPath, name);
+            }
+
+            return testRunNames;
         }
     }
 }
