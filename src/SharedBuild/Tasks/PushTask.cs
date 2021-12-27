@@ -33,6 +33,10 @@ namespace Grynwald.SharedBuild.Tasks
                         PushToNuGetOrg(context, target);
                         break;
 
+                    case PushTargetType.MyGet:
+                        PushToMyGet(context, target);
+                        break;
+
                     default:
                         throw new NotImplementedException($"Unimplemented push target type '{target.Type}'");
                 }
@@ -81,6 +85,28 @@ namespace Grynwald.SharedBuild.Tasks
             }
 
             context.Log.Information($"Pushing packages to nuget.org (feed {pushTarget.FeedUrl})");
+            foreach (var package in context.Output.PackageFiles)
+            {
+                context.Log.Information($"Pushing package '{package}'");
+                var pushSettings = new DotNetCoreNuGetPushSettings()
+                {
+                    Source = pushTarget.FeedUrl,
+                    ApiKey = apiKey
+                };
+
+                context.DotNetCoreNuGetPush(package.FullPath, pushSettings);
+            }
+        }
+
+        private void PushToMyGet(IBuildContext context, IPushTarget pushTarget)
+        {
+            var apiKey = context.EnvironmentVariable("MYGET_APIKEY");
+            if (String.IsNullOrEmpty(apiKey))
+            {
+                throw new InvalidOperationException("Could not determine MyGet API key. Enviornment variable 'MYGET_APIKEY' is empty.");
+            }
+
+            context.Log.Information($"Pushing packages to MyGet (feed {pushTarget.FeedUrl})");
             foreach (var package in context.Output.PackageFiles)
             {
                 context.Log.Information($"Pushing package '{package}'");

@@ -3,6 +3,7 @@
     public enum PushTargetType
     {
         AzureArtifacts,
-        NuGetOrg
+        NuGetOrg,
+        MyGet
     }
 }

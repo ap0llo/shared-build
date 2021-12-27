@@ -28,14 +28,14 @@ This guide assumes you're already familiar with Cake.Frosting.
 public static int Main(string[] args)
 {
     return new CakeHost()
-        .UseSharedBuild<BuildContext>()                    
+        .UseSharedBuild<BuildContext>()
         .Run(args);
 }
 ----
 +
   . You'll need to provide a build context type that implements `IBuildContext`.
   . The package provides a default implementation of the build context named `DefaultBuildContext`.
-  . By default, the `UseSharedBuild()` method will import all tasks. 
+  . By default, the `UseSharedBuild()` method will import all tasks.
     You can filter these tasks by specifying a task filter, see <<overriding-and-skipping-tasks>> for details.
 
 . Set up your repository to match the assumptions the shared build tasks make.
@@ -71,14 +71,14 @@ The easiest way to configure projects to use the default ouptut structure is usi
 ----
 <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    
+
     <!-- Output paths -->
     <BaseOutputPath Condition="'$(BUILD_BINARIESDIRECTORY)' != '' ">$(BUILD_BINARIESDIRECTORY)</BaseOutputPath>
     <BaseOutputPath Condition="'$(BaseOutputPath)' == '' ">$(MSBuildThisFileDirectory)Binaries/</BaseOutputPath>
     <BaseOutputPath Condition="!HasTrailingSlash('BaseOutputPath')">$(BaseOutputPath)/</BaseOutputPath>
     <OutputPath>$(BaseOutputPath)$(Configuration)/$(MSBuildProjectName)/</OutputPath>
     <PackageOutputPath>$(BaseOutputPath)$(Configuration)/packages/</PackageOutputPath>
-    <VSTestResultsDirectory>$(BaseOutputPath)TestResults/</VSTestResultsDirectory>    
+    <VSTestResultsDirectory>$(BaseOutputPath)TestResults/</VSTestResultsDirectory>
 </PropertyGroup>
 ----
 
@@ -102,13 +102,13 @@ The following tools need to be installed:
 
 === Uploading NuGet packages
 
-The Shared Build tasks support uploading NuGet packages from builds to NuGet.org and/or Azure Artifacts.
+The Shared Build tasks support uploading NuGet packages from builds to NuGet.org, Azure Artifacts or MyGet.
 
 Where packages are uploaded to is determined by the `PushTargets` property of the build context.
 To define one or more push targets when using a build context derived from `DefaultBuildContext`, override the property and return one or more `IPushTarget` instances.
 The package provides a default implementation of `IPushTarget` which can be used to easily define upload targets.
 
-==== Example 
+==== Example
 
 [source,cs]
 ----
@@ -117,7 +117,7 @@ class BuildContext : DefaultBuildContext
     public override IReadOnlyCollection<IPushTarget> PushTargets { get; } = new IPushTarget[]
     {
         new PushTarget(
-            // type: The type of hosting provider to push to. Can be either Azure Artifacts or Nuget.org            
+            // type: The type of hosting provider to push to. Can be either Azure Artifacts, Nuget.org or MyGet
             type: PushTargetType.AzureArtifacts,
             // feedUrl: The url of the NuGet package feed to push to, for nuget.org, use "https://api.nuget.org/v3/index.json"
             feedUrl: "https://pkgs.dev.azure.com/ap0llo/OSS/_packaging/PublicCI/nuget/v3/index.json",
@@ -151,10 +151,11 @@ steps:
         filePath: './build.ps1'
         arguments: '--target CI --configuration $(buildConfiguration)'
     env:
-        SYSTEM_ACCESSTOKEN: $(System.AccessToken)        
+        SYSTEM_ACCESSTOKEN: $(System.AccessToken)
 ----
 
 . For uploads to nuget.org, the API key is required to be available in the environment variable `NUGET_ORG_APIKEY`
+. For uploads to link:https://www.myget.org[MyGet], the API key is required to be available in the environment variable `MYGET_APIKEY`
 
 === Overriding and skipping tasks
 
@@ -167,9 +168,9 @@ When specified, only the tasks for which the filter function returned `true` wil
 ----
 public static int Main(string[] args)
 {
-    return new CakeHost()  
+    return new CakeHost()
         // Import all tasks except the "Pack" task
-        .UseSharedBuild<BuildContext>(taskType => taskType != typeof(Grynwald.SharedBuild.Tasks.PackTask))                    
+        .UseSharedBuild<BuildContext>(taskType => taskType != typeof(Grynwald.SharedBuild.Tasks.PackTask))
         .Run(args);
 }
 ----
@@ -187,21 +188,21 @@ namespace Build
     {
         public static int Main(string[] args)
         {
-            return new CakeHost()  
-                .UseSharedBuild<DefaultBuildContext>(taskType => taskType != typeof(Grynwald.SharedBuild.Tasks.PackTask))                    
+            return new CakeHost()
+                .UseSharedBuild<DefaultBuildContext>(taskType => taskType != typeof(Grynwald.SharedBuild.Tasks.PackTask))
                 .Run(args);
         }
     }
 
     // The 'TaskNames' class provides constants for the names of all built-in tasks
-    [TaskName(TaskNames.Pack)] 
+    [TaskName(TaskNames.Pack)]
     public class PackTask : FrostingTask<IBuildContext>
     {
-        public override void Run(IBuildContext context) 
+        public override void Run(IBuildContext context)
         {
             // Custom task logic
         }
-    }     
+    }
 }
 ----
 
