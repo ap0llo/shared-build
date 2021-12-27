@@ -110,7 +110,9 @@ The Shared Build tasks support uploading NuGet packages from builds to NuGet.org
 
 Where packages are uploaded to is determined by the `PushTargets` property of the build context.
 To define one or more push targets when using a build context derived from `DefaultBuildContext`, override the property and return one or more `IPushTarget` instances.
-The package provides a default implementation of `IPushTarget` which can be used to easily define upload targets.
+The package provides `PushTarget` as default implementation of `IPushTarget` which can be used to easily define upload targets.
+
+The `PushTargets` class offers factory methods to create `IPushTarget` instances for well-known targets (currently only nuget.org)
 
 ==== Example
 
@@ -126,9 +128,12 @@ class BuildContext : DefaultBuildContext
             // feedUrl: The url of the NuGet package feed to push to, for nuget.org, use "https://api.nuget.org/v3/index.json"
             feedUrl: "https://pkgs.dev.azure.com/ap0llo/OSS/_packaging/PublicCI/nuget/v3/index.json",
             // isActive: Provide a function to determine when to upload packages to this source
-            // In the example above, packages are uploaded to Azure Artifacts for every build of master or a release branch
+            // In the example below, packages are uploaded to Azure Artifacts for every build of master or a release branch
             isActive: context => context.Git.IsMasterBranch || context.Git.IsReleaseBranch
-        )
+        ),
+        // 'PushTargets' provides factory methods for known targets to avoid having to repeat the feed url in every project
+        // In the example below, packages are uploaded to nuget when the current build is build a  release branch
+        PushTargets.NuGetOrg(isActive: context => context.Git.IsReleaseBranch)
     };
 
     public BuildContext(ICakeContext context) : base(context)
