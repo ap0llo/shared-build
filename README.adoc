@@ -8,6 +8,10 @@
 :url-reportgenerator: https://github.com/danielpalme/ReportGenerator
 :url-changelog: https://github.com/ap0llo/changelog
 :url-cake.dotnetlocaltools: https://github.com/cake-contrib/Cake.DotNetLocalTools.Module
+:url-build-statusbadge: https://dev.azure.com/ap0llo/OSS/_apis/build/status/shared-build?branchName=master
+:url-build-latest: https://dev.azure.com/ap0llo/OSS/_build/latest?definitionId=23&branchName=master
+
+image:{url-build-statusbadge}[link={url-build-latest}]
 
 This repository contains shared build logic common to some of my open source projects.
 
