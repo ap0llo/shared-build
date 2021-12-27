@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using Cake.AzurePipelines.Module;
 using Cake.Frosting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,8 +18,7 @@ namespace Grynwald.SharedBuild
         {
             return host
                 .UseContext<TContext>()
-                .AddAssembly(typeof(CakeHostExtensions).Assembly, taskFilter)
-                .UseModule<AzurePipelinesModule>();
+                .AddAssembly(typeof(CakeHostExtensions).Assembly, taskFilter);
         }
 
         /// <summary>
