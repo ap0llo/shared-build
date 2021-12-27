@@ -4,8 +4,8 @@ using System.Linq;
 using Cake.Common.Build.AzurePipelines.Data;
 using Cake.Common.Diagnostics;
 using Cake.Common.IO;
-using Cake.Common.Tools.DotNetCore;
-using Cake.Common.Tools.DotNetCore.Test;
+using Cake.Common.Tools.DotNet;
+using Cake.Common.Tools.DotNet.Test;
 using Cake.Common.Tools.ReportGenerator;
 using Cake.Core.Diagnostics;
 using Cake.Core.IO;
@@ -47,7 +47,7 @@ namespace Grynwald.SharedBuild.Tasks
             //
             // Run tests
             //
-            var testSettings = new DotNetCoreTestSettings()
+            var testSettings = new DotNetTestSettings()
             {
                 Configuration = context.BuildSettings.Configuration,
                 NoBuild = true,
@@ -62,7 +62,7 @@ namespace Grynwald.SharedBuild.Tasks
                 testSettings.Collectors = new[] { "XPlat Code Coverage" };
             }
 
-            context.DotNetCoreTest(context.SolutionPath.FullPath, testSettings);
+            context.DotNetTest(context.SolutionPath.FullPath, testSettings);
 
             //
             // Publish Test Results

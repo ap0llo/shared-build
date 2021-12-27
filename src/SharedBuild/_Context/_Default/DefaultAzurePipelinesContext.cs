@@ -14,13 +14,10 @@ namespace Grynwald.SharedBuild
         public virtual IAzurePipelinesArtifactNames ArtifactNames { get; }
 
         /// <inheritdoc />
-        public virtual bool IsActive => IsRunningOnAzurePipelines || IsRunningOnAzurePipelinesHosted;
+        public virtual bool IsActive => IsRunningOnAzurePipelines;
 
         /// <inheritdoc />
         public virtual bool IsRunningOnAzurePipelines => m_AzurePipelinesProvider.IsRunningOnAzurePipelines;
-
-        /// <inheritdoc />
-        public virtual bool IsRunningOnAzurePipelinesHosted => m_AzurePipelinesProvider.IsRunningOnAzurePipelinesHosted;
 
         /// <inheritdoc />
         public virtual AzurePipelinesEnvironmentInfo Environment => m_AzurePipelinesProvider.Environment;
