@@ -112,7 +112,7 @@ Where packages are uploaded to is determined by the `PushTargets` property of th
 To define one or more push targets when using a build context derived from `DefaultBuildContext`, override the property and return one or more `IPushTarget` instances.
 The package provides `PushTarget` as default implementation of `IPushTarget` which can be used to easily define upload targets.
 
-The `PushTargets` class offers factory methods to create `IPushTarget` instances for well-known targets (currently only nuget.org)
+The `KnownPushTargets` class offers factory methods to create `IPushTarget` instances for well-known targets (currently only nuget.org)
 
 ==== Example
 
@@ -131,9 +131,9 @@ class BuildContext : DefaultBuildContext
             // In the example below, packages are uploaded to Azure Artifacts for every build of master or a release branch
             isActive: context => context.Git.IsMasterBranch || context.Git.IsReleaseBranch
         ),
-        // 'PushTargets' provides factory methods for known targets to avoid having to repeat the feed url in every project
+        // 'KnownPushTargets' provides factory methods for known targets to avoid having to repeat the feed url in every project
         // In the example below, packages are uploaded to nuget when the current build is build a  release branch
-        PushTargets.NuGetOrg(isActive: context => context.Git.IsReleaseBranch)
+        KnownPushTargets.NuGetOrg(isActive: context => context.Git.IsReleaseBranch)
     };
 
     public BuildContext(ICakeContext context) : base(context)
