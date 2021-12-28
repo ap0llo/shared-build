@@ -23,8 +23,7 @@ namespace Grynwald.SharedBuild.Tasks
                 CurrentVersion = version,
                 VersionRange = $"[{version}]",
                 OutputPath = context.Output.ChangeLogFile,
-                Template = ChangeLogTemplate.GitHubRelease,
-                Verbose = true
+                Template = ChangeLogTemplate.GitHubRelease
             };
 
             if (context.GitHub.TryGetAccessToken() is string accessToken)
