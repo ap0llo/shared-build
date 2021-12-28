@@ -87,6 +87,7 @@ namespace Grynwald.SharedBuild.Tasks
                 foreach (var testResult in testResults)
                 {
                     // Publish test results to Azure Pipelines test UI
+                    context.Log.Debug($"Publishing Test Results from '{testResult}' with title '{testRunNames[testResult]}'");
                     context.AzurePipelines.Commands.PublishTestResults(new()
                     {
                         Configuration = context.BuildSettings.Configuration,
@@ -96,7 +97,7 @@ namespace Grynwald.SharedBuild.Tasks
                     });
 
                     // Publish result file as downloadable artifact
-                    context.Log.Debug($"Publishing '{testResult}' as build artifact");
+                    context.Log.Debug($"Publishing Test Result file '{testResult}' as build artifact");
                     context.AzurePipelines.Commands.UploadArtifact(
                         folderName: "",
                         file: testResult,
