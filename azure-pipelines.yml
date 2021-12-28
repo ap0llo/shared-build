@@ -7,20 +7,21 @@ pr:
   - release/*
 
 variables:
-  buildConfiguration: 'Release'
+  buildConfiguration: Release
 
 jobs:
 - job: Build
-  displayName: Build
+  displayName: Build  
   pool:
-    vmImage: 'windows-latest'
+    vmImage: windows-latest
+    
 
   steps:
   - task: PowerShell@2
     displayName: Cake Build
     inputs:
-      filePath: './build.ps1'
-      arguments: '--target CI --configuration $(buildConfiguration)'
+      filePath: ./build.ps1
+      arguments: --target CI --configuration $(buildConfiguration)
     env:
      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
      GITHUB_ACCESSTOKEN: $(GitHub.AccessToken)
