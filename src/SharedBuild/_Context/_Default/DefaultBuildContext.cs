@@ -67,6 +67,11 @@ namespace Grynwald.SharedBuild
             Output = new DefaultOutputContext(this);
             BuildSettings = new DefaultBuildSettings(this);
             TestSettings = new DefaultTestSettings(this);
+
+            if (Environment.GetEnvironmentVariable("SYSTEM_DEBUG")?.Equals("true", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                Log.Verbosity = Verbosity.Diagnostic;
+            }
         }
 
 
