@@ -2,6 +2,10 @@ trigger:
   - master
   - release/*
 
+pr:
+  - master
+  - release/*
+
 variables:
   buildConfiguration: 'Release'
 
