@@ -1,5 +1,5 @@
-﻿using Cake.Frosting;
-using Grynwald.SharedBuild.Tools.DotNet;
+﻿using Cake.Common.Tools.DotNet;
+using Cake.Frosting;
 
 namespace Grynwald.SharedBuild.Tasks
 {
@@ -10,8 +10,7 @@ namespace Grynwald.SharedBuild.Tasks
     {
         public override void Run(IBuildContext context)
         {
-            var settings = new DotNetFormatSettings();
-            context.DotNetFormat(context.SolutionPath.FullPath, settings);
+            context.DotNetFormat(context.SolutionPath.FullPath);
         }
     }
 }

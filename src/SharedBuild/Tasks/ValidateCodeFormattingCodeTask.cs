@@ -1,5 +1,6 @@
-﻿using Cake.Frosting;
-using Grynwald.SharedBuild.Tools.DotNet;
+﻿using Cake.Common.Tools.DotNet;
+using Cake.Common.Tools.DotNet.Format;
+using Cake.Frosting;
 
 namespace Grynwald.SharedBuild.Tasks
 {
