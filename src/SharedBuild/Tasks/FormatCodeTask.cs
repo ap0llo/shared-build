@@ -8,6 +8,8 @@ namespace Grynwald.SharedBuild.Tasks
     [TaskDescription("Applies formatting rules to all code files")]
     public class FormatCodeTask : FrostingTask<IBuildContext>
     {
+        public override bool ShouldRun(IBuildContext context) => context.CodeFormattingSettings.EnableAutomaticFormatting;
+
         public override void Run(IBuildContext context)
         {
             context.DotNetFormat(context.SolutionPath.FullPath);

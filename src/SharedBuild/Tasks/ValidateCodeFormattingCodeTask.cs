@@ -9,6 +9,8 @@ namespace Grynwald.SharedBuild.Tasks
     [IsDependeeOf(typeof(ValidateTask))]
     public class ValidateCodeFormattingTask : FrostingTask<IBuildContext>
     {
+        public override bool ShouldRun(IBuildContext context) => context.CodeFormattingSettings.EnableAutomaticFormatting;
+
         public override void Run(IBuildContext context)
         {
             var settings = new DotNetFormatSettings()

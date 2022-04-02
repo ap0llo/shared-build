@@ -53,6 +53,9 @@ namespace Grynwald.SharedBuild
         /// <inheritdoc />
         public virtual IReadOnlyCollection<IPushTarget> PushTargets { get; } = Array.Empty<IPushTarget>();
 
+        /// <inheritdoc />
+        public virtual ICodeFormattingSettings CodeFormattingSettings { get; } = new DefaultCodeFormattingSettings();
+
 
         /// <summary>
         /// Initializes a new instance of <see cref="DefaultBuildContext"/>
@@ -112,6 +115,9 @@ namespace Grynwald.SharedBuild
                 pushTarget.PrintToLog(new IndentedCakeLog(indentedLog));
                 index++;
             }
+
+            log.Information(nameof(CodeFormattingSettings));
+            CodeFormattingSettings.PrintToLog(indentedLog);
         }
     }
 }

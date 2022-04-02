@@ -55,5 +55,10 @@ namespace Grynwald.SharedBuild
         /// Gets the sources to push NuGet packages to
         /// </summary>
         IReadOnlyCollection<IPushTarget> PushTargets { get; }
+
+        /// <summary>
+        /// Gets the settings for automatic formatting of source files.
+        /// </summary>
+        ICodeFormattingSettings CodeFormattingSettings { get; }
     }
 }
