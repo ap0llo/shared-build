@@ -17,6 +17,10 @@ jobs:
     
 
   steps:
+  - checkout: self
+    clean: true
+    submodules: recursive
+    displayName: Checkout
   - task: PowerShell@2
     displayName: Cake Build
     inputs:

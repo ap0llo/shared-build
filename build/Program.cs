@@ -26,5 +26,11 @@ class BuildContext : DefaultBuildContext
     };
 
     public BuildContext(ICakeContext context) : base(context)
-    { }
+    {
+        // Exclude the "deps" directory from code formatting (contains submodules for which this project's formatting rules do not apply)
+        CodeFormattingSettings.ExcludedDirectories = new[]
+        {
+            RootDirectory.Combine("deps")
+        };
+    }
 }

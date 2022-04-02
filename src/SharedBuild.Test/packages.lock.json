@@ -126,14 +126,6 @@
           "Microsoft.Extensions.DependencyInjection": "6.0.0"
         }
       },
-      "Cake.GitHubReleases": {
-        "type": "Transitive",
-        "resolved": "1.0.10",
-        "contentHash": "eVeYhXAwxPfFXl/0F6LIlh+NmwFam3leqD9p8dI3hTIQr56ZXTAtlmDnkCk8oUbiAIW2y8KuHYDBDt19iMIENQ==",
-        "dependencies": {
-          "Octokit": "0.50.0"
-        }
-      },
       "Cake.GitVersioning": {
         "type": "Transitive",
         "resolved": "3.5.50-alpha",
@@ -1402,9 +1394,9 @@
         "type": "Project",
         "dependencies": {
           "Cake.Frosting": "2.1.0",
-          "Cake.GitHubReleases": "1.0.10",
           "Cake.GitVersioning": "3.5.50-alpha",
-          "Mono.Cecil": "0.11.4"
+          "Mono.Cecil": "0.11.4",
+          "Octokit": "0.50.0"
         }
       }
     }

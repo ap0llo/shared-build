@@ -15,7 +15,6 @@
     <PackageReference Include="Cake.DotNetLocalTools.Module" Version="1.0.2" />
     <PackageReference Include="Cake.Frosting" Version="2.1.0" />
     <PackageReference Include="Cake.GitVersioning" Version="3.5.50-alpha" />
-    <PackageReference Include="Cake.GitHubReleases" Version="1.0.10" />
     <PackageReference Include="Mono.Cecil" Version="0.11.4" />
   </ItemGroup>
 
@@ -26,4 +25,13 @@
              Exclude="..\src\SharedBuild\obj\**\*.cs;..\src\SharedBuild\Properties\AssemblyInfo.cs" />
   </ItemGroup>
 
+
+  <!-- Cake.GitHub (currently pulled in via git submodules instead of NuGet) -->
+  <ItemGroup>
+    <Compile Include="..\deps\Cake.GitHub\src\Cake.GitHub\**\*.cs"
+             Link="_External Code\Cake.GitHub\%(RecursiveDir)\%(FileName)%(Extension)"
+             Exclude="..\deps\Cake.GitHub\src\Cake.GitHub\Properties\**\*.cs"/>
+    <PackageReference Include="Octokit" Version="0.50.0" />
+  </ItemGroup>
+  
 </Project>

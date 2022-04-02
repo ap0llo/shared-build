@@ -12,9 +12,21 @@
 
   <ItemGroup>
     <PackageReference Include="Cake.Frosting" Version="2.1.0" />
-    <PackageReference Include="Cake.GitHubReleases" Version="1.0.10" />
     <PackageReference Include="Cake.GitVersioning" Version="3.5.50-alpha" />
     <PackageReference Include="Mono.Cecil" Version="0.11.4" />
   </ItemGroup>
+
+  <!-- Cake.GitHub (currently pulled in via git submodules instead of NuGet) -->
+  <ItemGroup>
+    <Compile Include="..\..\deps\Cake.GitHub\src\Cake.GitHub\**\*.cs"
+             Link="_External Code\Cake.GitHub\%(RecursiveDir)\%(FileName)%(Extension)"
+             Exclude="..\..\deps\Cake.GitHub\src\Cake.GitHub\Properties\**\*.cs"/>
+    <PackageReference Include="Octokit" Version="0.50.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\3rdPartyNotices.txt" Pack="true" PackagePath="3rdPartyNotices.txt" />
+  </ItemGroup>
+
 
 </Project>

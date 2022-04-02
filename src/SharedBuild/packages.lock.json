@@ -16,15 +16,6 @@
           "Microsoft.Extensions.DependencyInjection": "6.0.0"
         }
       },
-      "Cake.GitHubReleases": {
-        "type": "Direct",
-        "requested": "[1.0.10, )",
-        "resolved": "1.0.10",
-        "contentHash": "eVeYhXAwxPfFXl/0F6LIlh+NmwFam3leqD9p8dI3hTIQr56ZXTAtlmDnkCk8oUbiAIW2y8KuHYDBDt19iMIENQ==",
-        "dependencies": {
-          "Octokit": "0.50.0"
-        }
-      },
       "Cake.GitVersioning": {
         "type": "Direct",
         "requested": "[3.5.50-alpha, )",
@@ -52,6 +43,12 @@
         "requested": "[3.5.54-alpha, )",
         "resolved": "3.5.54-alpha",
         "contentHash": "k/sVSDMtXMSqACw2to3uW+h8AeS2mvcc6KspQG+OG8U3/ARhikFgMrw2nDbb0cRCL2Ox6aLzvt4smw5p2docXw=="
+      },
+      "Octokit": {
+        "type": "Direct",
+        "requested": "[0.50.0, )",
+        "resolved": "0.50.0",
+        "contentHash": "J5vqespSvjxIAAtjG1Tc6ghBqyfRgDJtKnk/ifi4N0hD/f3JbPwyEDRT+Eelu/bS4C4M6mu5gt1WJqar+fByzg=="
       },
       "Autofac": {
         "type": "Transitive",
@@ -219,11 +216,6 @@
         "type": "Transitive",
         "resolved": "6.0.0",
         "contentHash": "XA59hPSbKdExu28TbONlD/BwOkKzjo4u2mkEJIP4wnDz9P65FdM34cVA+2/jztKrKyFmX8jpQW++xOp99mufjw=="
-      },
-      "Octokit": {
-        "type": "Transitive",
-        "resolved": "0.50.0",
-        "contentHash": "J5vqespSvjxIAAtjG1Tc6ghBqyfRgDJtKnk/ifi4N0hD/f3JbPwyEDRT+Eelu/bS4C4M6mu5gt1WJqar+fByzg=="
       },
       "Spectre.Console": {
         "type": "Transitive",
