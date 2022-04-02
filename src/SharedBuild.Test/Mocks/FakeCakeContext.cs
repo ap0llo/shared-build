@@ -3,6 +3,7 @@ using Cake.Core.Configuration;
 using Cake.Core.Diagnostics;
 using Cake.Core.IO;
 using Cake.Core.Tooling;
+using Cake.Testing;
 
 namespace Grynwald.SharedBuild.Test.Mocks
 {
@@ -11,9 +12,15 @@ namespace Grynwald.SharedBuild.Test.Mocks
     /// </summary>
     internal class FakeCakeContext : ICakeContext
     {
-        public IFileSystem FileSystem => throw new System.NotImplementedException();
+        /// <summary>
+        /// Mock object for <see cref="ICakeContext.FileSystem"/>
+        /// </summary>
+        public FakeFileSystem FileSystem { get; }
 
-        public ICakeEnvironment Environment => throw new System.NotImplementedException();
+        /// <summary>
+        /// Mock object for <see cref="ICakeContext.Environment"/>
+        /// </summary>
+        public FakeEnvironment Environment { get; }
 
         public IGlobber Globber => throw new System.NotImplementedException();
 
@@ -21,14 +28,40 @@ namespace Grynwald.SharedBuild.Test.Mocks
 
         public ICakeArguments Arguments => throw new System.NotImplementedException();
 
-        public IProcessRunner ProcessRunner => throw new System.NotImplementedException();
+        /// <summary>
+        /// Mock object for <see cref="ICakeContext.ProcessRunner" />
+        /// </summary>
+        public FakeProcessRunner ProcessRunner { get; }
 
         public IRegistry Registry => throw new System.NotImplementedException();
 
-        public IToolLocator Tools => throw new System.NotImplementedException();
+        /// <summary>
+        /// Mock object for <see cref="ICakeContext.Tools" />
+        /// </summary>
+        public FakeToolLocator Tools { get; }
 
         public ICakeDataResolver Data => throw new System.NotImplementedException();
 
         public ICakeConfiguration Configuration => throw new System.NotImplementedException();
+
+        /// <inheritdoc />
+        IProcessRunner ICakeContext.ProcessRunner => ProcessRunner;
+
+        /// <inheritdoc />
+        IFileSystem ICakeContext.FileSystem => FileSystem;
+
+        /// <inheritdoc />
+        ICakeEnvironment ICakeContext.Environment => Environment;
+
+        /// <inheritdoc />
+        IToolLocator ICakeContext.Tools => Tools;
+
+        public FakeCakeContext()
+        {
+            Environment = FakeEnvironment.CreateWindowsEnvironment();
+            FileSystem = new FakeFileSystem(Environment);
+            ProcessRunner = new FakeProcessRunner();
+            Tools = new FakeToolLocator();
+        }
     }
 }

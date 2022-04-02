@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Cake.Core.Diagnostics;
+using Cake.Core.IO;
 
 namespace Grynwald.SharedBuild.Test.Mocks
 {
@@ -8,7 +10,11 @@ namespace Grynwald.SharedBuild.Test.Mocks
     /// </summary>
     internal class FakeCodeFormattingSettings : ICodeFormattingSettings
     {
+        /// <inheritdoc />
         public bool EnableAutomaticFormatting { get; set; }
+
+        /// <inheritdoc />
+        public ICollection<DirectoryPath> ExcludedDirectories { get; set; } = new List<DirectoryPath>();
 
 
         public void PrintToLog(ICakeLog log)

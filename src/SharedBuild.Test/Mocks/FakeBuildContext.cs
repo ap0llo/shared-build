@@ -10,11 +10,23 @@ namespace Grynwald.SharedBuild.Test.Mocks
     /// </summary>
     internal class FakeBuildContext : FakeCakeContext, IBuildContext
     {
+        private FilePath? m_SolutionPath;
+        private DirectoryPath? m_RootDirectory;
+
+
         public bool IsRunningInCI => throw new NotImplementedException();
 
-        public DirectoryPath RootDirectory => throw new NotImplementedException();
+        public DirectoryPath RootDirectory
+        {
+            get => m_RootDirectory ?? throw new InvalidOperationException($"Property '{nameof(RootDirectory)}' was not set");
+            set => m_RootDirectory = value;
+        }
 
-        public FilePath SolutionPath => throw new NotImplementedException();
+        public FilePath SolutionPath
+        {
+            get => m_SolutionPath ?? throw new InvalidOperationException($"Property '{nameof(SolutionPath)}' was not set");
+            set => m_SolutionPath = value;
+        }
 
         public IAzurePipelinesContext AzurePipelines => throw new NotImplementedException();
 
