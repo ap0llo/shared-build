@@ -18,6 +18,11 @@
         string RepositoryName { get; }
 
         /// <summary>
+        /// Gets information about the Pull Request being built
+        /// </summary>
+        IGitHubPullRequestContext PullRequest { get; }
+
+        /// <summary>
         /// Tries to get the GitHub Access token for the current builds
         /// </summary>
         string? TryGetAccessToken();
