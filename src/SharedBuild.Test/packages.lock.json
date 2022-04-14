@@ -4,11 +4,11 @@
     "net6.0": {
       "Cake.Testing": {
         "type": "Direct",
-        "requested": "[2.1.0, )",
-        "resolved": "2.1.0",
-        "contentHash": "7ew3LIXxnNKzNxImyr6wFjPzVjdOst5/kZWQzkjj5IZkCMB+/016eC42LXryev6lzirBB/cerqiTn8tRphsRWw==",
+        "requested": "[2.2.0, )",
+        "resolved": "2.2.0",
+        "contentHash": "BVh47FqGv01UwAB4r+6H27DtDITWDvzZiQQ/FVOT1HyUrAjqQgVaXP9ySOHa2CjBT/ErbSvnBrJKRQX19oOSBw==",
         "dependencies": {
-          "Cake.Core": "2.1.0"
+          "Cake.Core": "2.2.0"
         }
       },
       "coverlet.collector": {
@@ -98,8 +98,8 @@
       },
       "Cake.Core": {
         "type": "Transitive",
-        "resolved": "2.1.0",
-        "contentHash": "XHDjFSnI69WP27FntR2QypODQ3ZCNyvrZl/bQgkrMhYopTKX0PgDcKJJTRT2bJ6053tMgjUP3Orqpgh0OCXr0Q==",
+        "resolved": "2.2.0",
+        "contentHash": "AsCE8hkdAHDLZA8sHDXydQnUZv8pNQB2LxBWIERbmHrpELGt2DN1djY5eKu7OEzyZDqvwYcpln3e7ThuW9P+rw==",
         "dependencies": {
           "Microsoft.CSharp": "4.7.0",
           "Microsoft.Win32.Registry": "5.0.0"
