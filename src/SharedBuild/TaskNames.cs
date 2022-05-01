@@ -16,5 +16,6 @@
         public const string ValidateCodeFormatting = "ValidateCodeFormatting";
         public const string Validate = "Validate";
         public const string Generate = "Generate";
+        public const string SetGitHubMilestone = "SetGitHubMilestone";
     }
 }
