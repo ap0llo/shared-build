@@ -24,9 +24,15 @@ namespace Grynwald.SharedBuild.Test.Mocks
 
         public IGlobber Globber => throw new System.NotImplementedException();
 
-        public ICakeLog Log => throw new System.NotImplementedException();
+        /// <summary>
+        /// Mock object for <see cref="ICakeContext.Log"/>
+        /// </summary>
+        public FakeLog Log { get; }
 
-        public ICakeArguments Arguments => throw new System.NotImplementedException();
+        /// <summary>
+        /// Mock object for <see cref="ICakeContext.Arguments"/>
+        /// </summary>
+        public FakeArguments Arguments { get; }
 
         /// <summary>
         /// Mock object for <see cref="ICakeContext.ProcessRunner" />
@@ -56,12 +62,21 @@ namespace Grynwald.SharedBuild.Test.Mocks
         /// <inheritdoc />
         IToolLocator ICakeContext.Tools => Tools;
 
+        /// <inheritdoc />
+        ICakeLog ICakeContext.Log => Log;
+
+        /// <inheritdoc />
+        ICakeArguments ICakeContext.Arguments => Arguments;
+
+
         public FakeCakeContext()
         {
             Environment = FakeEnvironment.CreateWindowsEnvironment();
             FileSystem = new FakeFileSystem(Environment);
             ProcessRunner = new FakeProcessRunner();
             Tools = new FakeToolLocator();
+            Log = new FakeLog();
+            Arguments = new FakeArguments();
         }
     }
 }

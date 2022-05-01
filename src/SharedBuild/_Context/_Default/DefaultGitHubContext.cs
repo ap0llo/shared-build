@@ -20,11 +20,15 @@ namespace Grynwald.SharedBuild
         /// <inheritdoc />
         public virtual string RepositoryName => m_ProjectInfo.Value.Repository;
 
+        /// <inheritdoc />
+        public IGitHubPullRequestContext PullRequest { get; }
+
 
         public DefaultGitHubContext(DefaultBuildContext context)
         {
             m_Context = context ?? throw new ArgumentNullException(nameof(context));
             m_ProjectInfo = new Lazy<GitHubProjectInfo>(() => GitHubUrlParser.ParseRemoteUrl(m_Context.Git.RemoteUrl));
+            PullRequest = new DefaultGitHubPullRequestContext(context);
         }
 
 
@@ -44,9 +48,13 @@ namespace Grynwald.SharedBuild
         /// <inheritdoc />
         public void PrintToLog(ICakeLog log)
         {
+            var indentedLog = new IndentedCakeLog(log);
+
             log.Information($"{nameof(HostName)}: {HostName}");
             log.Information($"{nameof(RepositoryOwner)}: {RepositoryOwner}");
             log.Information($"{nameof(RepositoryName)}: {RepositoryName}");
+            log.Information($"{nameof(PullRequest)}:");
+            PullRequest.PrintToLog(indentedLog);
         }
     }
 }
