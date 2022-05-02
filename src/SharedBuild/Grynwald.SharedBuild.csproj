@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="Cake.Frosting" Version="2.2.0" />
-    <PackageReference Include="Cake.GitVersioning" Version="3.5.50-alpha" />
+    <PackageReference Include="Cake.GitVersioning" Version="3.5.103" />
     <PackageReference Include="Mono.Cecil" Version="0.11.4" />
   </ItemGroup>
 
