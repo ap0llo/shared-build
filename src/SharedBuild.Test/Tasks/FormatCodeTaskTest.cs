@@ -56,7 +56,8 @@ namespace Grynwald.SharedBuild.Test.Tasks
             Assert.Collection(
                 startedProcess.Settings.Arguments,
                 arg => Assert.Equal("format", arg.Render()),
-                arg => Assert.Equal($@"""{solutionPath}""", arg.Render())
+                arg => Assert.Equal($@"""{solutionPath}""", arg.Render()),
+                arg => Assert.Equal("--no-restore", arg.Render())
             );
         }
 
@@ -95,6 +96,7 @@ namespace Grynwald.SharedBuild.Test.Tasks
                 startedProcess.Settings.Arguments,
                 arg => Assert.Equal("format", arg.Render()),
                 arg => Assert.Equal($@"""{solutionPath}""", arg.Render()),
+                arg => Assert.Equal("--no-restore", arg.Render()),
                 arg => Assert.Equal("--exclude", arg.Render()),
                 arg => Assert.Equal("\"directory2\"", arg.Render()),
                 arg => Assert.Equal("\"directory1/directory3\"", arg.Render())

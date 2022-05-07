@@ -15,7 +15,10 @@ namespace Grynwald.SharedBuild.Tasks
 
         public override void Run(IBuildContext context)
         {
-            var settings = new DotNetFormatSettings();
+            var settings = new DotNetFormatSettings()
+            {
+                NoRestore = true
+            };
 
             // "dotnet format" expects the excluded directories to be passed as realtive paths (relative to the process' working directory)
             // To ensure that, start "dotnet format" in the repository root directory and convert all exclude paths to relative paths.

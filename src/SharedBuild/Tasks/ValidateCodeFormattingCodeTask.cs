@@ -16,7 +16,8 @@ namespace Grynwald.SharedBuild.Tasks
         {
             var settings = new DotNetFormatSettings()
             {
-                VerifyNoChanges = true
+                VerifyNoChanges = true,
+                NoRestore = true
             };
 
             // "dotnet format" expects the excluded directories to be passed as realtive paths (relative to the process' working directory)
