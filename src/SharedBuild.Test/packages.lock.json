@@ -358,8 +358,8 @@
       },
       "Octokit": {
         "type": "Transitive",
-        "resolved": "3.0.0",
-        "contentHash": "IM7sDD1DSu+6jiFKcRyB8Tb0CZlPJ7nnBdPnhCXEToEZWJAlr/01PVk/UTRiCutF62Dni3n2gZWJrusLytxzpw=="
+        "resolved": "3.0.1",
+        "contentHash": "YMlCfdajpmU+Ar+3SH0MThU1OCi0h9ovtCJTEQEGRJZyLdiL/DCFLhhNr7jsIFPANFogEXEAy1iZLfOC3UxZow=="
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
@@ -1275,7 +1275,7 @@
           "Cake.Frosting": "2.2.0",
           "Cake.GitVersioning": "3.5.113",
           "Mono.Cecil": "0.11.4",
-          "Octokit": "3.0.0"
+          "Octokit": "3.0.1"
         }
       }
     }
