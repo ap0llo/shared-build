@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     <!-- 
         Ignore warning NU5104: "A stable release of a package should not have a prerelease dependency."
         The shared build tasks require functionality in the not-yet released version of Cake.GitVersioning 3.5,
