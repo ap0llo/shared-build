@@ -2,12 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-    <!-- 
-        Ignore warning NU5104: "A stable release of a package should not have a prerelease dependency."
-        The shared build tasks require functionality in the not-yet released version of Cake.GitVersioning 3.5,
-        so we need to reference a prerelease version
-    -->
-    <NoWarn>$(NoWarn),NU5104</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
