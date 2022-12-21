@@ -1,6 +1,6 @@
 ﻿using System;
 using Cake.Common;
-using Cake.Common.Tools.DotNetCore.MSBuild;
+using Cake.Common.Tools.DotNet.MSBuild;
 using Cake.Core.Diagnostics;
 
 namespace Grynwald.SharedBuild
@@ -32,7 +32,7 @@ namespace Grynwald.SharedBuild
 
 
         /// <inheritdoc />
-        public virtual DotNetCoreMSBuildSettings GetDefaultMSBuildSettings() => new()
+        public virtual DotNetMSBuildSettings GetDefaultMSBuildSettings() => new()
         {
             TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error
         };

@@ -1,4 +1,4 @@
-﻿using Cake.Common.Tools.DotNetCore.MSBuild;
+﻿using Cake.Common.Tools.DotNet.MSBuild;
 
 namespace Grynwald.SharedBuild
 {
@@ -19,6 +19,6 @@ namespace Grynwald.SharedBuild
         /// Gets the default settings to use when calling MSBuild
         /// </summary>
         /// <returns></returns>
-        DotNetCoreMSBuildSettings GetDefaultMSBuildSettings();
+        DotNetMSBuildSettings GetDefaultMSBuildSettings();
     }
 }
