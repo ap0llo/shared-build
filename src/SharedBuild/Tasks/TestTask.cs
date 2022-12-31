@@ -39,14 +39,8 @@ namespace Grynwald.SharedBuild.Tasks
             throw exception;
         }
 
-
-        private void RunTests(IBuildContext context)
+        protected virtual DotNetTestSettings GetDotNetTestSettings(IBuildContext context)
         {
-            context.Log.Information($"Running tests for {context.SolutionPath}");
-
-            //
-            // Run tests
-            //
             var testSettings = new DotNetTestSettings()
             {
                 Configuration = context.BuildSettings.Configuration,
@@ -61,6 +55,18 @@ namespace Grynwald.SharedBuild.Tasks
                 // Assumes that the "coverlet.collector" package is installed in all test projects
                 testSettings.Collectors = new[] { "XPlat Code Coverage" };
             }
+
+            return testSettings;
+        }
+
+        private void RunTests(IBuildContext context)
+        {
+            context.Log.Information($"Running tests for {context.SolutionPath}");
+
+            //
+            // Run tests
+            //
+            var testSettings = GetDotNetTestSettings(context);
 
             context.DotNetTest(context.SolutionPath.FullPath, testSettings);
 
