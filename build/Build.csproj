@@ -31,7 +31,7 @@
     <Compile Include="..\deps\Cake.GitHub\src\Cake.GitHub\**\*.cs"
              Link="_External Code\Cake.GitHub\%(RecursiveDir)\%(FileName)%(Extension)"
              Exclude="..\deps\Cake.GitHub\src\Cake.GitHub\Properties\**\*.cs"/>
-    <PackageReference Include="Octokit" Version="4.0.3" />
+    <PackageReference Include="Octokit" Version="6.0.0" />
   </ItemGroup>
   
 </Project>
