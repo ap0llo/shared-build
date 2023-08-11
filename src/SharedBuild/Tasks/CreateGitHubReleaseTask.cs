@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Cake.Core.Diagnostics;
+using Cake.FileHelpers;
 using Cake.Frosting;
 using Cake.GitHub;
 using Cake.GitVersioning;
@@ -23,7 +24,7 @@ namespace Grynwald.SharedBuild.Tasks
 
             var versionInfo = context.GitVersioningGetVersion(context.RootDirectory.FullPath);
 
-            var changeLog = context.FileSystem.GetFile(context.Output.ChangeLogFile).ReadAllText();
+            var changeLog = context.FileReadText(context.Output.ChangeLogFile);
 
             if (context.GitHub.TryGetAccessToken() is not string accessToken)
             {

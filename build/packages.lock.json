@@ -17,6 +17,12 @@
           "Newtonsoft.Json": "13.0.1"
         }
       },
+      "Cake.FileHelpers": {
+        "type": "Direct",
+        "requested": "[6.1.3, )",
+        "resolved": "6.1.3",
+        "contentHash": "KHQyol6oqxt++5K0WzsVXqIo34P2Igodceg4hQnv1QUkYkGcDUEb75208QLyCu5X0hWAfibT6NHTX2Fa18eKGA=="
+      },
       "Cake.Frosting": {
         "type": "Direct",
         "requested": "[3.1.0, )",
