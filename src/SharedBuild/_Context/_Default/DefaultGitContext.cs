@@ -42,7 +42,7 @@ namespace Grynwald.SharedBuild
         public virtual string RemoteUrl => StartGit("remote", "get-url", "origin").Trim();
 
         /// <inheritdoc />
-        public virtual bool IsMasterBranch => BranchName.Equals("master", StringComparison.OrdinalIgnoreCase);
+        public virtual bool IsMainBranch => BranchName.Equals("main", StringComparison.OrdinalIgnoreCase) || BranchName.Equals("master", StringComparison.OrdinalIgnoreCase);
 
         /// <inheritdoc />
         public virtual bool IsReleaseBranch => BranchName.StartsWith("release/", StringComparison.OrdinalIgnoreCase);
@@ -61,7 +61,7 @@ namespace Grynwald.SharedBuild
             log.Information($"{nameof(BranchName)}: {BranchName}");
             log.Information($"{nameof(CommitId)}: {CommitId}");
             log.Information($"{nameof(RemoteUrl)}: {RemoteUrl}");
-            log.Information($"{nameof(IsMasterBranch)}: {IsMasterBranch}");
+            log.Information($"{nameof(IsMainBranch)}: {IsMainBranch}");
             log.Information($"{nameof(IsReleaseBranch)}: {IsReleaseBranch}");
         }
 

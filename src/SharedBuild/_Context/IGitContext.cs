@@ -18,9 +18,9 @@
         string RemoteUrl { get; }
 
         /// <summary>
-        /// Gets whether the current branch is <c>master</c>
+        /// Gets whether the current branch is repostitories main branch (either <c>main</c> or <c>master</c>)
         /// </summary>
-        bool IsMasterBranch { get; }
+        bool IsMainBranch { get; }
 
         /// <summary>
         /// Gets whether the current branch is a release branch

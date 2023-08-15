@@ -15,7 +15,7 @@ namespace Grynwald.SharedBuild.Tasks
     {
         public override bool ShouldRun(IBuildContext context)
         {
-            return context.IsRunningInCI && (context.Git.IsMasterBranch || context.Git.IsReleaseBranch);
+            return context.IsRunningInCI && (context.Git.IsMainBranch || context.Git.IsReleaseBranch);
         }
 
         public override async Task RunAsync(IBuildContext context)
@@ -34,7 +34,7 @@ namespace Grynwald.SharedBuild.Tasks
             //
             // For builds on master, create a *draft* release
             //
-            if (context.Git.IsMasterBranch)
+            if (context.Git.IsMainBranch)
             {
                 await CreateDraftRelease(context, accessToken, versionInfo.NuGetPackageVersion, changeLog);
             }
