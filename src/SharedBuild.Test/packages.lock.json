@@ -357,8 +357,8 @@
       },
       "Octokit": {
         "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "ORnIFEj4tO5gikwvPTDla1WeM+Ql71L8CgKADl0cZcAwyFRpEzePlzRxtLQ6FrUumGL4Mc+61kj6jTeTECngTw=="
+        "resolved": "8.1.1",
+        "contentHash": "qrRUuJSkmCht+kG4Gf01jtbzNhYbUssy99VsUYlk9d/Z3vFCRpLn7Iulh3V3OWhpWaeHfHUKTMx9VbOB1uoo/A=="
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
@@ -1286,7 +1286,7 @@
           "Cake.Frosting": "[3.1.0, )",
           "Cake.GitVersioning": "[3.6.133, )",
           "Mono.Cecil": "[0.11.5, )",
-          "Octokit": "[8.0.0, )"
+          "Octokit": "[8.1.1, )"
         }
       }
     },
@@ -1646,8 +1646,8 @@
       },
       "Octokit": {
         "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "ORnIFEj4tO5gikwvPTDla1WeM+Ql71L8CgKADl0cZcAwyFRpEzePlzRxtLQ6FrUumGL4Mc+61kj6jTeTECngTw=="
+        "resolved": "8.1.1",
+        "contentHash": "qrRUuJSkmCht+kG4Gf01jtbzNhYbUssy99VsUYlk9d/Z3vFCRpLn7Iulh3V3OWhpWaeHfHUKTMx9VbOB1uoo/A=="
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
@@ -2575,7 +2575,7 @@
           "Cake.Frosting": "[3.1.0, )",
           "Cake.GitVersioning": "[3.6.133, )",
           "Mono.Cecil": "[0.11.5, )",
-          "Octokit": "[8.0.0, )"
+          "Octokit": "[8.1.1, )"
         }
       }
     }
