@@ -19,7 +19,7 @@ namespace Grynwald.SharedBuild.Test
                 [InlineData("true", "23", null, false)]
                 [InlineData("true", "23", "TfsGit", false)]
                 [InlineData("true", "23", "GitHub", true)]
-                public void IsPullRequest_returns_expected_value_when_building_a_GitHub_PR_on_Azure_Pipelines(string tfBuild, string system_PullRequest_PullRequestId, string build_Repository_Provider, bool expected)
+                public void IsPullRequest_returns_expected_value_when_building_a_GitHub_PR_on_Azure_Pipelines(string? tfBuild, string? system_PullRequest_PullRequestId, string? build_Repository_Provider, bool expected)
                 {
                     // ARRANGE
                     var context = new FakeCakeContext();
@@ -43,7 +43,7 @@ namespace Grynwald.SharedBuild.Test
                 [InlineData("true", "23", null, null, 0)]
                 [InlineData("true", "23", "TfsGit", null, 0)]
                 [InlineData("true", "23", "GitHub", "42", 42)]
-                public void PullRequestNumber_returns_expected_value(string tfBuild, string system_PullRequest_PullRequestId, string build_Repository_Provider, string system_PullRequest_PullRequestNumber, int expected)
+                public void PullRequestNumber_returns_expected_value(string? tfBuild, string? system_PullRequest_PullRequestId, string? build_Repository_Provider, string? system_PullRequest_PullRequestNumber, int expected)
                 {
 
                     // ARRANGE
