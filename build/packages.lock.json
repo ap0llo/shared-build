@@ -67,9 +67,9 @@
       },
       "Octokit": {
         "type": "Direct",
-        "requested": "[8.0.0, )",
-        "resolved": "8.0.0",
-        "contentHash": "ORnIFEj4tO5gikwvPTDla1WeM+Ql71L8CgKADl0cZcAwyFRpEzePlzRxtLQ6FrUumGL4Mc+61kj6jTeTECngTw=="
+        "requested": "[9.0.0, )",
+        "resolved": "9.0.0",
+        "contentHash": "mQZMCTZavxd9IzTkRaRLxJtFE5uTOJ2Uia5KDwnHiBBFjvnG4BJf56RV1aPZsVdqiKlqRmxbLrkU8DVlmRDrSA=="
       },
       "Autofac": {
         "type": "Transitive",
