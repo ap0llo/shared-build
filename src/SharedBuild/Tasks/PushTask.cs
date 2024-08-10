@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Linq;
 using Cake.Common;
+using Cake.Common.IO;
 using Cake.Common.Tools.DotNet;
 using Cake.Common.Tools.DotNet.NuGet.Push;
 using Cake.Common.Tools.DotNet.NuGet.Source;
 using Cake.Core.Diagnostics;
+using Cake.Core.IO;
+using Cake.FileHelpers;
 using Cake.Frosting;
 
 namespace Grynwald.SharedBuild.Tasks
@@ -53,25 +56,44 @@ namespace Grynwald.SharedBuild.Tasks
                 throw new InvalidOperationException("Could not resolve SYSTEM_ACCESSTOKEN.");
             }
 
+            // Create a NuGet.Config in a temporary directory to avoid interference with the local repository's NuGet.Config
+            var tempDir = context.Environment.GetSpecialPath(SpecialPath.LocalTemp).Combine(Guid.NewGuid().ToString());
+            context.EnsureDirectoryExists(tempDir);
+
+            var nugetConfigPath = tempDir.CombineWithFilePath("NuGet.config");
+            context.FileWriteText(
+                nugetConfigPath,
+                """
+            <?xml version="1.0" encoding="utf-8"?>
+            <configuration>
+              <packageSources>
+                <clear />
+              </packageSources>
+            </configuration>        
+            """);
+
+            // Add AzureArtifacts as source to the temporary NuGet.config
             context.DotNetNuGetAddSource(
                 "AzureArtifacts",
                 new DotNetNuGetSourceSettings()
                 {
                     Source = pushTarget.FeedUrl,
                     UserName = "AzureArtifacts",
-                    Password = accessToken
+                    Password = accessToken,
+                    ConfigFile = nugetConfigPath
                 });
 
+            // Push all packages
             context.Log.Information($"Pushing packages to Azure Artifacts feed '{pushTarget.FeedUrl}'");
+            var pushSettings = new DotNetNuGetPushSettings()
+            {
+                Source = "AzureArtifacts",
+                ApiKey = "AzureArtifacts",
+                WorkingDirectory = tempDir
+            };
             foreach (var package in context.Output.PackageFiles)
             {
                 context.Log.Information($"Pushing package '{package}'");
-                var pushSettings = new DotNetNuGetPushSettings()
-                {
-                    Source = "AzureArtifacts",
-                    ApiKey = "AzureArtifacts"
-                };
-
                 context.DotNetNuGetPush(package.FullPath, pushSettings);
             }
         }
