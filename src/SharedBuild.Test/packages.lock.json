@@ -270,8 +270,8 @@
       },
       "Octokit": {
         "type": "Transitive",
-        "resolved": "9.1.0",
-        "contentHash": "aIxATAhMWn3IquZsoho8yK12MDU81YhexLWLGDoCp1vhJP7Z23Pu5JBEkNaTIkl9KqALJPqGLN1an7YfA7BhvA=="
+        "resolved": "9.1.2",
+        "contentHash": "YKh5EYi+b2mV8eafANJkkZKKBCpI2MNPeSCTlKLYWqVGktOn/TBc7NZEcViPMSNw6R+glgmbkOetLc6LuNK5qQ=="
       },
       "Spectre.Console": {
         "type": "Transitive",
@@ -388,7 +388,7 @@
           "Cake.Frosting": "[4.0.0, )",
           "Cake.GitVersioning": "[3.6.133, )",
           "Mono.Cecil": "[0.11.5, )",
-          "Octokit": "[9.1.0, )"
+          "Octokit": "[9.1.2, )"
         }
       }
     }
