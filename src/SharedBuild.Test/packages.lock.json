@@ -105,8 +105,8 @@
       },
       "Cake.FileHelpers": {
         "type": "Transitive",
-        "resolved": "6.1.3",
-        "contentHash": "KHQyol6oqxt++5K0WzsVXqIo34P2Igodceg4hQnv1QUkYkGcDUEb75208QLyCu5X0hWAfibT6NHTX2Fa18eKGA=="
+        "resolved": "7.0.0",
+        "contentHash": "5h2rBYgH8IvmrA8K+/Qd9p38VjHgHH1iAYJriKdlfE5BjogQ4gm3v6Df+dTU1TwL7nkjTV7huvquFTmak2zKqw=="
       },
       "Cake.Frosting": {
         "type": "Transitive",
@@ -383,7 +383,7 @@
       "grynwald.sharedbuild": {
         "type": "Project",
         "dependencies": {
-          "Cake.FileHelpers": "[6.1.3, )",
+          "Cake.FileHelpers": "[7.0.0, )",
           "Cake.Frosting": "[4.0.0, )",
           "Cake.GitVersioning": "[3.6.141, )",
           "Mono.Cecil": "[0.11.5, )",
