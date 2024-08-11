@@ -1,0 +1,6 @@
+fix: Fix push of NuGet packages to Azure Artifacts
+
+When the Azure Artifacts nuget feed being pushed to was already present in a repository's NuGet.config, the "Push" task failed because the same url cannot be added twice to a NuGet config.
+
+To avoid this error (and also avoid updating any files under source control), use a NuGet.config in a temporary directory for the push to Azure Artifacts.
+
