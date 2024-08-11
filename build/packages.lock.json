@@ -19,9 +19,9 @@
       },
       "Cake.FileHelpers": {
         "type": "Direct",
-        "requested": "[6.1.3, )",
-        "resolved": "6.1.3",
-        "contentHash": "KHQyol6oqxt++5K0WzsVXqIo34P2Igodceg4hQnv1QUkYkGcDUEb75208QLyCu5X0hWAfibT6NHTX2Fa18eKGA=="
+        "requested": "[7.0.0, )",
+        "resolved": "7.0.0",
+        "contentHash": "5h2rBYgH8IvmrA8K+/Qd9p38VjHgHH1iAYJriKdlfE5BjogQ4gm3v6Df+dTU1TwL7nkjTV7huvquFTmak2zKqw=="
       },
       "Cake.Frosting": {
         "type": "Direct",
