@@ -38,9 +38,9 @@
       },
       "Nerdbank.GitVersioning": {
         "type": "Direct",
-        "requested": "[3.6.133, )",
-        "resolved": "3.6.133",
-        "contentHash": "VZWMd5YAeDxpjWjAP/X6bAxnRMiEf6tES/ITN0X5CHJgkWLLeHGmEALivmTAfYM6P+P/3Szy6VCITUAkqjcHVw=="
+        "requested": "[3.6.141, )",
+        "resolved": "3.6.141",
+        "contentHash": "A2+obbz6Xl6nHdDDMiqHCrn6Lktrs/pLq4BIQXDUD2O2gd5fz2WobQyX30Kp0mPPXjEOgBA1r5s6iYVurTkUig=="
       },
       "xunit": {
         "type": "Direct",
@@ -123,8 +123,8 @@
       },
       "Cake.GitVersioning": {
         "type": "Transitive",
-        "resolved": "3.6.133",
-        "contentHash": "/xqsgx2aeXQxHod0LAIHBEQUVqSjTtKwytGKVZI9FXg5mLRCdqKz6QtU3QmLH+OoD36KHcTt/KcIUtKrqxy9kQ=="
+        "resolved": "3.6.141",
+        "contentHash": "nZ/w2E4jRFoMKjfZrvyQiiCswaw7CoisS9VbVcBA6NgBaBkeMG2+xNuYpItQDcf3PpYZn3fSXZU1hnjig4zt6g=="
       },
       "Cake.NuGet": {
         "type": "Transitive",
@@ -386,7 +386,7 @@
         "dependencies": {
           "Cake.FileHelpers": "[6.1.3, )",
           "Cake.Frosting": "[4.0.0, )",
-          "Cake.GitVersioning": "[3.6.133, )",
+          "Cake.GitVersioning": "[3.6.141, )",
           "Mono.Cecil": "[0.11.5, )",
           "Octokit": "[9.1.0, )"
         }
