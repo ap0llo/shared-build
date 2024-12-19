@@ -1,6 +1,7 @@
 ﻿using Cake.Common.Tools.DotNet;
 using Cake.Common.Tools.DotNet.Format;
 using Cake.Core;
+using Cake.Core.Diagnostics;
 using Cake.Frosting;
 
 namespace Grynwald.SharedBuild.Tasks
@@ -10,7 +11,25 @@ namespace Grynwald.SharedBuild.Tasks
     [IsDependeeOf(typeof(ValidateTask))]
     public class ValidateCodeFormattingTask : FrostingTask<IBuildContext>
     {
-        public override bool ShouldRun(IBuildContext context) => context.CodeFormattingSettings.EnableAutomaticFormatting;
+        public override bool ShouldRun(IBuildContext context)
+        {
+            if (!context.CodeFormattingSettings.EnableAutomaticFormatting)
+            {
+                return false;
+            }
+
+
+            // Running dotnet format on Azure Pipelines when using the .NET 9 SDK and Nerdbank.GitVersioning causes the build to hang
+            // See: https://github.com/dotnet/sdk/issues/44951
+            // To work around this, skip the task when running on Azure Pipelines
+            if (context.AzurePipelines.IsRunningOnAzurePipelines)
+            {
+                context.Log.Warning($"Skipping task {TaskNames.ValidateCodeFormatting} since the build is running on Azure Pipelines. This is a workaround for https://github.com/dotnet/sdk/issues/44951");
+                return false;
+            }
+
+            return true;
+        }
 
         public override void Run(IBuildContext context)
         {

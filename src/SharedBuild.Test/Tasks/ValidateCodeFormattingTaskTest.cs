@@ -1,4 +1,5 @@
-﻿using Cake.Core.IO;
+﻿using Cake.Core.Diagnostics;
+using Cake.Core.IO;
 using Grynwald.SharedBuild.Tasks;
 using Grynwald.SharedBuild.Test.Mocks;
 using Xunit;
@@ -28,6 +29,24 @@ namespace Grynwald.SharedBuild.Test.Tasks
             Assert.Equal(enableAutomaticFormatting, shouldRun);
         }
 
+        [Fact]
+        public void Task_is_skipped_when_build_is_running_on_Azure_Pipelies()
+        {
+            // ARRANGE
+            var context = new FakeBuildContext();
+            context.CodeFormattingSettings.EnableAutomaticFormatting = true;
+            context.AzurePipelines.IsRunningOnAzurePipelines = true;
+
+            var sut = new ValidateCodeFormattingTask();
+
+            // ACT
+            var shouldRun = sut.ShouldRun(context);
+
+            // ASSERT
+            Assert.False(shouldRun);
+            var warning = Assert.Single(context.Log.Entries, x => x.Level == LogLevel.Warning);
+            Assert.Equal("Skipping task ValidateCodeFormatting since the build is running on Azure Pipelines. This is a workaround for https://github.com/dotnet/sdk/issues/44951", warning.Message);
+        }
 
         [Fact]
         public void Task_starts_dotnet_format_with_expected_parameters()

@@ -28,7 +28,13 @@ namespace Grynwald.SharedBuild.Test.Mocks
             set => m_SolutionPath = value;
         }
 
-        public IAzurePipelinesContext AzurePipelines => throw new NotImplementedException();
+        /// <summary>
+        /// Gets the mock for <see cref="IBuildContext.AzurePipelines"/>
+        /// </summary>
+        public FakeAzurePipelinesContext AzurePipelines { get; } = new();
+
+        /// <inheritdoc />
+        IAzurePipelinesContext IBuildContext.AzurePipelines => AzurePipelines;
 
         public IBuildSettings BuildSettings => throw new NotImplementedException();
 
@@ -43,7 +49,7 @@ namespace Grynwald.SharedBuild.Test.Mocks
         public IReadOnlyCollection<IPushTarget> PushTargets => throw new NotImplementedException();
 
         /// <summary>
-        /// Mock object for <see cref="IBuildContext.CodeFormattingSettings"/>
+        /// Gets the mock for <see cref="IBuildContext.CodeFormattingSettings"/>
         /// </summary>
         public FakeCodeFormattingSettings CodeFormattingSettings { get; } = new();
 
