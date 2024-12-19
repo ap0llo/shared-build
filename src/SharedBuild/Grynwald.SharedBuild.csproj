@@ -23,5 +23,9 @@
     <None Include="..\..\3rdPartyNotices.txt" Pack="true" PackagePath="3rdPartyNotices.txt" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="$(AssemblyName).Test" />
+  </ItemGroup>
+  
 
 </Project>
