@@ -205,8 +205,8 @@
       },
       "Mono.Cecil": {
         "type": "Transitive",
-        "resolved": "0.11.5",
-        "contentHash": "fxfX+0JGTZ8YQeu1MYjbBiK2CYTSzDyEeIixt+yqKKTn7FW8rv7JMY70qevup4ZJfD7Kk/VG/jDzQQTpfch87g=="
+        "resolved": "0.11.6",
+        "contentHash": "f33RkDtZO8VlGXCtmQIviOtxgnUdym9xx/b1p9h91CRGOsJFxCFOFK1FDbVt1OCf1aWwYejUFa2MOQyFWTFjbA=="
       },
       "Newtonsoft.Json": {
         "type": "Transitive",
@@ -386,7 +386,7 @@
           "Cake.FileHelpers": "[7.0.0, )",
           "Cake.Frosting": "[4.0.0, )",
           "Cake.GitVersioning": "[3.7.112, )",
-          "Mono.Cecil": "[0.11.5, )",
+          "Mono.Cecil": "[0.11.6, )",
           "Octokit": "[13.0.1, )"
         }
       }
