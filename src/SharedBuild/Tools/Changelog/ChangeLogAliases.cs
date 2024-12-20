@@ -1,20 +1,19 @@
 ﻿using System;
 using Cake.Core;
 
-namespace Grynwald.SharedBuild.Tools.ChangeLog
+namespace Grynwald.SharedBuild.Tools.ChangeLog;
+
+internal static class ChangeLogAliases
 {
-    internal static class ChangeLogAliases
+    public static void ChangeLog(this ICakeContext context, ChangeLogSettings settings)
     {
-        public static void ChangeLog(this ICakeContext context, ChangeLogSettings settings)
-        {
-            if (context is null)
-                throw new ArgumentNullException(nameof(context));
+        if (context is null)
+            throw new ArgumentNullException(nameof(context));
 
-            if (settings is null)
-                throw new ArgumentNullException(nameof(settings));
+        if (settings is null)
+            throw new ArgumentNullException(nameof(settings));
 
-            var runner = new ChangeLogRunner(context.FileSystem, context.Environment, context.ProcessRunner, context.Tools);
-            runner.Run(settings);
-        }
+        var runner = new ChangeLogRunner(context.FileSystem, context.Environment, context.ProcessRunner, context.Tools);
+        runner.Run(settings);
     }
 }

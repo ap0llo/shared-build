@@ -1,9 +1,8 @@
-﻿namespace Grynwald.SharedBuild.Tools.ChangeLog
+﻿namespace Grynwald.SharedBuild.Tools.ChangeLog;
+
+public enum ChangeLogIntegrationProvider
 {
-    public enum ChangeLogIntegrationProvider
-    {
-        None,
-        GitHub,
-        GitLab
-    }
+    None,
+    GitHub,
+    GitLab
 }

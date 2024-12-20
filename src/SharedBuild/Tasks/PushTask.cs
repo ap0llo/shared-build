@@ -10,136 +10,135 @@ using Cake.Core.IO;
 using Cake.FileHelpers;
 using Cake.Frosting;
 
-namespace Grynwald.SharedBuild.Tasks
+namespace Grynwald.SharedBuild.Tasks;
+
+[TaskName(TaskNames.Push)]
+[IsDependentOn(typeof(PackTask))]
+public class PushTask : FrostingTask<IBuildContext>
 {
-    [TaskName(TaskNames.Push)]
-    [IsDependentOn(typeof(PackTask))]
-    public class PushTask : FrostingTask<IBuildContext>
+    public override bool ShouldRun(IBuildContext context)
     {
-        public override bool ShouldRun(IBuildContext context)
-        {
-            return context.IsRunningInCI && context.PushTargets.Any(x => x.IsActive(context));
-        }
+        return context.IsRunningInCI && context.PushTargets.Any(x => x.IsActive(context));
+    }
 
-        public override void Run(IBuildContext context)
+    public override void Run(IBuildContext context)
+    {
+        var activePushTargets = context.PushTargets.Where(x => x.IsActive(context));
+        foreach (var target in activePushTargets)
         {
-            var activePushTargets = context.PushTargets.Where(x => x.IsActive(context));
-            foreach (var target in activePushTargets)
+            switch (target.Type)
             {
-                switch (target.Type)
-                {
-                    case PushTargetType.AzureArtifacts:
-                        PushToAzureArtifacts(context, target);
-                        break;
+                case PushTargetType.AzureArtifacts:
+                    PushToAzureArtifacts(context, target);
+                    break;
 
-                    case PushTargetType.NuGetOrg:
-                        PushToNuGetOrg(context, target);
-                        break;
+                case PushTargetType.NuGetOrg:
+                    PushToNuGetOrg(context, target);
+                    break;
 
-                    case PushTargetType.MyGet:
-                        PushToMyGet(context, target);
-                        break;
+                case PushTargetType.MyGet:
+                    PushToMyGet(context, target);
+                    break;
 
-                    default:
-                        throw new NotImplementedException($"Unimplemented push target type '{target.Type}'");
-                }
+                default:
+                    throw new NotImplementedException($"Unimplemented push target type '{target.Type}'");
             }
         }
+    }
 
 
-        private void PushToAzureArtifacts(IBuildContext context, IPushTarget pushTarget)
+    private void PushToAzureArtifacts(IBuildContext context, IPushTarget pushTarget)
+    {
+        // See https://www.daveaglick.com/posts/pushing-packages-from-azure-pipelines-to-azure-artifacts-using-cake
+        var accessToken = context.EnvironmentVariable("SYSTEM_ACCESSTOKEN");
+        if (String.IsNullOrEmpty(accessToken))
         {
-            // See https://www.daveaglick.com/posts/pushing-packages-from-azure-pipelines-to-azure-artifacts-using-cake
-            var accessToken = context.EnvironmentVariable("SYSTEM_ACCESSTOKEN");
-            if (String.IsNullOrEmpty(accessToken))
+            throw new InvalidOperationException("Could not resolve SYSTEM_ACCESSTOKEN.");
+        }
+
+        // Create a NuGet.Config in a temporary directory to avoid interference with the local repository's NuGet.Config
+        var tempDir = context.Environment.GetSpecialPath(SpecialPath.LocalTemp).Combine(Guid.NewGuid().ToString());
+        context.EnsureDirectoryExists(tempDir);
+
+        var nugetConfigPath = tempDir.CombineWithFilePath("NuGet.config");
+        context.FileWriteText(
+            nugetConfigPath,
+            """
+        <?xml version="1.0" encoding="utf-8"?>
+        <configuration>
+          <packageSources>
+            <clear />
+          </packageSources>
+        </configuration>        
+        """);
+
+        // Add AzureArtifacts as source to the temporary NuGet.config
+        context.DotNetNuGetAddSource(
+            "AzureArtifacts",
+            new DotNetNuGetSourceSettings()
             {
-                throw new InvalidOperationException("Could not resolve SYSTEM_ACCESSTOKEN.");
-            }
+                Source = pushTarget.FeedUrl,
+                UserName = "AzureArtifacts",
+                Password = accessToken,
+                ConfigFile = nugetConfigPath
+            });
 
-            // Create a NuGet.Config in a temporary directory to avoid interference with the local repository's NuGet.Config
-            var tempDir = context.Environment.GetSpecialPath(SpecialPath.LocalTemp).Combine(Guid.NewGuid().ToString());
-            context.EnsureDirectoryExists(tempDir);
+        // Push all packages
+        context.Log.Information($"Pushing packages to Azure Artifacts feed '{pushTarget.FeedUrl}'");
+        var pushSettings = new DotNetNuGetPushSettings()
+        {
+            Source = "AzureArtifacts",
+            ApiKey = "AzureArtifacts",
+            WorkingDirectory = tempDir
+        };
+        foreach (var package in context.Output.PackageFiles)
+        {
+            context.Log.Information($"Pushing package '{package}'");
+            context.DotNetNuGetPush(package.FullPath, pushSettings);
+        }
+    }
 
-            var nugetConfigPath = tempDir.CombineWithFilePath("NuGet.config");
-            context.FileWriteText(
-                nugetConfigPath,
-                """
-            <?xml version="1.0" encoding="utf-8"?>
-            <configuration>
-              <packageSources>
-                <clear />
-              </packageSources>
-            </configuration>        
-            """);
+    private void PushToNuGetOrg(IBuildContext context, IPushTarget pushTarget)
+    {
+        var apiKey = context.EnvironmentVariable("NUGET_ORG_APIKEY");
+        if (String.IsNullOrEmpty(apiKey))
+        {
+            throw new InvalidOperationException("Could not determine nuget.org API key. Enviornment variable 'NUGET_ORG_APIKEY' is empty.");
+        }
 
-            // Add AzureArtifacts as source to the temporary NuGet.config
-            context.DotNetNuGetAddSource(
-                "AzureArtifacts",
-                new DotNetNuGetSourceSettings()
-                {
-                    Source = pushTarget.FeedUrl,
-                    UserName = "AzureArtifacts",
-                    Password = accessToken,
-                    ConfigFile = nugetConfigPath
-                });
-
-            // Push all packages
-            context.Log.Information($"Pushing packages to Azure Artifacts feed '{pushTarget.FeedUrl}'");
+        context.Log.Information($"Pushing packages to nuget.org (feed {pushTarget.FeedUrl})");
+        foreach (var package in context.Output.PackageFiles)
+        {
+            context.Log.Information($"Pushing package '{package}'");
             var pushSettings = new DotNetNuGetPushSettings()
             {
-                Source = "AzureArtifacts",
-                ApiKey = "AzureArtifacts",
-                WorkingDirectory = tempDir
+                Source = pushTarget.FeedUrl,
+                ApiKey = apiKey
             };
-            foreach (var package in context.Output.PackageFiles)
-            {
-                context.Log.Information($"Pushing package '{package}'");
-                context.DotNetNuGetPush(package.FullPath, pushSettings);
-            }
+
+            context.DotNetNuGetPush(package.FullPath, pushSettings);
+        }
+    }
+
+    private void PushToMyGet(IBuildContext context, IPushTarget pushTarget)
+    {
+        var apiKey = context.EnvironmentVariable("MYGET_APIKEY");
+        if (String.IsNullOrEmpty(apiKey))
+        {
+            throw new InvalidOperationException("Could not determine MyGet API key. Enviornment variable 'MYGET_APIKEY' is empty.");
         }
 
-        private void PushToNuGetOrg(IBuildContext context, IPushTarget pushTarget)
+        context.Log.Information($"Pushing packages to MyGet (feed {pushTarget.FeedUrl})");
+        foreach (var package in context.Output.PackageFiles)
         {
-            var apiKey = context.EnvironmentVariable("NUGET_ORG_APIKEY");
-            if (String.IsNullOrEmpty(apiKey))
+            context.Log.Information($"Pushing package '{package}'");
+            var pushSettings = new DotNetNuGetPushSettings()
             {
-                throw new InvalidOperationException("Could not determine nuget.org API key. Enviornment variable 'NUGET_ORG_APIKEY' is empty.");
-            }
+                Source = pushTarget.FeedUrl,
+                ApiKey = apiKey
+            };
 
-            context.Log.Information($"Pushing packages to nuget.org (feed {pushTarget.FeedUrl})");
-            foreach (var package in context.Output.PackageFiles)
-            {
-                context.Log.Information($"Pushing package '{package}'");
-                var pushSettings = new DotNetNuGetPushSettings()
-                {
-                    Source = pushTarget.FeedUrl,
-                    ApiKey = apiKey
-                };
-
-                context.DotNetNuGetPush(package.FullPath, pushSettings);
-            }
-        }
-
-        private void PushToMyGet(IBuildContext context, IPushTarget pushTarget)
-        {
-            var apiKey = context.EnvironmentVariable("MYGET_APIKEY");
-            if (String.IsNullOrEmpty(apiKey))
-            {
-                throw new InvalidOperationException("Could not determine MyGet API key. Enviornment variable 'MYGET_APIKEY' is empty.");
-            }
-
-            context.Log.Information($"Pushing packages to MyGet (feed {pushTarget.FeedUrl})");
-            foreach (var package in context.Output.PackageFiles)
-            {
-                context.Log.Information($"Pushing package '{package}'");
-                var pushSettings = new DotNetNuGetPushSettings()
-                {
-                    Source = pushTarget.FeedUrl,
-                    ApiKey = apiKey
-                };
-
-                context.DotNetNuGetPush(package.FullPath, pushSettings);
-            }
+            context.DotNetNuGetPush(package.FullPath, pushSettings);
         }
     }
 }

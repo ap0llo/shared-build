@@ -1,10 +1,9 @@
-﻿namespace Grynwald.SharedBuild.Tools.ChangeLog
+﻿namespace Grynwald.SharedBuild.Tools.ChangeLog;
+
+public enum ChangeLogTemplate
 {
-    public enum ChangeLogTemplate
-    {
-        Default = 0,
-        GitLabRelease = 1,
-        GitHubRelease = 2,
-        Html = 3
-    }
+    Default = 0,
+    GitLabRelease = 1,
+    GitHubRelease = 2,
+    Html = 3
 }
