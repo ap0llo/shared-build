@@ -4,6 +4,4 @@ namespace Grynwald.SharedBuild.Tasks;
 
 [TaskName(TaskNames.Generate)]
 [TaskDescription("Updates files under source control")]
-public class GenerateTask : FrostingTask
-{
-}
+public class GenerateTask : FrostingTask;

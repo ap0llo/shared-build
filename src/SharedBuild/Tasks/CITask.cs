@@ -14,5 +14,4 @@ namespace Grynwald.SharedBuild.Tasks;
 [IsDependentOn(typeof(PushTask))]
 [IsDependentOn(typeof(SetGitHubMilestoneTask))]
 [IsDependentOn(typeof(CreateGitHubReleaseTask))]
-public class CITask : FrostingTask
-{ }
+public class CITask : FrostingTask;

@@ -7,5 +7,4 @@ namespace Grynwald.SharedBuild.Tasks;
 [IsDependentOn(typeof(BuildTask))]
 [IsDependentOn(typeof(TestTask))]
 [IsDependentOn(typeof(PackTask))]
-public class DefaultTask : FrostingTask<IBuildContext>
-{ }
+public class DefaultTask : FrostingTask<IBuildContext>;
