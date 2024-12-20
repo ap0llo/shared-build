@@ -5,9 +5,9 @@ using Cake.Core.Diagnostics;
 
 namespace Grynwald.SharedBuild;
 
-public class DefaultBuildSettings : IBuildSettings
+public class DefaultBuildSettings(DefaultBuildContext context) : IBuildSettings
 {
-    private readonly DefaultBuildContext m_Context;
+    private readonly DefaultBuildContext m_Context = context ?? throw new ArgumentNullException(nameof(context));
 
 
     /// <inheritdoc />
@@ -22,13 +22,6 @@ public class DefaultBuildSettings : IBuildSettings
     /// In other environments it is disabled by default.
     /// </remarks>
     public virtual bool Deterministic => m_Context.Argument("deterministic", m_Context.IsRunningInCI);
-
-
-
-    public DefaultBuildSettings(DefaultBuildContext context)
-    {
-        m_Context = context ?? throw new ArgumentNullException(nameof(context));
-    }
 
 
     /// <inheritdoc />

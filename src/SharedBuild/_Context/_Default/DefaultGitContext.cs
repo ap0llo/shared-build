@@ -4,9 +4,9 @@ using Cake.Core.IO;
 
 namespace Grynwald.SharedBuild;
 
-public class DefaultGitContext : IGitContext
+public class DefaultGitContext(DefaultBuildContext context) : IGitContext
 {
-    private readonly DefaultBuildContext m_Context;
+    private readonly DefaultBuildContext m_Context = context ?? throw new ArgumentNullException(nameof(context));
 
 
     /// <inheritdoc />
@@ -46,13 +46,6 @@ public class DefaultGitContext : IGitContext
 
     /// <inheritdoc />
     public virtual bool IsReleaseBranch => BranchName.StartsWith("release/", StringComparison.OrdinalIgnoreCase);
-
-
-    public DefaultGitContext(DefaultBuildContext context)
-    {
-        m_Context = context ?? throw new ArgumentNullException(nameof(context));
-
-    }
 
 
     /// <inheritdoc />

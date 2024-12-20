@@ -3,16 +3,9 @@ using Cake.Core.Diagnostics;
 
 namespace Grynwald.SharedBuild;
 
-public class DefaultTestSettings : ITestSettings
+public class DefaultTestSettings(DefaultBuildContext context) : ITestSettings
 {
-    public virtual bool CollectCodeCoverage { get; }
-
-
-    public DefaultTestSettings(DefaultBuildContext context)
-    {
-        CollectCodeCoverage = context.Argument("collect-code-coverage", true);
-    }
-
+    public virtual bool CollectCodeCoverage { get; } = context.Argument("collect-code-coverage", true);
 
     public void PrintToLog(ICakeLog log)
     {

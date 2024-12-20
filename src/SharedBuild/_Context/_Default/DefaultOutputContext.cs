@@ -6,9 +6,9 @@ using Cake.Core.IO;
 
 namespace Grynwald.SharedBuild;
 
-public class DefaultOutputContext : IOutputContext
+public class DefaultOutputContext(DefaultBuildContext context) : IOutputContext
 {
-    private readonly DefaultBuildContext m_Context;
+    private readonly DefaultBuildContext m_Context = context ?? throw new ArgumentNullException(nameof(context));
 
 
     /// <inheritdoc />
@@ -38,12 +38,6 @@ public class DefaultOutputContext : IOutputContext
 
     /// <inheritdoc />
     public virtual IEnumerable<FilePath> PackageFiles => m_Context.FileSystem.GetFilePaths(PackagesDirectory, "*.nupkg");
-
-
-    public DefaultOutputContext(DefaultBuildContext context)
-    {
-        m_Context = context ?? throw new ArgumentNullException(nameof(context));
-    }
 
 
     /// <inheritdoc />

@@ -5,13 +5,13 @@ using Cake.Core.Diagnostics;
 
 namespace Grynwald.SharedBuild;
 
-public class DefaultAzurePipelinesContext : IAzurePipelinesContext
+public class DefaultAzurePipelinesContext(DefaultBuildContext context) : IAzurePipelinesContext
 {
-    private readonly IAzurePipelinesProvider m_AzurePipelinesProvider;
+    private readonly IAzurePipelinesProvider m_AzurePipelinesProvider = context.AzurePipelines();
 
 
     /// <inheritdoc />
-    public virtual IAzurePipelinesArtifactNames ArtifactNames { get; }
+    public virtual IAzurePipelinesArtifactNames ArtifactNames { get; } = new DefaultAzurePipelinesArtifactNames();
 
     /// <inheritdoc />
     public virtual bool IsActive => IsRunningOnAzurePipelines;
@@ -24,13 +24,6 @@ public class DefaultAzurePipelinesContext : IAzurePipelinesContext
 
     /// <inheritdoc />
     public virtual IAzurePipelinesCommands Commands => m_AzurePipelinesProvider.Commands;
-
-
-    public DefaultAzurePipelinesContext(DefaultBuildContext context)
-    {
-        ArtifactNames = new DefaultAzurePipelinesArtifactNames();
-        m_AzurePipelinesProvider = context.AzurePipelines();
-    }
 
 
     /// <inheritdoc />
