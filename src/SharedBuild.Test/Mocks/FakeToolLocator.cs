@@ -10,7 +10,7 @@ namespace Grynwald.SharedBuild.Test.Mocks;
 /// </summary>
 internal class FakeToolLocator : IToolLocator
 {
-    private Dictionary<string, FilePath> m_Tools = new Dictionary<string, FilePath>();
+    private Dictionary<string, FilePath> m_Tools = [];
 
 
     public void RegisterFile(FilePath path) => throw new NotImplementedException();

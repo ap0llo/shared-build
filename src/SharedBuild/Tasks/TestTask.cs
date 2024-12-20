@@ -45,14 +45,14 @@ public class TestTask : FrostingTask<IBuildContext>
             Configuration = context.BuildSettings.Configuration,
             NoBuild = true,
             NoRestore = true,
-            Loggers = new[] { "trx" },
+            Loggers = ["trx"],
             ResultsDirectory = context.Output.TestResultsDirectory
         };
 
         if (context.TestSettings.CollectCodeCoverage)
         {
             // Assumes that the "coverlet.collector" package is installed in all test projects
-            testSettings.Collectors = new[] { "XPlat Code Coverage" };
+            testSettings.Collectors = ["XPlat Code Coverage"];
         }
 
         return testSettings;
@@ -95,7 +95,7 @@ public class TestTask : FrostingTask<IBuildContext>
                 context.AzurePipelines.Commands.PublishTestResults(new()
                 {
                     Configuration = context.BuildSettings.Configuration,
-                    TestResultsFiles = new[] { testResult },
+                    TestResultsFiles = [testResult],
                     TestRunner = AzurePipelinesTestRunnerType.VSTest,
                     TestRunTitle = testRunNames[testResult]
                 });
@@ -135,7 +135,7 @@ public class TestTask : FrostingTask<IBuildContext>
             targetDir: context.Output.CodeCoverageReportDirectory,
             settings: new ReportGeneratorSettings()
             {
-                ReportTypes = new[] { htmlReportType, ReportGeneratorReportType.Cobertura },
+                ReportTypes = [htmlReportType, ReportGeneratorReportType.Cobertura],
                 HistoryDirectory = context.Output.CodeCoverageHistoryDirectory
             }
         );

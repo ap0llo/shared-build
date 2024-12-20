@@ -14,7 +14,7 @@ internal class FakeCodeFormattingSettings : ICodeFormattingSettings
     public bool EnableAutomaticFormatting { get; set; }
 
     /// <inheritdoc />
-    public ICollection<DirectoryPath> ExcludedDirectories { get; set; } = new List<DirectoryPath>();
+    public ICollection<DirectoryPath> ExcludedDirectories { get; set; } = [];
 
 
     public void PrintToLog(ICakeLog log) => throw new NotImplementedException();

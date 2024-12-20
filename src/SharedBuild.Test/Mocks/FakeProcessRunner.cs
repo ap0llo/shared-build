@@ -9,7 +9,7 @@ internal class FakeProcessRunner : IProcessRunner
     public record ProcessInvocation(FilePath FilePath, ProcessSettings Settings);
 
 
-    private readonly List<ProcessInvocation> m_ProcessInvocations = new List<ProcessInvocation>();
+    private readonly List<ProcessInvocation> m_ProcessInvocations = [];
 
 
     public IReadOnlyList<ProcessInvocation> ProcessInvocations => m_ProcessInvocations;

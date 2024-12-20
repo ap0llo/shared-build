@@ -25,7 +25,7 @@ internal class ChangeLogRunner : Tool<ChangeLogSettings>
 
     protected override IEnumerable<string> GetToolExecutableNames()
     {
-        return new[] { "changelog", "changelog.exe" };
+        return ["changelog", "changelog.exe"];
     }
 
     protected override string GetToolName() => "changelog";

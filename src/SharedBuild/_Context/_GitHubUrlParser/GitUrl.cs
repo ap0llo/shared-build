@@ -5,7 +5,7 @@ namespace Grynwald.ChangeLog.Integrations;
 
 public static class GitUrl
 {
-    private static readonly char[] s_ScpUrlSplitChars = new[] { ':' };
+    private static readonly char[] s_ScpUrlSplitChars = [':'];
 
 
     public static bool TryGetUri(string url, [NotNullWhen(true)] out Uri? uri)
