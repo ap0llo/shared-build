@@ -21,8 +21,5 @@ internal class FakeAzurePipelinesContext : IAzurePipelinesContext
 
     public IAzurePipelinesCommands Commands => throw new NotImplementedException();
 
-    public void PrintToLog(ICakeLog log)
-    {
-        throw new NotImplementedException();
-    }
+    public void PrintToLog(ICakeLog log) => throw new NotImplementedException();
 }

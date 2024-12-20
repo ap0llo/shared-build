@@ -17,8 +17,5 @@ internal class FakeCodeFormattingSettings : ICodeFormattingSettings
     public ICollection<DirectoryPath> ExcludedDirectories { get; set; } = new List<DirectoryPath>();
 
 
-    public void PrintToLog(ICakeLog log)
-    {
-        throw new NotImplementedException();
-    }
+    public void PrintToLog(ICakeLog log) => throw new NotImplementedException();
 }

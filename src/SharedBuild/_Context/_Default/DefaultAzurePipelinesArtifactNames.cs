@@ -1,5 +1,4 @@
-﻿using System;
-using Cake.Core.Diagnostics;
+﻿using Cake.Core.Diagnostics;
 
 namespace Grynwald.SharedBuild;
 

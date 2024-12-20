@@ -57,8 +57,5 @@ internal class FakeBuildContext : FakeCakeContext, IBuildContext
     ICodeFormattingSettings IBuildContext.CodeFormattingSettings => CodeFormattingSettings;
 
 
-    public void PrintToLog(ICakeLog log)
-    {
-        throw new NotImplementedException();
-    }
+    public void PrintToLog(ICakeLog log) => throw new NotImplementedException();
 }

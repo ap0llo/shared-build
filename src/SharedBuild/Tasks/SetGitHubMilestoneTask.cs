@@ -15,7 +15,6 @@ public class SetGitHubMilestoneTask : AsyncFrostingTask<IBuildContext>
         return context.IsRunningInCI && context.GitHub.PullRequest.IsPullRequest;
     }
 
-
     public override async Task RunAsync(IBuildContext context)
     {
         var versionInfo = context.GitVersioningGetVersion(context.RootDirectory.FullPath);
@@ -41,5 +40,4 @@ public class SetGitHubMilestoneTask : AsyncFrostingTask<IBuildContext>
                 CreateMilestone = true
             });
     }
-
 }

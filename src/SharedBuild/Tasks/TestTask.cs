@@ -27,7 +27,6 @@ public class TestTask : FrostingTask<IBuildContext>
         {
             GenerateCoverageReport(context);
         }
-
     }
 
     public override void OnError(Exception exception, IBuildContext context)
@@ -82,7 +81,6 @@ public class TestTask : FrostingTask<IBuildContext>
 
         if (!testResults.Any() && failOnMissingTestResults)
             throw new Exception($"No test results found in '{context.Output.TestResultsDirectory}'");
-
 
         if (context.AzurePipelines.IsActive)
         {

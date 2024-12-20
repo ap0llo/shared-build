@@ -18,7 +18,6 @@ public class ValidateCodeFormattingTask : FrostingTask<IBuildContext>
             return false;
         }
 
-
         // Running dotnet format on Azure Pipelines when using the .NET 9 SDK and Nerdbank.GitVersioning causes the build to hang
         // See: https://github.com/dotnet/sdk/issues/44951
         // To work around this, skip the task when running on Azure Pipelines
@@ -56,7 +55,6 @@ public class ValidateCodeFormattingTask : FrostingTask<IBuildContext>
                 }
                 return args;
             };
-
         }
 
         context.DotNetFormat(context.SolutionPath.FullPath, settings);

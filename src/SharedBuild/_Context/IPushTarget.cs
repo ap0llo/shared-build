@@ -18,5 +18,4 @@ public interface IPushTarget : IPrintableObject
     /// <param name="context"></param>
     /// <returns></returns>
     bool IsActive(IBuildContext context);
-
 }
