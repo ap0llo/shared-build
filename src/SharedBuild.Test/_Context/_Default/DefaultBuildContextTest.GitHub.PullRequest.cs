@@ -19,12 +19,12 @@ public partial class DefaultBuildContextTest
             [InlineData("true", "23", null, false)]
             [InlineData("true", "23", "TfsGit", false)]
             [InlineData("true", "23", "GitHub", true)]
-            public void IsPullRequest_returns_expected_value_when_building_a_GitHub_PR_on_Azure_Pipelines(string? tfBuild, string? system_PullRequest_PullRequestId, string? build_Repository_Provider, bool expected)
+            public void IsPullRequest_returns_expected_value_when_building_a_GitHub_PR_on_Azure_Pipelines(string? tfBuild, string? system_PullRequest_PullRequestNumber, string? build_Repository_Provider, bool expected)
             {
                 // ARRANGE
                 var context = new FakeCakeContext();
                 context.Environment.SetEnvironmentVariable("TF_BUILD", tfBuild);
-                context.Environment.SetEnvironmentVariable("SYSTEM_PULLREQUEST_PULLREQUESTID", system_PullRequest_PullRequestId);
+                context.Environment.SetEnvironmentVariable("SYSTEM_PULLREQUEST_PULLREQUESTNUMBER", system_PullRequest_PullRequestNumber);
                 context.Environment.SetEnvironmentVariable("BUILD_REPOSITORY_PROVIDER", build_Repository_Provider);
 
                 var sut = new DefaultBuildContext(context);
