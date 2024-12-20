@@ -11,177 +11,176 @@ using Cake.Core.Diagnostics;
 using Cake.Core.IO;
 using Cake.Frosting;
 
-namespace Grynwald.SharedBuild.Tasks
+namespace Grynwald.SharedBuild.Tasks;
+
+[TaskName(TaskNames.Test)]
+[IsDependentOn(typeof(BuildTask))]
+public class TestTask : FrostingTask<IBuildContext>
 {
-    [TaskName(TaskNames.Test)]
-    [IsDependentOn(typeof(BuildTask))]
-    public class TestTask : FrostingTask<IBuildContext>
+    public override void Run(IBuildContext context)
     {
-        public override void Run(IBuildContext context)
+        context.EnsureDirectoryDoesNotExist(context.Output.TestResultsDirectory);
+
+        RunTests(context);
+
+        if (context.TestSettings.CollectCodeCoverage)
         {
-            context.EnsureDirectoryDoesNotExist(context.Output.TestResultsDirectory);
-
-            RunTests(context);
-
-            if (context.TestSettings.CollectCodeCoverage)
-            {
-                GenerateCoverageReport(context);
-            }
-
+            GenerateCoverageReport(context);
         }
 
-        public override void OnError(Exception exception, IBuildContext context)
-        {
-            // If test execution failed, publish test results anyways (so the error can be inspected)
-            // but do not throw in PublishTestResults() when there are not test results
-            PublishTestResults(context, failOnMissingTestResults: false);
+    }
 
-            throw exception;
+    public override void OnError(Exception exception, IBuildContext context)
+    {
+        // If test execution failed, publish test results anyways (so the error can be inspected)
+        // but do not throw in PublishTestResults() when there are not test results
+        PublishTestResults(context, failOnMissingTestResults: false);
+
+        throw exception;
+    }
+
+    protected virtual DotNetTestSettings GetDotNetTestSettings(IBuildContext context)
+    {
+        var testSettings = new DotNetTestSettings()
+        {
+            Configuration = context.BuildSettings.Configuration,
+            NoBuild = true,
+            NoRestore = true,
+            Loggers = new[] { "trx" },
+            ResultsDirectory = context.Output.TestResultsDirectory
+        };
+
+        if (context.TestSettings.CollectCodeCoverage)
+        {
+            // Assumes that the "coverlet.collector" package is installed in all test projects
+            testSettings.Collectors = new[] { "XPlat Code Coverage" };
         }
 
-        protected virtual DotNetTestSettings GetDotNetTestSettings(IBuildContext context)
+        return testSettings;
+    }
+
+    private void RunTests(IBuildContext context)
+    {
+        context.Log.Information($"Running tests for {context.SolutionPath}");
+
+        //
+        // Run tests
+        //
+        var testSettings = GetDotNetTestSettings(context);
+
+        context.DotNetTest(context.SolutionPath.FullPath, testSettings);
+
+        //
+        // Publish Test Results
+        //
+        PublishTestResults(context, failOnMissingTestResults: true);
+    }
+
+    private static void PublishTestResults(IBuildContext context, bool failOnMissingTestResults)
+    {
+        var testResults = context.FileSystem.GetFilePaths(context.Output.TestResultsDirectory, "*.trx", SearchScope.Current);
+
+        if (!testResults.Any() && failOnMissingTestResults)
+            throw new Exception($"No test results found in '{context.Output.TestResultsDirectory}'");
+
+
+        if (context.AzurePipelines.IsActive)
         {
-            var testSettings = new DotNetTestSettings()
+            context.Log.Information("Publishing Test Results to Azure Pipelines");
+
+            var testRunNames = GetTestRunNames(context, testResults);
+
+            foreach (var testResult in testResults)
             {
-                Configuration = context.BuildSettings.Configuration,
-                NoBuild = true,
-                NoRestore = true,
-                Loggers = new[] { "trx" },
-                ResultsDirectory = context.Output.TestResultsDirectory
-            };
-
-            if (context.TestSettings.CollectCodeCoverage)
-            {
-                // Assumes that the "coverlet.collector" package is installed in all test projects
-                testSettings.Collectors = new[] { "XPlat Code Coverage" };
-            }
-
-            return testSettings;
-        }
-
-        private void RunTests(IBuildContext context)
-        {
-            context.Log.Information($"Running tests for {context.SolutionPath}");
-
-            //
-            // Run tests
-            //
-            var testSettings = GetDotNetTestSettings(context);
-
-            context.DotNetTest(context.SolutionPath.FullPath, testSettings);
-
-            //
-            // Publish Test Results
-            //
-            PublishTestResults(context, failOnMissingTestResults: true);
-        }
-
-        private static void PublishTestResults(IBuildContext context, bool failOnMissingTestResults)
-        {
-            var testResults = context.FileSystem.GetFilePaths(context.Output.TestResultsDirectory, "*.trx", SearchScope.Current);
-
-            if (!testResults.Any() && failOnMissingTestResults)
-                throw new Exception($"No test results found in '{context.Output.TestResultsDirectory}'");
-
-
-            if (context.AzurePipelines.IsActive)
-            {
-                context.Log.Information("Publishing Test Results to Azure Pipelines");
-
-                var testRunNames = GetTestRunNames(context, testResults);
-
-                foreach (var testResult in testResults)
+                // Publish test results to Azure Pipelines test UI
+                context.Log.Debug($"Publishing Test Results from '{testResult}' with title '{testRunNames[testResult]}'");
+                context.AzurePipelines.Commands.PublishTestResults(new()
                 {
-                    // Publish test results to Azure Pipelines test UI
-                    context.Log.Debug($"Publishing Test Results from '{testResult}' with title '{testRunNames[testResult]}'");
-                    context.AzurePipelines.Commands.PublishTestResults(new()
-                    {
-                        Configuration = context.BuildSettings.Configuration,
-                        TestResultsFiles = new[] { testResult },
-                        TestRunner = AzurePipelinesTestRunnerType.VSTest,
-                        TestRunTitle = testRunNames[testResult]
-                    });
-
-                    // Publish result file as downloadable artifact
-                    context.Log.Debug($"Publishing Test Result file '{testResult}' as build artifact");
-                    context.AzurePipelines.Commands.UploadArtifact(
-                        folderName: "",
-                        file: testResult,
-                        context.AzurePipelines.ArtifactNames.TestResults
-                    );
-                }
-            }
-        }
-
-        private void GenerateCoverageReport(IBuildContext context)
-        {
-            context.EnsureDirectoryDoesNotExist(context.Output.CodeCoverageReportDirectory, new() { Force = true, Recursive = true });
-
-            var coverageFiles = context.FileSystem.GetFilePaths(context.Output.TestResultsDirectory, "coverage.cobertura.xml", SearchScope.Recursive);
-
-            if (!coverageFiles.Any())
-                throw new Exception($"No coverage files found in '{context.Output.TestResultsDirectory}'");
-
-            context.Log.Information($"Found {coverageFiles.Count} coverage files");
-
-            //
-            // Generate Coverage Report and merged code coverage file
-            //
-            context.Log.Information("Merging coverage files");
-            var htmlReportType = context.AzurePipelines.IsActive
-                ? ReportGeneratorReportType.HtmlInline_AzurePipelines
-                : ReportGeneratorReportType.Html;
-
-            context.ReportGenerator(
-                reports: coverageFiles,
-                targetDir: context.Output.CodeCoverageReportDirectory,
-                settings: new ReportGeneratorSettings()
-                {
-                    ReportTypes = new[] { htmlReportType, ReportGeneratorReportType.Cobertura },
-                    HistoryDirectory = context.Output.CodeCoverageHistoryDirectory
-                }
-            );
-
-            //
-            // Publish Code coverage report
-            //
-            if (context.AzurePipelines.IsActive)
-            {
-                context.Log.Information("Publishing Code Coverage Results to Azure Pipelines");
-                context.AzurePipelines.Commands.PublishCodeCoverage(new()
-                {
-                    CodeCoverageTool = AzurePipelinesCodeCoverageToolType.Cobertura,
-                    SummaryFileLocation = context.Output.CodeCoverageReportDirectory.CombineWithFilePath("Cobertura.xml"),
-                    ReportDirectory = context.Output.CodeCoverageReportDirectory
+                    Configuration = context.BuildSettings.Configuration,
+                    TestResultsFiles = new[] { testResult },
+                    TestRunner = AzurePipelinesTestRunnerType.VSTest,
+                    TestRunTitle = testRunNames[testResult]
                 });
+
+                // Publish result file as downloadable artifact
+                context.Log.Debug($"Publishing Test Result file '{testResult}' as build artifact");
+                context.AzurePipelines.Commands.UploadArtifact(
+                    folderName: "",
+                    file: testResult,
+                    context.AzurePipelines.ArtifactNames.TestResults
+                );
             }
         }
+    }
 
-        private static IReadOnlyDictionary<FilePath, string> GetTestRunNames(IBuildContext context, IEnumerable<FilePath> testResultPaths)
-        {
-            var testRunNamer = new TestRunNamer(context.Log, context.Environment, context.FileSystem);
+    private void GenerateCoverageReport(IBuildContext context)
+    {
+        context.EnsureDirectoryDoesNotExist(context.Output.CodeCoverageReportDirectory, new() { Force = true, Recursive = true });
 
-            var previousNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var testRunNames = new Dictionary<FilePath, string>();
+        var coverageFiles = context.FileSystem.GetFilePaths(context.Output.TestResultsDirectory, "coverage.cobertura.xml", SearchScope.Recursive);
 
-            foreach (var testResultPath in testResultPaths)
+        if (!coverageFiles.Any())
+            throw new Exception($"No coverage files found in '{context.Output.TestResultsDirectory}'");
+
+        context.Log.Information($"Found {coverageFiles.Count} coverage files");
+
+        //
+        // Generate Coverage Report and merged code coverage file
+        //
+        context.Log.Information("Merging coverage files");
+        var htmlReportType = context.AzurePipelines.IsActive
+            ? ReportGeneratorReportType.HtmlInline_AzurePipelines
+            : ReportGeneratorReportType.Html;
+
+        context.ReportGenerator(
+            reports: coverageFiles,
+            targetDir: context.Output.CodeCoverageReportDirectory,
+            settings: new ReportGeneratorSettings()
             {
-                var baseName = testRunNamer.GetTestRunName(testResultPath);
-                var name = baseName;
+                ReportTypes = new[] { htmlReportType, ReportGeneratorReportType.Cobertura },
+                HistoryDirectory = context.Output.CodeCoverageHistoryDirectory
+            }
+        );
 
-                // Test run names should be unique, otherwise Azure Pipeline will overwrite results for a previous test with the same name
-                // To avoid this, append a number at the end of the name until it is unique.
-                var counter = 1;
-                while (previousNames.Contains(name))
-                {
-                    name = $"{baseName} ({counter++})";
-                }
+        //
+        // Publish Code coverage report
+        //
+        if (context.AzurePipelines.IsActive)
+        {
+            context.Log.Information("Publishing Code Coverage Results to Azure Pipelines");
+            context.AzurePipelines.Commands.PublishCodeCoverage(new()
+            {
+                CodeCoverageTool = AzurePipelinesCodeCoverageToolType.Cobertura,
+                SummaryFileLocation = context.Output.CodeCoverageReportDirectory.CombineWithFilePath("Cobertura.xml"),
+                ReportDirectory = context.Output.CodeCoverageReportDirectory
+            });
+        }
+    }
 
-                previousNames.Add(name);
-                testRunNames.Add(testResultPath, name);
+    private static IReadOnlyDictionary<FilePath, string> GetTestRunNames(IBuildContext context, IEnumerable<FilePath> testResultPaths)
+    {
+        var testRunNamer = new TestRunNamer(context.Log, context.Environment, context.FileSystem);
+
+        var previousNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var testRunNames = new Dictionary<FilePath, string>();
+
+        foreach (var testResultPath in testResultPaths)
+        {
+            var baseName = testRunNamer.GetTestRunName(testResultPath);
+            var name = baseName;
+
+            // Test run names should be unique, otherwise Azure Pipeline will overwrite results for a previous test with the same name
+            // To avoid this, append a number at the end of the name until it is unique.
+            var counter = 1;
+            while (previousNames.Contains(name))
+            {
+                name = $"{baseName} ({counter++})";
             }
 
-            return testRunNames;
+            previousNames.Add(name);
+            testRunNames.Add(testResultPath, name);
         }
+
+        return testRunNames;
     }
 }

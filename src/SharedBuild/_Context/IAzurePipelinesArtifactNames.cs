@@ -1,11 +1,10 @@
-﻿namespace Grynwald.SharedBuild
+﻿namespace Grynwald.SharedBuild;
+
+public interface IAzurePipelinesArtifactNames : IPrintableObject
 {
-    public interface IAzurePipelinesArtifactNames : IPrintableObject
-    {
-        string Binaries { get; }
+    string Binaries { get; }
 
-        string ChangeLog { get; }
+    string ChangeLog { get; }
 
-        string TestResults { get; }
-    }
+    string TestResults { get; }
 }

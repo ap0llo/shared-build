@@ -1,22 +1,21 @@
 ﻿using Cake.Common;
 using Cake.Core.Diagnostics;
 
-namespace Grynwald.SharedBuild
+namespace Grynwald.SharedBuild;
+
+public class DefaultTestSettings : ITestSettings
 {
-    public class DefaultTestSettings : ITestSettings
+    public virtual bool CollectCodeCoverage { get; }
+
+
+    public DefaultTestSettings(DefaultBuildContext context)
     {
-        public virtual bool CollectCodeCoverage { get; }
+        CollectCodeCoverage = context.Argument("collect-code-coverage", true);
+    }
 
 
-        public DefaultTestSettings(DefaultBuildContext context)
-        {
-            CollectCodeCoverage = context.Argument("collect-code-coverage", true);
-        }
-
-
-        public void PrintToLog(ICakeLog log)
-        {
-            log.Information($"{nameof(CollectCodeCoverage)}: {CollectCodeCoverage}");
-        }
+    public void PrintToLog(ICakeLog log)
+    {
+        log.Information($"{nameof(CollectCodeCoverage)}: {CollectCodeCoverage}");
     }
 }

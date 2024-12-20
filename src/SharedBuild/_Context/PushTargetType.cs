@@ -1,9 +1,8 @@
-﻿namespace Grynwald.SharedBuild
+﻿namespace Grynwald.SharedBuild;
+
+public enum PushTargetType
 {
-    public enum PushTargetType
-    {
-        AzureArtifacts,
-        NuGetOrg,
-        MyGet
-    }
+    AzureArtifacts,
+    NuGetOrg,
+    MyGet
 }

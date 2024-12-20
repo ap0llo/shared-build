@@ -1,53 +1,52 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Grynwald.ChangeLog.Integrations.GitHub
+namespace Grynwald.ChangeLog.Integrations.GitHub;
+
+public sealed class GitHubProjectInfo : IEquatable<GitHubProjectInfo>
 {
-    public sealed class GitHubProjectInfo : IEquatable<GitHubProjectInfo>
+    public string Host { get; }
+
+    public string Owner { get; }
+
+    public string Repository { get; }
+
+
+    public GitHubProjectInfo(string host, string owner, string repository)
     {
-        public string Host { get; }
+        if (String.IsNullOrWhiteSpace(host))
+            throw new ArgumentException("Value must not be null or whitespace", nameof(host));
 
-        public string Owner { get; }
+        if (String.IsNullOrWhiteSpace(owner))
+            throw new ArgumentException("Value must not be null or whitespace", nameof(owner));
 
-        public string Repository { get; }
+        if (String.IsNullOrWhiteSpace(repository))
+            throw new ArgumentException("Value must not be null or whitespace", nameof(repository));
+
+        Host = host;
+        Owner = owner;
+        Repository = repository;
+    }
 
 
-        public GitHubProjectInfo(string host, string owner, string repository)
+    public override int GetHashCode()
+    {
+        unchecked
         {
-            if (String.IsNullOrWhiteSpace(host))
-                throw new ArgumentException("Value must not be null or whitespace", nameof(host));
-
-            if (String.IsNullOrWhiteSpace(owner))
-                throw new ArgumentException("Value must not be null or whitespace", nameof(owner));
-
-            if (String.IsNullOrWhiteSpace(repository))
-                throw new ArgumentException("Value must not be null or whitespace", nameof(repository));
-
-            Host = host;
-            Owner = owner;
-            Repository = repository;
+            var hash = StringComparer.OrdinalIgnoreCase.GetHashCode(Host) * 397;
+            hash ^= StringComparer.OrdinalIgnoreCase.GetHashCode(Owner);
+            hash ^= StringComparer.OrdinalIgnoreCase.GetHashCode(Repository);
+            return hash;
         }
+    }
 
+    public override bool Equals(object? obj) => Equals(obj as GitHubProjectInfo);
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hash = StringComparer.OrdinalIgnoreCase.GetHashCode(Host) * 397;
-                hash ^= StringComparer.OrdinalIgnoreCase.GetHashCode(Owner);
-                hash ^= StringComparer.OrdinalIgnoreCase.GetHashCode(Repository);
-                return hash;
-            }
-        }
-
-        public override bool Equals(object? obj) => Equals(obj as GitHubProjectInfo);
-
-        public bool Equals([AllowNull] GitHubProjectInfo other)
-        {
-            return other != null &&
-                StringComparer.OrdinalIgnoreCase.Equals(Host, other.Host) &&
-                StringComparer.OrdinalIgnoreCase.Equals(Owner, other.Owner) &&
-                StringComparer.OrdinalIgnoreCase.Equals(Repository, other.Repository);
-        }
+    public bool Equals([AllowNull] GitHubProjectInfo other)
+    {
+        return other != null &&
+            StringComparer.OrdinalIgnoreCase.Equals(Host, other.Host) &&
+            StringComparer.OrdinalIgnoreCase.Equals(Owner, other.Owner) &&
+            StringComparer.OrdinalIgnoreCase.Equals(Repository, other.Repository);
     }
 }
