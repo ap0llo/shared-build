@@ -19,7 +19,10 @@ public class DefaultGitHubPullRequestContext : IGitHubPullRequestContext
         {
             IsPullRequest =
                 context.AzurePipelines.Environment.Repository.Provider == AzurePipelinesRepositoryType.GitHub &&
-                context.AzurePipelines.Environment.PullRequest.IsPullRequest;
+                // Do not use context.AzurePipelines.Environment.PullRequest.IsPullRequest, since that returns false since GitHub's PR ids exceeded int.MaxValue
+                // (see https://github.com/cake-build/cake/issues/4410)
+                // Instead, check the precense of a PR number
+                context.AzurePipelines.Environment.PullRequest.Number > 0;
 
             Number = context.AzurePipelines.Environment.PullRequest.Number;
         }
