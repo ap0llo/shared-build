@@ -1,5 +1,11 @@
 ﻿namespace Grynwald.SharedBuild;
 
+/// <summary>
+/// Provides GitHUb information about the current repository
+/// </summary>
+/// <remarks>
+/// Git information about the current repository that is independent of GitHub is provided by <see cref="IGitContext"/>
+/// </remarks>
 public interface IGitHubContext : IPrintableObject
 {
     /// <summary>

@@ -1,4 +1,6 @@
-﻿using Cake.Common.Build.AzurePipelines.Data;
+﻿using System;
+using Cake.Common.Build;
+using Cake.Common.Build.AzurePipelines.Data;
 using Cake.Core.Diagnostics;
 
 namespace Grynwald.SharedBuild;
@@ -25,6 +27,33 @@ public class DefaultGitHubPullRequestContext : IGitHubPullRequestContext
                 context.AzurePipelines.Environment.PullRequest.Number > 0;
 
             Number = context.AzurePipelines.Environment.PullRequest.Number;
+        }
+        else if (context.GitHubActions.IsActive)
+        {
+            IsPullRequest = context.GitHubActions().Environment.PullRequest.IsPullRequest;
+
+            if (IsPullRequest)
+            {
+                // GitHub Actions has no predefined variable that specifies the PR number for a PR build.
+                // Instead, the PR_NUMBER variable needs to be defined and populated in the GitHub Actions workflow, like this
+                //
+                //  env:
+                //    PR_NUMBER: ${{ github.event.number }}
+                //
+                // If the PR_NUMBER variable is not set, emit a warning
+
+                var prNumberVar = context.Environment.GetEnvironmentVariable("PR_NUMBER");
+                if (!String.IsNullOrWhiteSpace(prNumberVar) && int.TryParse(prNumberVar, out var prNumber))
+                {
+                    Number = prNumber;
+                }
+                else
+                {
+                    context.Log.Warning("Current build seems to be a PR build but the Pull Request number could not be determined. " +
+                                        "Make sure the PR_NUMBER variable is set in the GitHub Actions workflow. " +
+                                        "This is required since GitHub Actions does not a provide a predefined variable for this.");
+                }
+            }
         }
         else
         {
