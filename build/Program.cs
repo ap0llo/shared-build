@@ -3,11 +3,13 @@ using Cake.AzurePipelines.Module;
 using Cake.Core;
 using Cake.DotNetLocalTools.Module;
 using Cake.Frosting;
+using Cake.GitHubActions.Module;
 using Grynwald.SharedBuild;
 
 return new CakeHost()
     .UseContext<BuildContext>()
     .UseModule<AzurePipelinesModule>()
+    .UseModule<GitHubActionsModule>()
     .UseModule<LocalToolsModule>()
     .InstallToolsFromManifest(".config/dotnet-tools.json")
     .Run(args);
