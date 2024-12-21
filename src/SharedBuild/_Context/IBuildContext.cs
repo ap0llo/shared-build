@@ -27,6 +27,11 @@ public interface IBuildContext : IFrostingContext, IPrintableObject
     IAzurePipelinesContext AzurePipelines { get; }
 
     /// <summary>
+    /// Gets information about the current build if the build is being run in GitHub Actions
+    /// </summary>
+    IGitHubActionsContext GitHubActions { get; }
+
+    /// <summary>
     /// Gets the build settings to use
     /// </summary>
     IBuildSettings BuildSettings { get; }

@@ -1,5 +1,8 @@
 $ErrorActionPreference = "Stop"
 
+if ($env:GITHUB_ACTIONS -eq "true") {
+    Write-Host "::group::Install .NET SDK"
+}
 if ($env:TF_BUILD) {
     Write-Host "##[group]Install .NET SDK"
 }
@@ -9,6 +12,9 @@ if ($env:TF_BUILD) {
 
 Invoke-Expression "dotnet --info"
 
+if ($env:GITHUB_ACTIONS -eq "true") {
+    Write-Host "::endgroup::"
+}
 if ($env:TF_BUILD) {
     Write-Host "##[endgroup]"
 }

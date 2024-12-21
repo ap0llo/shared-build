@@ -36,6 +36,8 @@ internal class FakeBuildContext : FakeCakeContext, IBuildContext
     /// <inheritdoc />
     IAzurePipelinesContext IBuildContext.AzurePipelines => AzurePipelines;
 
+    public IGitHubActionsContext GitHubActions => throw new NotImplementedException();
+
     public IBuildSettings BuildSettings => throw new NotImplementedException();
 
     public ITestSettings TestSettings => throw new NotImplementedException();
