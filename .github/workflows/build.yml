@@ -23,7 +23,8 @@ permissions:
   # Write permissions for actions is required for uploading pipeline artifacts
   actions: write
   # Read access to the repo is required for generating the change log
-  contents: read
+  # Write access to the repo is required for creating/update GitHub releases
+  contents: write
 
 env:
   BUILD_CONFIGURATION: Release
