@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using Cake.AzurePipelines.Module;
 using Cake.Frosting;
+using Cake.GitHubActions.Module;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Grynwald.SharedBuild;
@@ -18,7 +20,9 @@ public static class CakeHostExtensions
     {
         return host
             .UseContext<TContext>()
-            .AddAssembly(typeof(CakeHostExtensions).Assembly, taskFilter);
+            .AddAssembly(typeof(CakeHostExtensions).Assembly, taskFilter)
+            .UseModule<AzurePipelinesModule>()
+            .UseModule<GitHubActionsModule>();
     }
 
     /// <summary>
