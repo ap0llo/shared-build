@@ -10,6 +10,7 @@ using Cake.Common.Tools.DotNet.Test;
 using Cake.Common.Tools.ReportGenerator;
 using Cake.Core.Diagnostics;
 using Cake.Core.IO;
+using Cake.FileHelpers;
 using Cake.Frosting;
 using Grynwald.SharedBuild.Tools.TemporaryFiles;
 using Microsoft.VisualBasic;
@@ -212,11 +213,15 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
                 HistoryDirectory = context.Output.CodeCoverageHistoryDirectory,
             }
         );
+        var markdownSummaryPath = context.FileSystem.GetFilePaths(temporaryDirectory.Path, "*.md").Single();
 
         context.CopyFile(coverageReportPath, temporaryDirectory.Path.CombineWithFilePath(coverageReportPath.GetFilename()));
 
-        // Publish coverage file and Summary are artifacts
+        // Publish coverage file and Summary as artifacts
         await context.GitHubActions().Commands.UploadArtifact(temporaryDirectory.Path, context.GitHubActions.ArtifactNames.TestResults + "_Coverage");
+
+        // Add coverage report to step summary
+        context.GitHubActions().Commands.SetStepSummary(context.FileReadText(markdownSummaryPath));
     }
 
     private static IReadOnlyDictionary<FilePath, string> GetTestRunNames(IBuildContext context, IEnumerable<FilePath> testResultPaths)
