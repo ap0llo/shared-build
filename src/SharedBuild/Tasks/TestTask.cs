@@ -11,6 +11,7 @@ using Cake.Common.Tools.ReportGenerator;
 using Cake.Core.Diagnostics;
 using Cake.Core.IO;
 using Cake.Frosting;
+using Grynwald.SharedBuild.Tools.TemporaryFiles;
 
 namespace Grynwald.SharedBuild.Tasks;
 
@@ -26,7 +27,7 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
 
         if (context.TestSettings.CollectCodeCoverage)
         {
-            GenerateCoverageReport(context);
+            await GenerateCoverageReportAsync(context);
         }
     }
 
@@ -76,7 +77,7 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
         await PublishTestResultsAsync(context, failOnMissingTestResults: true);
     }
 
-    private static async Task PublishTestResultsAsync(IBuildContext context, bool failOnMissingTestResults)
+    protected virtual async Task PublishTestResultsAsync(IBuildContext context, bool failOnMissingTestResults)
     {
         var testResults = context.FileSystem.GetFilePaths(context.Output.TestResultsDirectory, "*.trx", SearchScope.Current);
 
@@ -139,7 +140,7 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
         }
     }
 
-    private void GenerateCoverageReport(IBuildContext context)
+    private async Task GenerateCoverageReportAsync(IBuildContext context)
     {
         context.EnsureDirectoryDoesNotExist(context.Output.CodeCoverageReportDirectory, new() { Force = true, Recursive = true });
 
@@ -168,19 +169,53 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
             }
         );
 
+        var coverageReportPath = context.Output.CodeCoverageReportDirectory.CombineWithFilePath("Cobertura.xml");
+
         //
         // Publish Code coverage report
         //
         if (context.AzurePipelines.IsActive)
         {
-            context.Log.Information("Publishing Code Coverage Results to Azure Pipelines");
-            context.AzurePipelines.Commands.PublishCodeCoverage(new()
-            {
-                CodeCoverageTool = AzurePipelinesCodeCoverageToolType.Cobertura,
-                SummaryFileLocation = context.Output.CodeCoverageReportDirectory.CombineWithFilePath("Cobertura.xml"),
-                ReportDirectory = context.Output.CodeCoverageReportDirectory
-            });
+            PublishCodeCoverageToAzurePipelines(context, coverageReportPath);
         }
+        else if (context.GitHubActions.IsActive)
+        {
+            await PublishCodeCoverageToGitHubActionsAsync(context, coverageReportPath);
+        }
+    }
+
+    protected virtual void PublishCodeCoverageToAzurePipelines(IBuildContext context, FilePath coverageReportPath)
+    {
+        context.Log.Information("Publishing Code Coverage Results to Azure Pipelines");
+        context.AzurePipelines.Commands.PublishCodeCoverage(new()
+        {
+            CodeCoverageTool = AzurePipelinesCodeCoverageToolType.Cobertura,
+            SummaryFileLocation = coverageReportPath,
+            ReportDirectory = context.Output.CodeCoverageReportDirectory
+        });
+    }
+
+    protected virtual async Task PublishCodeCoverageToGitHubActionsAsync(IBuildContext context, FilePath coverageReportPath)
+    {
+        context.Log.Information("Publishing Code Coverage Results to GitHub Actions");
+
+        using var temporaryDirectory = context.CreateTemporaryDirectory();
+
+        // Generate Markdown coverage report
+        context.ReportGenerator(
+            reports: [coverageReportPath],
+            targetDir: temporaryDirectory.Path.Combine("Report"),
+            settings: new ReportGeneratorSettings()
+            {
+                ReportTypes = [ReportGeneratorReportType.Html],
+                HistoryDirectory = context.Output.CodeCoverageHistoryDirectory,
+            }
+        );
+
+        context.CopyFileToDirectory(coverageReportPath, temporaryDirectory.Path);
+
+        // Publish coverage file and Summary as artifacts
+        await context.GitHubActions().Commands.UploadArtifact(temporaryDirectory.Path, "CodeCoverage");
     }
 
     private static IReadOnlyDictionary<FilePath, string> GetTestRunNames(IBuildContext context, IEnumerable<FilePath> testResultPaths)
