@@ -212,11 +212,11 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
                 HistoryDirectory = context.Output.CodeCoverageHistoryDirectory,
             }
         );
-        var markdownSummaryPath = context.FileSystem.GetFilePaths(temporaryDirectory.Path, "*.md").Single();
+
+        context.CopyFile(coverageReportPath, temporaryDirectory.Path.CombineWithFilePath(coverageReportPath.GetFilename()));
 
         // Publish coverage file and Summary are artifacts
-        await context.GitHubActions().Commands.UploadArtifact(coverageReportPath, context.GitHubActions.ArtifactNames.TestResults);
-        await context.GitHubActions().Commands.UploadArtifact(markdownSummaryPath, context.GitHubActions.ArtifactNames.TestResults);
+        await context.GitHubActions().Commands.UploadArtifact(temporaryDirectory.Path, context.GitHubActions.ArtifactNames.TestResults + "_Coverage");
     }
 
     private static IReadOnlyDictionary<FilePath, string> GetTestRunNames(IBuildContext context, IEnumerable<FilePath> testResultPaths)
