@@ -7,7 +7,7 @@ namespace Grynwald.SharedBuild.Test.Mocks;
 
 internal class FakeAzurePipelinesContext : IAzurePipelinesContext
 {
-    public IAzurePipelinesArtifactNames ArtifactNames => throw new NotImplementedException();
+    public IArtifactNames ArtifactNames => throw new NotImplementedException();
 
     public bool IsActive
     {

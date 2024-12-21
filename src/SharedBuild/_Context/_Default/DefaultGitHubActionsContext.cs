@@ -10,9 +10,14 @@ public class DefaultGitHubActionsContext(DefaultBuildContext context) : IGitHubA
 
     public bool IsActive => m_GitHubActionsProvider.IsRunningOnGitHubActions;
 
+    /// <inheritdoc />
+    public virtual IArtifactNames ArtifactNames { get; } = new DefaultArtifactNames();
 
     public void PrintToLog(ICakeLog log)
     {
         log.Information($"{nameof(IsActive)}: {IsActive}");
+
+        log.Information($"{nameof(ArtifactNames)}:");
+        ArtifactNames.PrintToLog(new IndentedCakeLog(log));
     }
 }

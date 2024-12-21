@@ -11,7 +11,7 @@ public class DefaultAzurePipelinesContext(DefaultBuildContext context) : IAzureP
 
 
     /// <inheritdoc />
-    public virtual IAzurePipelinesArtifactNames ArtifactNames { get; } = new DefaultAzurePipelinesArtifactNames();
+    public virtual IArtifactNames ArtifactNames { get; } = new DefaultArtifactNames();
 
     /// <inheritdoc />
     public virtual bool IsActive => IsRunningOnAzurePipelines;

@@ -2,7 +2,7 @@
 
 namespace Grynwald.SharedBuild;
 
-public class DefaultAzurePipelinesArtifactNames : IAzurePipelinesArtifactNames
+public class DefaultArtifactNames : IArtifactNames
 {
     /// <summary>
     /// The name of the main artifact
