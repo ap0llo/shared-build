@@ -54,6 +54,8 @@ The shared build tasks make some assumptions about the repository being built
 . The output structure follows the expected <<project-output-structure>>
 . The repository uses link:{url-nerdbank.gitversioning}[Nerdbank.GitVersioning] for versioning
 . The repository's main Visual Studio solution file is located in the root of the repository.
+. The repository is hosted on GitHub
+. The CI system being used is either Azure Pipelines or GitHub Actions
 
 === Project Output Structure
 
@@ -216,3 +218,141 @@ namespace Build
 ----
 
 CAUTION: When skipping the import of a task that is a dependency of another task, the build will fail. In that case you cannot just skip the task but must provide a (possibly empty) implementation of a task with the same name.
+
+=== CI System integrations
+
+The Shared Build tasks provide additional features when the build is running in one of the supported CI systems.
+
+Currently, the following CI systems are supported
+
+* Azure Pipelines
+* GitHub Actions
+
+The task `CI` is the entry point for running a build inside a CI system.
+Generally, the build definition in a CI system will be
+
+[source, sh]
+----
+./build.sh --target CI
+----
+
+The following steps are executed when the build is running in a CI pipeline:
+
+* The build number is set to the version being build (only works on Azure Pipelines) 
+* When the build is running for the main branch (`main` or `master`) or a release branch (`release/*`):
+** A GitHub Release for the version being built is created (including a automatically generated change log)
+*** For builds of the main branch, the GitHub release is created as draft with the tag `vNext`
+*** For builds of release branches, a non-draft GitHub release is created
+** The built NuGet packages are pushed to configured NuGet feeds (see <<uploading-nuget-packages>>)
+* When building a Pull Request, the PR's milestone is automatically set 
+** The milestone name is derived from the  current major & minor version (`v${MAJOR}.${MINOR}`)
+** If a milestone with the expected name does not yet exist, it will be created automatically
+* The `Pack` tasks publishes the generated NuGet packages as pipeline artifacts
+* The `Test` task  publishes the test results (and the coverage report) as pipeline artifacts
+* The `GenerateChangeLog` task publishes the change log as pipeline artifact
+
+==== Required settings on GitHub Actions
+
+To use the shared build task in GitHub actions, the following settings need to be configured workflow:
+
+* The workflow's `permissions` need to allow `write` access to 
+** `issues` and `pull-requests`: This is required for automatically creating and assigning milestones to Pull Requests
+** `actions`: This is required for uploading pipeline artifacts
+** `contents`: This is required for generating the changelog (read access would be sufficient) and creating GitHub releases (requires `write` permission)
+* The access token for accessing the GitHub API needs to be specified as environment variable `GITHUB_ACCESSTOKEN`.
+  The automatically generated token provided by GitHub Actions can be used for this. + 
+  To make it available, add `GITHUB_ACCESSTOKEN: ${{ secrets.GITHUB_TOKEN }}` to the workflow's `env` section
+* The current pull request number needs to be made available as environment variable `PR_NUMBER` (GitHub Actions has no predefined variable that provides this). +
+  To make the PR number available, add `PR_NUMBER: ${{ github.event.number }}` to the workflow's `env` section
+* For uploading artifacts, the following environment variables need to be made available.
+** `ACTIONS_CACHE_URL`
+** `ACTIONS_RUNTIME_TOKEN`
+** `ACTIONS_RUNTIME_URL`
+** `ACTIONS_RESULTS_URL`
+** This can be achieved using a `github-script` step before running the Cake build: 
++
+[source,yml]
+----
+- name: Set up environment variables
+ uses: actions/github-script@v7
+ with:
+   script: | 
+     core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+     core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+     core.exportVariable('ACTIONS_RUNTIME_URL', process.env.ACTIONS_RUNTIME_URL || '');
+     core.exportVariable('ACTIONS_RESULTS_URL', process.env.ACTIONS_RESULTS_URL || '');
+----
+* Since Nerdbank.GitVersioning is used for calculating the version from the repository's history, the `checkout` step needs to be configure to *not* use shallow clones
++
+[source,yml]
+----
+- name: Check out
+  uses: actions/checkout@v2
+  with:
+    fetch-depth: 0
+----
+
+An example of a full GitHub Actions workflow can be seen below:
+
+[source,yml]
+----
+name: CI Build
+
+# Trigger build for pushes to the main branch and all release branches
+# As well as all Pull Requests targeting these branches
+on:
+  push:
+    branches:
+      - master
+      - release/*
+  pull_request:
+    branches:
+      - main
+      - master
+      - release/*
+  # Adding the "workflow_dispatch" trigger allows the workflow to be started manually from the GitHub Web UI
+  workflow_dispatch:
+
+permissions:
+  # Write permissions to issues and PRs is required for automatically setting the PR milestone  
+  issues: write
+  pull-requests: write
+  # Write permissions for actions is required for uploading pipeline artifacts
+  actions: write
+  # Read access to the repo is required for generating the change log
+  # Write access to the repo is required for creating/update GitHub releases
+  contents: write
+
+env:
+  BUILD_CONFIGURATION: Release
+  # Disable telemetry and "Welcome" message of dotnet CLI
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
+  # Expose the Pull Request number as environment variable (there is no predefined variable for this unfortunately)
+  PR_NUMBER: ${{ github.event.number }}
+  GITHUB_ACCESSTOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  build:
+    name: "Build"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Disable shallow clones (Nerdbank.GitVersioning requires the full history to calculate the version)
+      - name: Set up environment variables
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // The 'ACTIONS_*' variables are required by the Cake build for uploading artifacts
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');          
+            core.exportVariable('ACTIONS_RUNTIME_URL', process.env.ACTIONS_RUNTIME_URL || '');          
+            core.exportVariable('ACTIONS_RESULTS_URL', process.env.ACTIONS_RESULTS_URL || '');          
+      - name: Run Cake Build
+        run: |-
+          ./build.sh --target CI --configuration $BUILD_CONFIGURATION
+----
+
