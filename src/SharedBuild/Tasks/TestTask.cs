@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Cake.Common.Build;
@@ -103,7 +104,7 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
                 });
 
                 // Publish result file as downloadable artifact
-                context.Log.Debug($"Publishing Test Result file '{testResult}' as pipelne artifact");
+                context.Log.Debug($"Publishing Test Result file '{testResult}' as pipeline artifact");
                 context.AzurePipelines.Commands.UploadArtifact(
                     folderName: "",
                     file: testResult,
@@ -115,13 +116,16 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
         {
             context.Log.Information("Publishing Test Results to GitHub Actions");
 
+            var testRunNames = GetTestRunNames(context, testResults);
+
             // GitHub Actions only allows a single upload for each artifact name
             // => Copy all results to a temporary directory and publish the directory
             using var temporaryDirectory = context.CreateTemporaryDirectory();
 
             foreach (var testResult in testResults)
             {
-                context.CopyFileToDirectory(testResult, temporaryDirectory.Path);
+                var fileName = testRunNames[testResult] + testResult.GetExtension();
+                context.CopyFile(testResult, temporaryDirectory.Path.CombineWithFilePath(fileName));
             }
             await context.GitHubActions().Commands.UploadArtifact(
                 temporaryDirectory.Path,
@@ -210,7 +214,7 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
         await context.GitHubActions().Commands.UploadArtifact(temporaryDirectory.Path, "CodeCoverage");
     }
 
-    private static IReadOnlyDictionary<FilePath, string> GetTestRunNames(IBuildContext context, IEnumerable<FilePath> testResultPaths)
+    protected virtual IReadOnlyDictionary<FilePath, string> GetTestRunNames(IBuildContext context, IEnumerable<FilePath> testResultPaths)
     {
         var testRunNamer = new TestRunNamer(context.Log, context.Environment, context.FileSystem);
 

@@ -50,7 +50,7 @@ internal class TestRunNamer
             name = testResultPath.GetFilenameWithoutExtension().ToString();
         }
 
-        return name.ToString();
+        return name;
     }
 
     private string? GetTrxTestRunName(FilePath testResultPath)
