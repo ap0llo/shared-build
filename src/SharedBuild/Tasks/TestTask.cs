@@ -115,28 +115,20 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
         {
             context.Log.Information("Publishing Test Results to GitHub Actions");
 
-            //var testRunNames = GetTestRunNames(context, testResults);
+            // GitHub Actions only allows a single upload for each artifact name
+            // => Copy all results to a temporary directory and publish the directory
+            using var temporaryDirectory = context.CreateTemporaryDirectory();
 
             foreach (var testResult in testResults)
             {
-                //TODO
-                // // Publish test results to Azure Pipelines test UI
-                // context.Log.Debug($"Publishing Test Results from '{testResult}' with title '{testRunNames[testResult]}'");
-                // context.AzurePipelines.Commands.PublishTestResults(new()
-                // {
-                //     Configuration = context.BuildSettings.Configuration,
-                //     TestResultsFiles = [testResult],
-                //     TestRunner = AzurePipelinesTestRunnerType.VSTest,
-                //     TestRunTitle = testRunNames[testResult]
-                // });
-
-                // Publish result file as pipeline artifact
-                context.Log.Debug($"Publishing Test Result file '{testResult}' as pipeline artifact");
-                await context.GitHubActions().Commands.UploadArtifact(
-                    testResult,
-                    context.GitHubActions.ArtifactNames.TestResults
-                );
+                context.CopyFileToDirectory(testResult, temporaryDirectory.Path);
             }
+            await context.GitHubActions().Commands.UploadArtifact(
+                temporaryDirectory.Path,
+                context.GitHubActions.ArtifactNames.TestResults
+            );
+
+            //TODO: Generate a human-readable test result and publish into GitHub action's step summary
         }
     }
 

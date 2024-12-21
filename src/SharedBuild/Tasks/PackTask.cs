@@ -6,6 +6,7 @@ using Cake.Common.Tools.DotNet.MSBuild;
 using Cake.Common.Tools.DotNet.Pack;
 using Cake.Core.Diagnostics;
 using Cake.Frosting;
+using Grynwald.SharedBuild.Tools.TemporaryFiles;
 
 namespace Grynwald.SharedBuild.Tasks;
 
@@ -57,11 +58,20 @@ public class PackTask : AsyncFrostingTask<IBuildContext>
         else if (context.GitHubActions.IsActive)
         {
             context.Log.Information("Publishing NuGet packages to GitHub Actions artifacts");
+
+            // GitHub Actions only allows a single upload for each artifact name
+            // => Copy all files to a temporary directory and publish the directory
+
+            using var temporaryDirectory = context.CreateTemporaryDirectory();
+
             foreach (var file in context.Output.PackageFiles)
             {
-                context.Log.Debug("Publishing '{file}'");
-                await context.GitHubActions().Commands.UploadArtifact(file, context.GitHubActions.ArtifactNames.Binaries);
+                context.CopyFileToDirectory(file, temporaryDirectory.Path);
             }
+
+            await context.GitHubActions().Commands.UploadArtifact(
+                temporaryDirectory.Path,
+                context.GitHubActions.ArtifactNames.Binaries);
         }
     }
 }
