@@ -17,15 +17,14 @@ return new CakeHost()
 
 class BuildContext : DefaultBuildContext
 {
-
-    public override IReadOnlyCollection<IPushTarget> PushTargets { get; } = new IPushTarget[]
-    {
+    public override IReadOnlyCollection<IPushTarget> PushTargets { get; } =
+    [
         new PushTarget(
             type: PushTargetType.AzureArtifacts,
             feedUrl: "https://pkgs.dev.azure.com/ap0llo/OSS/_packaging/BuildInfrastructure/nuget/v3/index.json",
-            isActive: context => context.Git.IsMainBranch || context.Git.IsReleaseBranch
+            isActive: context => context.AzurePipelines.IsActive && (context.Git.IsMainBranch || context.Git.IsReleaseBranch)
         )
-    };
+    ];
 
     public BuildContext(ICakeContext context) : base(context)
     {
