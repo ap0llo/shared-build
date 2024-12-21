@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Cake.Common.Build;
 using Cake.Common.Build.AzurePipelines.Data;
-using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Common.Tools.DotNet;
 using Cake.Common.Tools.DotNet.Test;
@@ -15,13 +16,13 @@ namespace Grynwald.SharedBuild.Tasks;
 
 [TaskName(TaskNames.Test)]
 [IsDependentOn(typeof(BuildTask))]
-public class TestTask : FrostingTask<IBuildContext>
+public class TestTask : AsyncFrostingTask<IBuildContext>
 {
-    public override void Run(IBuildContext context)
+    public override async Task RunAsync(IBuildContext context)
     {
         context.EnsureDirectoryDoesNotExist(context.Output.TestResultsDirectory);
 
-        RunTests(context);
+        await RunTestsAsync(context);
 
         if (context.TestSettings.CollectCodeCoverage)
         {
@@ -33,7 +34,7 @@ public class TestTask : FrostingTask<IBuildContext>
     {
         // If test execution failed, publish test results anyways (so the error can be inspected)
         // but do not throw in PublishTestResults() when there are not test results
-        PublishTestResults(context, failOnMissingTestResults: false);
+        PublishTestResultsAsync(context, failOnMissingTestResults: false).GetAwaiter().GetResult();
 
         throw exception;
     }
@@ -58,7 +59,7 @@ public class TestTask : FrostingTask<IBuildContext>
         return testSettings;
     }
 
-    private void RunTests(IBuildContext context)
+    private async Task RunTestsAsync(IBuildContext context)
     {
         context.Log.Information($"Running tests for {context.SolutionPath}");
 
@@ -72,10 +73,10 @@ public class TestTask : FrostingTask<IBuildContext>
         //
         // Publish Test Results
         //
-        PublishTestResults(context, failOnMissingTestResults: true);
+        await PublishTestResultsAsync(context, failOnMissingTestResults: true);
     }
 
-    private static void PublishTestResults(IBuildContext context, bool failOnMissingTestResults)
+    private static async Task PublishTestResultsAsync(IBuildContext context, bool failOnMissingTestResults)
     {
         var testResults = context.FileSystem.GetFilePaths(context.Output.TestResultsDirectory, "*.trx", SearchScope.Current);
 
@@ -101,11 +102,38 @@ public class TestTask : FrostingTask<IBuildContext>
                 });
 
                 // Publish result file as downloadable artifact
-                context.Log.Debug($"Publishing Test Result file '{testResult}' as build artifact");
+                context.Log.Debug($"Publishing Test Result file '{testResult}' as pipelne artifact");
                 context.AzurePipelines.Commands.UploadArtifact(
                     folderName: "",
                     file: testResult,
                     context.AzurePipelines.ArtifactNames.TestResults
+                );
+            }
+        }
+        else if (context.GitHubActions.IsActive)
+        {
+            context.Log.Information("Publishing Test Results to GitHub Actions");
+
+            //var testRunNames = GetTestRunNames(context, testResults);
+
+            foreach (var testResult in testResults)
+            {
+                //TODO
+                // // Publish test results to Azure Pipelines test UI
+                // context.Log.Debug($"Publishing Test Results from '{testResult}' with title '{testRunNames[testResult]}'");
+                // context.AzurePipelines.Commands.PublishTestResults(new()
+                // {
+                //     Configuration = context.BuildSettings.Configuration,
+                //     TestResultsFiles = [testResult],
+                //     TestRunner = AzurePipelinesTestRunnerType.VSTest,
+                //     TestRunTitle = testRunNames[testResult]
+                // });
+
+                // Publish result file as pipeline artifact
+                context.Log.Debug($"Publishing Test Result file '{testResult}' as pipeline artifact");
+                await context.GitHubActions().Commands.UploadArtifact(
+                    testResult,
+                    context.GitHubActions.ArtifactNames.TestResults
                 );
             }
         }
