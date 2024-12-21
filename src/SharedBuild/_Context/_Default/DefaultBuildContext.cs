@@ -10,7 +10,7 @@ namespace Grynwald.SharedBuild;
 public class DefaultBuildContext : FrostingContext, IBuildContext
 {
     /// <inheritdoc />
-    public virtual bool IsRunningInCI => AzurePipelines.IsActive;
+    public virtual bool IsRunningInCI => AzurePipelines.IsActive || GitHubActions.IsActive;
 
     /// <inheritdoc />
     public virtual DirectoryPath RootDirectory { get; }
@@ -34,6 +34,9 @@ public class DefaultBuildContext : FrostingContext, IBuildContext
 
     /// <inheritdoc />
     public virtual IAzurePipelinesContext AzurePipelines { get; }
+
+    /// <inheritdoc />
+    public virtual IGitHubActionsContext GitHubActions { get; }
 
     /// <inheritdoc />
     public virtual IBuildSettings BuildSettings { get; }
@@ -65,6 +68,7 @@ public class DefaultBuildContext : FrostingContext, IBuildContext
         RootDirectory = context.Environment.WorkingDirectory;
 
         AzurePipelines = new DefaultAzurePipelinesContext(this);
+        GitHubActions = new DefaultGitHubActionsContext(this);
         Git = new DefaultGitContext(this);
         GitHub = new DefaultGitHubContext(this);
         Output = new DefaultOutputContext(this);
@@ -103,6 +107,9 @@ public class DefaultBuildContext : FrostingContext, IBuildContext
 
         log.Information(nameof(AzurePipelines));
         AzurePipelines.PrintToLog(indentedLog);
+
+        log.Information(nameof(GitHubActions));
+        GitHubActions.PrintToLog(indentedLog);
 
         log.Information(nameof(GitHub));
         GitHub.PrintToLog(indentedLog);

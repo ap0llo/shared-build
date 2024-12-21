@@ -1,4 +1,6 @@
-﻿using Cake.Core.Diagnostics;
+﻿using System.Threading.Tasks;
+using Cake.Common.Build;
+using Cake.Core.Diagnostics;
 using Cake.Frosting;
 using Cake.GitVersioning;
 using Grynwald.SharedBuild.Tools.ChangeLog;
@@ -6,9 +8,9 @@ using Grynwald.SharedBuild.Tools.ChangeLog;
 namespace Grynwald.SharedBuild.Tasks;
 
 [TaskName(TaskNames.GenerateChangeLog)]
-public class GenerateChangeLogTask : FrostingTask<IBuildContext>
+public class GenerateChangeLogTask : AsyncFrostingTask<IBuildContext>
 {
-    public override void Run(IBuildContext context)
+    public override async Task RunAsync(IBuildContext context)
     {
         //
         // Generate change log
@@ -46,6 +48,11 @@ public class GenerateChangeLogTask : FrostingTask<IBuildContext>
         {
             context.Log.Information("Publishing change log to Azure Pipelines");
             context.AzurePipelines.Commands.UploadArtifact("", context.Output.ChangeLogFile, context.AzurePipelines.ArtifactNames.ChangeLog);
+        }
+        else if (context.GitHubActions.IsActive)
+        {
+            context.Log.Information("Publishing change log to GitHub Actions artifacts");
+            await context.GitHubActions().Commands.UploadArtifact(context.Output.ChangeLogFile, context.GitHubActions.ArtifactNames.ChangeLog);
         }
     }
 }

@@ -1,5 +1,8 @@
 ﻿namespace Grynwald.SharedBuild;
 
+/// <summary>
+/// Provides information about the Pull Request if the current build is a GitHub Pull Request Build
+/// </summary>
 public interface IGitHubPullRequestContext : IPrintableObject
 {
     /// <summary>

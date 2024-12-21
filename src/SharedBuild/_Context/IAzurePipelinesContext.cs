@@ -7,7 +7,7 @@ public interface IAzurePipelinesContext : IAzurePipelinesProvider, IPrintableObj
     /// <summary>
     /// Gets the names to use for publishing pipeline artifacts
     /// </summary>
-    IAzurePipelinesArtifactNames ArtifactNames { get; }
+    IArtifactNames ArtifactNames { get; }
 
     /// <summary>
     /// Gets whether the build is currently running on Azure Pipelines
