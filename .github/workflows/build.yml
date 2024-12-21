@@ -21,6 +21,8 @@ env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_NOLOGO: true
+  # Expose the Pull Request number as environment variable (there is no predefined variable for this unfortunately)
+  PR_NUMBER: ${{ github.event.number }}
 
 jobs:
   build:
