@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Cake.Common.Build;
@@ -9,9 +8,11 @@ using Cake.Common.IO;
 using Cake.Common.Tools.DotNet;
 using Cake.Common.Tools.DotNet.Test;
 using Cake.Common.Tools.ReportGenerator;
+using Cake.Core;
 using Cake.Core.Diagnostics;
 using Cake.Core.IO;
 using Cake.Frosting;
+using Grynwald.SharedBuild.Tools;
 using Grynwald.SharedBuild.Tools.TemporaryFiles;
 
 namespace Grynwald.SharedBuild.Tasks;
@@ -28,7 +29,7 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
 
         if (context.TestSettings.CollectCodeCoverage)
         {
-            await GenerateCoverageReportAsync(context);
+            await GenerateCodeCoverageOutputAsync(context);
         }
     }
 
@@ -136,84 +137,6 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
         }
     }
 
-    private async Task GenerateCoverageReportAsync(IBuildContext context)
-    {
-        context.EnsureDirectoryDoesNotExist(context.Output.CodeCoverageReportDirectory, new() { Force = true, Recursive = true });
-
-        var coverageFiles = context.FileSystem.GetFilePaths(context.Output.TestResultsDirectory, "coverage.cobertura.xml", SearchScope.Recursive);
-
-        if (!coverageFiles.Any())
-            throw new Exception($"No coverage files found in '{context.Output.TestResultsDirectory}'");
-
-        context.Log.Information($"Found {coverageFiles.Count} coverage files");
-
-        //
-        // Generate Coverage Report and merged code coverage file
-        //
-        context.Log.Information("Merging coverage files");
-        var htmlReportType = context.AzurePipelines.IsActive
-            ? ReportGeneratorReportType.HtmlInline_AzurePipelines
-            : ReportGeneratorReportType.Html;
-
-        context.ReportGenerator(
-            reports: coverageFiles,
-            targetDir: context.Output.CodeCoverageReportDirectory,
-            settings: new ReportGeneratorSettings()
-            {
-                ReportTypes = [htmlReportType, ReportGeneratorReportType.Cobertura],
-                HistoryDirectory = context.Output.CodeCoverageHistoryDirectory
-            }
-        );
-
-        var coverageReportPath = context.Output.CodeCoverageReportDirectory.CombineWithFilePath("Cobertura.xml");
-
-        //
-        // Publish Code coverage report
-        //
-        if (context.AzurePipelines.IsActive)
-        {
-            PublishCodeCoverageToAzurePipelines(context, coverageReportPath);
-        }
-        else if (context.GitHubActions.IsActive)
-        {
-            await PublishCodeCoverageToGitHubActionsAsync(context, coverageReportPath);
-        }
-    }
-
-    protected virtual void PublishCodeCoverageToAzurePipelines(IBuildContext context, FilePath coverageReportPath)
-    {
-        context.Log.Information("Publishing Code Coverage Results to Azure Pipelines");
-        context.AzurePipelines.Commands.PublishCodeCoverage(new()
-        {
-            CodeCoverageTool = AzurePipelinesCodeCoverageToolType.Cobertura,
-            SummaryFileLocation = coverageReportPath,
-            ReportDirectory = context.Output.CodeCoverageReportDirectory
-        });
-    }
-
-    protected virtual async Task PublishCodeCoverageToGitHubActionsAsync(IBuildContext context, FilePath coverageReportPath)
-    {
-        context.Log.Information("Publishing Code Coverage Results to GitHub Actions");
-
-        using var temporaryDirectory = context.CreateTemporaryDirectory();
-
-        // Generate Markdown coverage report
-        context.ReportGenerator(
-            reports: [coverageReportPath],
-            targetDir: temporaryDirectory.Path.Combine("Report"),
-            settings: new ReportGeneratorSettings()
-            {
-                ReportTypes = [ReportGeneratorReportType.Html],
-                HistoryDirectory = context.Output.CodeCoverageHistoryDirectory,
-            }
-        );
-
-        context.CopyFileToDirectory(coverageReportPath, temporaryDirectory.Path);
-
-        // Publish coverage file and Summary as artifacts
-        await context.GitHubActions().Commands.UploadArtifact(temporaryDirectory.Path, "CodeCoverage");
-    }
-
     protected virtual IReadOnlyDictionary<FilePath, string> GetTestRunNames(IBuildContext context, IEnumerable<FilePath> testResultPaths)
     {
         var testRunNamer = new TestRunNamer(context.Log, context.Environment, context.FileSystem);
@@ -239,5 +162,147 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
         }
 
         return testRunNames;
+    }
+
+    /// <summary>
+    /// Merges the individual code coverage reports from all test projects into a single coverage result file and generates a HTML report.
+    /// If the build is running in a CI system, the coverage is also published as pipeline artifact
+    /// </summary>
+    private async Task GenerateCodeCoverageOutputAsync(IBuildContext context)
+    {
+        var mergedCoverageResult = MergeCoverageFiles(context);
+
+        var htmlReportPath = GenerateCodeCoverageHtmlReport(context, mergedCoverageResult);
+
+        //
+        // Publish Code coverage report to CI artifacts if necessary
+        //
+        if (context.AzurePipelines.IsActive)
+        {
+            PublishCodeCoverageToAzurePipelines(context, mergedCoverageResult, htmlReportPath);
+        }
+        else if (context.GitHubActions.IsActive)
+        {
+            await PublishCodeCoverageToGitHubActionsAsync(context, mergedCoverageResult, htmlReportPath);
+        }
+    }
+
+    /// <summary>
+    /// Merges all code coverage outputs into a single Cobertura report file
+    /// </summary>
+    protected virtual FilePath MergeCoverageFiles(IBuildContext context)
+    {
+        var coverageFiles = context.FileSystem.GetFilePaths(context.Output.TestResultsDirectory, "coverage.cobertura.xml", SearchScope.Recursive);
+
+        if (!coverageFiles.Any())
+            throw new Exception($"No coverage files found in '{context.Output.TestResultsDirectory}'");
+
+        context.Log.Information($"Found {coverageFiles.Count} coverage files");
+
+        var mergedCoverageFilePath = context.Output.CodeCoverageOutputDirectory.CombineWithFilePath("Cobertura.xml");
+        context.EnsureFileDoesNotExist(mergedCoverageFilePath);
+
+        //
+        // Generate merged code coverage file
+        //
+        context.Log.Information("Merging coverage files");
+        context.ReportGenerator(
+            reports: coverageFiles,
+            targetDir: context.Output.CodeCoverageOutputDirectory,
+            settings: new ReportGeneratorSettings()
+            {
+                ReportTypes = [ReportGeneratorReportType.Cobertura],
+                HistoryDirectory = GetCodeCoverageHistoryDirectory(context)
+            }
+        );
+
+        if (!context.FileExists(mergedCoverageFilePath))
+        {
+            throw new CakeException($"Failed to merge code coverage output files. Expected output file '{mergedCoverageFilePath}' does not exist after merging files");
+        }
+
+        return mergedCoverageFilePath;
+    }
+
+    /// <summary>
+    /// Generates a Code Coverage HTML report
+    /// </summary>
+    protected virtual DirectoryPath GenerateCodeCoverageHtmlReport(IBuildContext context, FilePath coverageFilePath)
+    {
+        var reportDirectory = context.Output.CodeCoverageOutputDirectory.Combine("Report");
+        context.Log.Information($"Generating code coverage HTML report to '{reportDirectory}'");
+        context.EnsureDirectoryDoesNotExist(reportDirectory);
+
+        context.ReportGenerator(
+            reports: [coverageFilePath],
+            targetDir: reportDirectory,
+            settings: new ReportGeneratorSettings()
+            {
+                ReportTypes = [ReportGeneratorReportType.Html],
+                HistoryDirectory = GetCodeCoverageHistoryDirectory(context)
+            }
+        );
+
+        return reportDirectory;
+    }
+
+    private DirectoryPath GetCodeCoverageHistoryDirectory(IBuildContext context) => context.Output.CodeCoverageOutputDirectory.Combine("History");
+
+
+    protected virtual void PublishCodeCoverageToAzurePipelines(IBuildContext context, FilePath coverageReportPath, DirectoryPath htmlReportPath)
+    {
+        context.Log.Information("Publishing Code Coverage Results to Azure Pipelines");
+
+        //
+        // Generate a version of the HTML report tailored for Azure Pipelines and publish it as code coverage
+        // so it is shown in the "Code Coverage" Azure Pipelines Web UI
+        //
+        var azurePipelinesHtmlReportDirectory = context.AzurePipelines.Environment.Build.ArtifactStagingDirectory.Combine($"{Guid.NewGuid():n}");
+        context.Log.Verbose("Generating tailored HTML code coverage report for Azure Pipelines");
+        context.ReportGenerator(
+            reports: [coverageReportPath],
+            targetDir: azurePipelinesHtmlReportDirectory,
+            settings: new ReportGeneratorSettings()
+            {
+                ReportTypes = [ReportGeneratorReportType.HtmlInline_AzurePipelines],
+                HistoryDirectory = GetCodeCoverageHistoryDirectory(context)
+            }
+        );
+
+        context.Log.Verbose("Publishing code coverage to Azure Pipelines Web UI");
+        context.AzurePipelines.Commands.PublishCodeCoverage(new()
+        {
+            CodeCoverageTool = AzurePipelinesCodeCoverageToolType.Cobertura,
+            SummaryFileLocation = coverageReportPath,
+            ReportDirectory = azurePipelinesHtmlReportDirectory
+        });
+
+        //
+        // Publish HTML report and coverage report as pipeline artifact to make it downloadable
+        //
+
+        var artifactStagingDirectory = context.AzurePipelines.Environment.Build.ArtifactStagingDirectory.Combine("CodeCoverage");
+        context.EnsureDirectoryDoesNotExist(artifactStagingDirectory);
+        context.EnsureDirectoryExists(artifactStagingDirectory);
+
+        context.CopyFileToDirectory(coverageReportPath, artifactStagingDirectory);
+        context.CopyDirectory(htmlReportPath, artifactStagingDirectory.Combine(htmlReportPath.GetDirectoryName()));
+        context.Log.Verbose($"Publishing code coverage as pipeline artifact");
+        context.AzurePipelines.Commands.UploadArtifact("", artifactStagingDirectory.ToString(), "CodeCoverage");
+    }
+
+    protected virtual async Task PublishCodeCoverageToGitHubActionsAsync(IBuildContext context, FilePath coverageReportPath, DirectoryPath htmlReportPath)
+    {
+        context.Log.Information("Publishing Code Coverage Results to GitHub Actions");
+
+        // GitHub Actions only allows artifact uploads once for each name
+        // => Copy all files together into a temporary directory and publish that directory
+        using var temporaryDirectory = context.CreateTemporaryDirectory();
+
+        context.CopyFileToDirectory(coverageReportPath, temporaryDirectory.Path);
+        context.CopyDirectory(htmlReportPath, temporaryDirectory.Path.Combine(htmlReportPath.GetDirectoryName()));
+
+        // Publish coverage file and Summary as artifacts
+        await context.GitHubActions().Commands.UploadArtifact(temporaryDirectory.Path, "CodeCoverage");
     }
 }

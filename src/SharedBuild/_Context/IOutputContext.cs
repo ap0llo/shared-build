@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Cake.Core.IO;
 
 namespace Grynwald.SharedBuild;
@@ -26,15 +27,9 @@ public interface IOutputContext : IPrintableObject
     DirectoryPath TestResultsDirectory { get; }
 
     /// <summary>
-    /// Gets the output path for code coverage reports
+    /// Gets the output path for the code coverage report
     /// </summary>
-    DirectoryPath CodeCoverageReportDirectory { get; }
-
-    /// <summary>
-    /// Gets the output path for code coverage history files
-    /// (used by Report Generator to show differences in code coverage between different runs)
-    /// </summary>
-    DirectoryPath CodeCoverageHistoryDirectory { get; }
+    DirectoryPath CodeCoverageOutputDirectory { get; }
 
     /// <summary>
     /// Gets all NuGet package files in the packages output directory
