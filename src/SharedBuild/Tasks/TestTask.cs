@@ -290,7 +290,7 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
         // Publish HTML report and coverage file as pipeline artifact to make it downloadable
         //
         context.Log.Verbose($"Publishing code coverage as pipeline artifact");
-        context.AzurePipelines.Commands.UploadArtifact("", stagingDirectory.ToString(), "CodeCoverage");
+        context.AzurePipelines.Commands.UploadArtifact("", stagingDirectory.Path.ToString(), "CodeCoverage");
     }
 
     protected virtual async Task PublishCodeCoverageToGitHubActionsAsync(IBuildContext context, FilePath coverageReportPath, DirectoryPath htmlReportPath)
