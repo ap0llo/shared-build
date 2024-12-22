@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Include="..\azure-pipelines.yml" Link="azure-pipelines.yml" />
+    <None Include="..\.github\workflows\build.yml" Link="build.yml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,6 +18,7 @@
     <PackageReference Include="Cake.GitVersioning" Version="3.7.112" />
     <PackageReference Include="Cake.FileHelpers" Version="7.0.0" />
     <PackageReference Include="Mono.Cecil" Version="0.11.6" />
+    <PackageReference Include="Cake.Frosting.Git" Version="5.0.1" />
   </ItemGroup>
 
   <ItemGroup>
