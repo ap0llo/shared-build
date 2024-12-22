@@ -260,7 +260,7 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
         // so it is shown in the "Code Coverage" Azure Pipelines Web UI
         //
 
-        var temporaryDirectory = context.CreateTemporaryDirectory();
+        using var temporaryDirectory = context.CreateTemporaryDirectory();
 
         context.Log.Verbose("Generating tailored HTML code coverage report for Azure Pipelines");
         context.ReportGenerator(
@@ -281,14 +281,16 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
             ReportDirectory = temporaryDirectory.Path
         });
 
+        using var stagingDirectory = context.CreateTemporaryDirectory();
+
+        context.CopyFileToDirectory(coverageReportPath, stagingDirectory.Path);
+        context.CopyDirectory(htmlReportPath, stagingDirectory.Path.Combine(htmlReportPath.GetDirectoryName()));
+
         //
         // Publish HTML report and coverage file as pipeline artifact to make it downloadable
         //
-        context.Log.Verbose($"Publishing merged code coverage file {coverageReportPath} as pipeline artifact");
-        context.AzurePipelines.Commands.UploadArtifact("", coverageReportPath, "CodeCoverage");
-
-        context.Log.Verbose($"Publishing code coverage HTML report as pipeline artifact");
-        context.AzurePipelines.Commands.UploadArtifact(htmlReportPath.GetDirectoryName(), htmlReportPath.ToString(), "CodeCoverage2");
+        context.Log.Verbose($"Publishing code coverage as pipeline artifact");
+        context.AzurePipelines.Commands.UploadArtifact("", stagingDirectory.ToString(), "CodeCoverage");
     }
 
     protected virtual async Task PublishCodeCoverageToGitHubActionsAsync(IBuildContext context, FilePath coverageReportPath, DirectoryPath htmlReportPath)
