@@ -294,7 +294,7 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
             // Compute the directory name of the file within the pipeline artifact being published
             // The name consists of the name of the HTML report folder, plus the relative path of each file inside that directory
 
-            var folderName = ((DirectoryPath)htmlReportPath.GetDirectoryName()).Combine(htmlReportPath.GetRelativePath(file.GetDirectory())).ToString();
+            var folderName = ((DirectoryPath)htmlReportPath.GetDirectoryName()).Combine(htmlReportPath.GetRelativePath(file.GetDirectory())).Collapse().ToString();
             context.Log.Debug($"Adding file '{file}' to pipeline artifact with folder name '{folderName}'");
             context.AzurePipelines.Commands.UploadArtifact(folderName, file, "CodeCoverage");
         }
