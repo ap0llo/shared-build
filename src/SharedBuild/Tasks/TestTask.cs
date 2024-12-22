@@ -257,27 +257,25 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
         // Generate a version of the HTML report tailored for Azure Pipelines and publish it as code coverage
         // so it is shown in the "Code Coverage" Azure Pipelines Web UI
         //
-        using (var temporaryDirectory1 = context.CreateTemporaryDirectory())
-        {
-            context.Log.Verbose("Generating tailored HTML code coverage report for Azure Pipelines");
-            context.ReportGenerator(
-                reports: [coverageReportPath],
-                targetDir: temporaryDirectory1.Path,
-                settings: new ReportGeneratorSettings()
-                {
-                    ReportTypes = [ReportGeneratorReportType.HtmlInline_AzurePipelines],
-                    HistoryDirectory = GetCodeCoverageHistoryDirectory(context)
-                }
-            );
-
-            context.Log.Verbose("Publishing code coverage to Azure Pipelines Web UI");
-            context.AzurePipelines.Commands.PublishCodeCoverage(new()
+        var azurePipelinesHtmlReportDirectory = context.AzurePipelines.Environment.Build.ArtifactStagingDirectory.Combine($"{Guid.NewGuid():n}");
+        context.Log.Verbose("Generating tailored HTML code coverage report for Azure Pipelines");
+        context.ReportGenerator(
+            reports: [coverageReportPath],
+            targetDir: azurePipelinesHtmlReportDirectory,
+            settings: new ReportGeneratorSettings()
             {
-                CodeCoverageTool = AzurePipelinesCodeCoverageToolType.Cobertura,
-                SummaryFileLocation = coverageReportPath,
-                ReportDirectory = temporaryDirectory1.Path
-            });
-        }
+                ReportTypes = [ReportGeneratorReportType.HtmlInline_AzurePipelines],
+                HistoryDirectory = GetCodeCoverageHistoryDirectory(context)
+            }
+        );
+
+        context.Log.Verbose("Publishing code coverage to Azure Pipelines Web UI");
+        context.AzurePipelines.Commands.PublishCodeCoverage(new()
+        {
+            CodeCoverageTool = AzurePipelinesCodeCoverageToolType.Cobertura,
+            SummaryFileLocation = coverageReportPath,
+            ReportDirectory = azurePipelinesHtmlReportDirectory
+        });
 
         //
         // Publish HTML report and coverage report as pipeline artifact to make it downloadable
