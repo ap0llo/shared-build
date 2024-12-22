@@ -259,45 +259,47 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
         // Generate a version of the HTML report tailored for Azure Pipelines and publish it as code coverage
         // so it is shown in the "Code Coverage" Azure Pipelines Web UI
         //
-
-        using var temporaryDirectory = context.CreateTemporaryDirectory();
-
-        context.Log.Verbose("Generating tailored HTML code coverage report for Azure Pipelines");
-        context.ReportGenerator(
-            reports: [coverageReportPath],
-            targetDir: temporaryDirectory.Path,
-            settings: new ReportGeneratorSettings()
-            {
-                ReportTypes = [ReportGeneratorReportType.HtmlInline_AzurePipelines],
-                HistoryDirectory = GetCodeCoverageHistoryDirectory(context)
-            }
-        );
-
-        context.Log.Verbose("Publishing code coverage to Azure Pipelines Web UI");
-        context.AzurePipelines.Commands.PublishCodeCoverage(new()
+        using (var temporaryDirectory1 = context.CreateTemporaryDirectory())
         {
-            CodeCoverageTool = AzurePipelinesCodeCoverageToolType.Cobertura,
-            SummaryFileLocation = coverageReportPath,
-            ReportDirectory = temporaryDirectory.Path
-        });
+            context.Log.Verbose("Generating tailored HTML code coverage report for Azure Pipelines");
+            context.ReportGenerator(
+                reports: [coverageReportPath],
+                targetDir: temporaryDirectory1.Path,
+                settings: new ReportGeneratorSettings()
+                {
+                    ReportTypes = [ReportGeneratorReportType.HtmlInline_AzurePipelines],
+                    HistoryDirectory = GetCodeCoverageHistoryDirectory(context)
+                }
+            );
 
-        using var stagingDirectory = context.CreateTemporaryDirectory();
-
-        context.CopyFileToDirectory(coverageReportPath, stagingDirectory.Path);
-        context.CopyDirectory(htmlReportPath, stagingDirectory.Path.Combine(htmlReportPath.GetDirectoryName()));
+            context.Log.Verbose("Publishing code coverage to Azure Pipelines Web UI");
+            context.AzurePipelines.Commands.PublishCodeCoverage(new()
+            {
+                CodeCoverageTool = AzurePipelinesCodeCoverageToolType.Cobertura,
+                SummaryFileLocation = coverageReportPath,
+                ReportDirectory = temporaryDirectory1.Path
+            });
+        }
 
         //
-        // Publish HTML report and coverage file as pipeline artifact to make it downloadable
+        // Publish HTML report and coverage report as pipeline artifact to make it downloadable
         //
+
+        var artifactStagingDirectory = context.AzurePipelines.Environment.Build.ArtifactStagingDirectory.Combine("CodeCoverage");
+        context.EnsureDirectoryDoesNotExist(artifactStagingDirectory);
+        context.EnsureDirectoryExists(artifactStagingDirectory);
+
+        context.CopyFileToDirectory(coverageReportPath, artifactStagingDirectory);
+        context.CopyDirectory(htmlReportPath, artifactStagingDirectory.Combine(htmlReportPath.GetDirectoryName()));
         context.Log.Verbose($"Publishing code coverage as pipeline artifact");
-        context.AzurePipelines.Commands.UploadArtifact("", stagingDirectory.Path.ToString(), "CodeCoverage");
+        context.AzurePipelines.Commands.UploadArtifact("", artifactStagingDirectory.ToString(), "CodeCoverage");
     }
 
     protected virtual async Task PublishCodeCoverageToGitHubActionsAsync(IBuildContext context, FilePath coverageReportPath, DirectoryPath htmlReportPath)
     {
         context.Log.Information("Publishing Code Coverage Results to GitHub Actions");
 
-        // GitHUb Actions only allows artifact uploads once for each name
+        // GitHub Actions only allows artifact uploads once for each name
         // => Copy all files together into a temporary directory and publish that directory
         using var temporaryDirectory = context.CreateTemporaryDirectory();
 
