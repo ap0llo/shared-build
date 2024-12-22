@@ -288,7 +288,7 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
         context.AzurePipelines.Commands.UploadArtifact("", coverageReportPath, "CodeCoverage");
 
         context.Log.Verbose($"Publishing code coverage HTML report as pipeline artifact");
-        context.AzurePipelines.Commands.UploadArtifact("", htmlReportPath.ToString(), "CodeCoverage2");
+        context.AzurePipelines.Commands.UploadArtifact(htmlReportPath.GetDirectoryName(), htmlReportPath.ToString(), "CodeCoverage2");
     }
 
     protected virtual async Task PublishCodeCoverageToGitHubActionsAsync(IBuildContext context, FilePath coverageReportPath, DirectoryPath htmlReportPath)
