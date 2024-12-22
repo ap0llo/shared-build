@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Cake.Common.Build;
@@ -15,7 +14,6 @@ using Cake.Core.IO;
 using Cake.Frosting;
 using Grynwald.SharedBuild.Tools;
 using Grynwald.SharedBuild.Tools.TemporaryFiles;
-using Octokit;
 
 namespace Grynwald.SharedBuild.Tasks;
 
