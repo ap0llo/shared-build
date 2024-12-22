@@ -155,6 +155,15 @@
           "System.Security.Cryptography.Pkcs": "9.0.0"
         }
       },
+      "Cake.Frosting.Git": {
+        "type": "Transitive",
+        "resolved": "5.0.1",
+        "contentHash": "85K0OGIEHj2oBvhITAJXRix7sUXLMLJmv5CNygH5LDIB3IubW5v7DxHZlyR16+gVgLygSx+DEVPzYLGqRRsR2Q==",
+        "dependencies": {
+          "Cake.Core": "5.0.0",
+          "LibGit2Sharp": "0.30.0"
+        }
+      },
       "Cake.GitVersioning": {
         "type": "Transitive",
         "resolved": "3.7.112",
@@ -185,6 +194,19 @@
         "dependencies": {
           "System.Diagnostics.EventLog": "6.0.0"
         }
+      },
+      "LibGit2Sharp": {
+        "type": "Transitive",
+        "resolved": "0.30.0",
+        "contentHash": "1cBg/7nz6q+yzvComhqQaTS4nbXloLp/x29ZgY/Rr82ohpkuaWT8ZYzsPLFvs1zmCh/4xQbVt5sQxazGblgRig==",
+        "dependencies": {
+          "LibGit2Sharp.NativeBinaries": "[2.0.322]"
+        }
+      },
+      "LibGit2Sharp.NativeBinaries": {
+        "type": "Transitive",
+        "resolved": "2.0.322",
+        "contentHash": "EWQaEevzc8uS1ZGS6T83jqUPBY//2WUSCHwbZHBoHOjlfSehqr30nm/VAhJPzjam/69sv7nlLKVcho9t2XuR/Q=="
       },
       "Microsoft.Bcl.AsyncInterfaces": {
         "type": "Transitive",
@@ -484,6 +506,7 @@
           "Cake.BuildSystems.Module": "[7.1.0, )",
           "Cake.FileHelpers": "[7.0.0, )",
           "Cake.Frosting": "[5.0.0, )",
+          "Cake.Frosting.Git": "[5.0.1, )",
           "Cake.GitVersioning": "[3.7.112, )",
           "Mono.Cecil": "[0.11.6, )",
           "Octokit": "[13.0.1, )"
