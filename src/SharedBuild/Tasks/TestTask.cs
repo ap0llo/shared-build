@@ -287,17 +287,8 @@ public class TestTask : AsyncFrostingTask<IBuildContext>
         context.Log.Verbose($"Publishing merged code coverage file {coverageReportPath} as pipeline artifact");
         context.AzurePipelines.Commands.UploadArtifact("", coverageReportPath, "CodeCoverage");
 
-
         context.Log.Verbose($"Publishing code coverage HTML report as pipeline artifact");
-        foreach (var file in context.FileSystem.GetFilePaths(htmlReportPath, scope: SearchScope.Recursive))
-        {
-            // Compute the directory name of the file within the pipeline artifact being published
-            // The name consists of the name of the HTML report folder, plus the relative path of each file inside that directory
-
-            var folderName = ((DirectoryPath)htmlReportPath.GetDirectoryName()).Combine(htmlReportPath.GetRelativePath(file.GetDirectory())).Collapse().ToString();
-            context.Log.Debug($"Adding file '{file}' to pipeline artifact with folder name '{folderName}'");
-            context.AzurePipelines.Commands.UploadArtifact(folderName, file, "CodeCoverage");
-        }
+        context.AzurePipelines.Commands.UploadArtifact("", htmlReportPath.ToString(), "CodeCoverage2");
     }
 
     protected virtual async Task PublishCodeCoverageToGitHubActionsAsync(IBuildContext context, FilePath coverageReportPath, DirectoryPath htmlReportPath)
