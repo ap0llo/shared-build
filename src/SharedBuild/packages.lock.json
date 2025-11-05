@@ -55,9 +55,9 @@
       },
       "Cake.GitVersioning": {
         "type": "Direct",
-        "requested": "[3.7.112, )",
-        "resolved": "3.7.112",
-        "contentHash": "WYoOASPrjP3lHCdFXQ7e2JQEvUL7ve8U3XA6tk6Iiuaab4cuu6cRTvVcC+MZHmRhbKfnEdiYIJdKGvbvy+wpYg=="
+        "requested": "[3.9.50, )",
+        "resolved": "3.9.50",
+        "contentHash": "SpfP4oypn/Ps/XB02saF72tdV/LVrlxOHI1EwJfaDAKIWpZcrUlqVbcXljIPYsMH6nt5PyYy1vAFaTsBw+AHCw=="
       },
       "Mono.Cecil": {
         "type": "Direct",
@@ -67,9 +67,9 @@
       },
       "Nerdbank.GitVersioning": {
         "type": "Direct",
-        "requested": "[3.7.112, )",
-        "resolved": "3.7.112",
-        "contentHash": "j0jcfnTjvhytRanVR34Gaj6RFKk8EDmVhRW7929nWjCo8tzBxsa3XmFmbSGDA6nWXGhfehTixWhPgGWAbz+NQA=="
+        "requested": "[3.9.50, )",
+        "resolved": "3.9.50",
+        "contentHash": "HtOgGF6jZ+WYbXnCUCYPT8Y2d6mIJo9ozjK/FINTRsXdm4Zgv9GehUMa7EFoGQkqrMcDJNOIDwCmENnvXg4UbA=="
       },
       "Octokit": {
         "type": "Direct",
