@@ -53,13 +53,11 @@
       },
       "xunit.v3": {
         "type": "Direct",
-        "requested": "[1.0.0, )",
-        "resolved": "1.0.0",
-        "contentHash": "jomUqCyfbILuGa4zWFAU1knj1n5/1H44ACDo7iu6DZlmmSbYlyYgB6Vzy8gxab6eh78otXDF/ntjktDCRkTMIg==",
+        "requested": "[3.2.2, )",
+        "resolved": "3.2.2",
+        "contentHash": "L+4/4y0Uqcg8/d6hfnxhnwh4j9FaeULvefTwrk30rr1o4n/vdPfyUQ8k0yzH8VJx7bmFEkDdcRfbtbjEHlaYcA==",
         "dependencies": {
-          "xunit.analyzers": "1.18.0",
-          "xunit.v3.assert": "[1.0.0]",
-          "xunit.v3.core": "[1.0.0]"
+          "xunit.v3.mtp-v1": "[3.2.2]"
         }
       },
       "Autofac": {
@@ -208,6 +206,14 @@
         "resolved": "2.0.322",
         "contentHash": "EWQaEevzc8uS1ZGS6T83jqUPBY//2WUSCHwbZHBoHOjlfSehqr30nm/VAhJPzjam/69sv7nlLKVcho9t2XuR/Q=="
       },
+      "Microsoft.ApplicationInsights": {
+        "type": "Transitive",
+        "resolved": "2.23.0",
+        "contentHash": "nWArUZTdU7iqZLycLKWe0TDms48KKGE6pONH2terYNa8REXiqixrMOkf1sk5DHGMaUTqONU2YkS4SAXBhLStgw==",
+        "dependencies": {
+          "System.Diagnostics.DiagnosticSource": "5.0.0"
+        }
+      },
       "Microsoft.Bcl.AsyncInterfaces": {
         "type": "Transitive",
         "resolved": "6.0.0",
@@ -277,25 +283,34 @@
         "resolved": "7.0.4",
         "contentHash": "yLEHlNN7O5WiND89r42sepgVwy5W/ZoTiFEdJDV7MHR1lW02LL7Nipz2TD5qM/Kx9W3/k3NP+PAP2qUdOm+leg=="
       },
+      "Microsoft.Testing.Extensions.Telemetry": {
+        "type": "Transitive",
+        "resolved": "1.9.1",
+        "contentHash": "No5AudZMmSb+uNXjlgL2y3/stHD2IT4uxqc5yHwkE+/nNux9jbKcaJMvcp9SwgP4DVD8L9/P3OUz8mmmcvEIdQ==",
+        "dependencies": {
+          "Microsoft.ApplicationInsights": "2.23.0",
+          "Microsoft.Testing.Platform": "1.9.1"
+        }
+      },
       "Microsoft.Testing.Extensions.TrxReport.Abstractions": {
         "type": "Transitive",
-        "resolved": "1.4.3",
-        "contentHash": "16sWznD6ZMok/zgW+vrO6zerCFMD9N+ey9bi1iV/e9xxsQb4V4y/aW6cY/Y7E9jA7pc+aZ6ffZby43yxQOoYZA==",
+        "resolved": "1.9.1",
+        "contentHash": "AL46Xe1WBi85Ntd4mNPvat5ZSsZ2uejiVqoKCypr8J3wK0elA5xJ3AN4G/Q4GIwzUFnggZoH/DBjnr9J18IO/g==",
         "dependencies": {
-          "Microsoft.Testing.Platform": "1.4.3"
+          "Microsoft.Testing.Platform": "1.9.1"
         }
       },
       "Microsoft.Testing.Platform": {
         "type": "Transitive",
-        "resolved": "1.4.3",
-        "contentHash": "NedIbwl1T7+ZMeg7gwk0Db8/RFLf0siyVpeTcRMMOle6Xl/ujaYOM4Aduo8rEfVqNj3kcQ7blegpyT3dHi+0PA=="
+        "resolved": "1.9.1",
+        "contentHash": "QafNtNSmEI0zazdebnsIkDKmFtTSpmx/5PLOjURWwozcPb3tvRxzosQSL8xwYNM1iPhhKiBksXZyRSE2COisrA=="
       },
       "Microsoft.Testing.Platform.MSBuild": {
         "type": "Transitive",
-        "resolved": "1.4.3",
-        "contentHash": "1gGqgHtiZ6tZn/6Tby+qlKpNe5Ye/5LnxlSsyl4XMZ4m4V+Cu1K1m+gD1zxoxHIvLjgX8mCnQRK95MGBBFuumw==",
+        "resolved": "1.9.1",
+        "contentHash": "oTUtyR4X/s9ytuiNA29FGsNCCH0rNmY5Wdm14NCKLjTM1cT9edVSlA+rGS/mVmusPqcP0l/x9qOnMXg16v87RQ==",
         "dependencies": {
-          "Microsoft.Testing.Platform": "1.4.3"
+          "Microsoft.Testing.Platform": "1.9.1"
         }
       },
       "Microsoft.TestPlatform.ObjectModel": {
@@ -447,57 +462,69 @@
       },
       "xunit.analyzers": {
         "type": "Transitive",
-        "resolved": "1.18.0",
-        "contentHash": "OtFMHN8yqIcYP9wcVIgJrq01AfTxijjAqVDy/WeQVSyrDC1RzBWeQPztL49DN2syXRah8TYnfvk035s7L95EZQ=="
+        "resolved": "1.27.0",
+        "contentHash": "y/pxIQaLvk/kxAoDkZW9GnHLCEqzwl5TW0vtX3pweyQpjizB9y3DXhb9pkw2dGeUqhLjsxvvJM1k89JowU6z3g=="
       },
       "xunit.v3.assert": {
         "type": "Transitive",
-        "resolved": "1.0.0",
-        "contentHash": "XGJP9QfdvT0cF14yPBe8uWQIEJaoaLXKhxWCE3W2mjugUYjiWVCoE1HtPDpoUiKRLcECvTJpmUHngebWTQUMog=="
+        "resolved": "3.2.2",
+        "contentHash": "BPciBghgEEaJN/JG00QfCYDfEfnLgQhfnYEy+j1izoeHVNYd5+3Wm8GJ6JgYysOhpBPYGE+sbf75JtrRc7jrdA=="
       },
       "xunit.v3.common": {
         "type": "Transitive",
-        "resolved": "1.0.0",
-        "contentHash": "3w/BtAJe83G73KXpxrejrQw+eO51gmFrHUov5rq2jfb9nFUYWrSvdK55aIPh1SMXZMNka3qnCvkmhFVZ8o7PtA==",
+        "resolved": "3.2.2",
+        "contentHash": "Hj775PEH6GTbbg0wfKRvG2hNspDCvTH9irXhH4qIWgdrOSV1sQlqPie+DOvFeigsFg2fxSM3ZAaaCDQs+KreFA==",
         "dependencies": {
           "Microsoft.Bcl.AsyncInterfaces": "6.0.0"
         }
       },
-      "xunit.v3.core": {
+      "xunit.v3.core.mtp-v1": {
         "type": "Transitive",
-        "resolved": "1.0.0",
-        "contentHash": "1OIr5m7smSIHaNPUe8IJ3+UvsQb9KiIQMwUm2uDcLB3w8Z2e1sg0ND4TcVzNltCuWVEnXU73XpNHwrCNLbaQYA==",
+        "resolved": "3.2.2",
+        "contentHash": "Ga5aA2Ca9ktz+5k3g5ukzwfexwoqwDUpV6z7atSEUvqtd6JuybU1XopHqg1oFd78QdTfZgZE9h5sHpO4qYIi5w==",
         "dependencies": {
-          "Microsoft.Testing.Platform.MSBuild": "1.4.3",
-          "xunit.v3.extensibility.core": "[1.0.0]",
-          "xunit.v3.runner.inproc.console": "[1.0.0]"
+          "Microsoft.Testing.Extensions.Telemetry": "1.9.1",
+          "Microsoft.Testing.Extensions.TrxReport.Abstractions": "1.9.1",
+          "Microsoft.Testing.Platform": "1.9.1",
+          "Microsoft.Testing.Platform.MSBuild": "1.9.1",
+          "xunit.v3.extensibility.core": "[3.2.2]",
+          "xunit.v3.runner.inproc.console": "[3.2.2]"
         }
       },
       "xunit.v3.extensibility.core": {
         "type": "Transitive",
-        "resolved": "1.0.0",
-        "contentHash": "TsRSMWPnrZ0uAPBKWCusQi5l406IlwtzIDguID70XrytDmD2H/9yUqoFruMpYfrLPep/vFnv+26L6/6J57TyVQ==",
+        "resolved": "3.2.2",
+        "contentHash": "srY8z/oMPvh/t8axtO2DwrHajhFMH7tnqKildvYrVQIfICi8fOn3yIBWkVPAcrKmHMwvXRJ/XsQM3VMR6DOYfQ==",
         "dependencies": {
-          "xunit.v3.common": "[1.0.0]"
+          "xunit.v3.common": "[3.2.2]"
+        }
+      },
+      "xunit.v3.mtp-v1": {
+        "type": "Transitive",
+        "resolved": "3.2.2",
+        "contentHash": "O41aAzYKBT5PWqATa1oEWVNCyEUypFQ4va6K0kz37dduV3EKzXNMaV2UnEhufzU4Cce1I33gg0oldS8tGL5I0A==",
+        "dependencies": {
+          "xunit.analyzers": "1.27.0",
+          "xunit.v3.assert": "[3.2.2]",
+          "xunit.v3.core.mtp-v1": "[3.2.2]"
         }
       },
       "xunit.v3.runner.common": {
         "type": "Transitive",
-        "resolved": "1.0.0",
-        "contentHash": "971vQ/IVmxWxKu6Rd9GlCBuoSTn2JH5S6GFUhlaCnMDpx36VjhrwVt2qS2RcMO6Hu4TlNyBEsZqgZ8g6HyMXSQ==",
+        "resolved": "3.2.2",
+        "contentHash": "/hkHkQCzGrugelOAehprm7RIWdsUFVmIVaD6jDH/8DNGCymTlKKPTbGokD5czbAfqfex47mBP0sb0zbHYwrO/g==",
         "dependencies": {
-          "xunit.v3.common": "[1.0.0]"
+          "Microsoft.Win32.Registry": "[5.0.0]",
+          "xunit.v3.common": "[3.2.2]"
         }
       },
       "xunit.v3.runner.inproc.console": {
         "type": "Transitive",
-        "resolved": "1.0.0",
-        "contentHash": "UwtiQZUVpxhulszBKH5Qvuu6Oxs8UXteZEOaOosP9lCXjvBvprxyeHFQCVfMuxKPbITx3MA7h9W7D5vgrR9lzQ==",
+        "resolved": "3.2.2",
+        "contentHash": "ulWOdSvCk+bPXijJZ73bth9NyoOHsAs1ZOvamYbCkD4DNLX/Bd29Ve2ZNUwBbK0MqfIYWXHZViy/HKrdEC/izw==",
         "dependencies": {
-          "Microsoft.Testing.Extensions.TrxReport.Abstractions": "1.4.3",
-          "Microsoft.Testing.Platform": "1.4.3",
-          "xunit.v3.extensibility.core": "[1.0.0]",
-          "xunit.v3.runner.common": "[1.0.0]"
+          "xunit.v3.extensibility.core": "[3.2.2]",
+          "xunit.v3.runner.common": "[3.2.2]"
         }
       },
       "grynwald.sharedbuild": {
